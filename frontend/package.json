@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "author": "Jill",
   "proxy":"http://localhost:8000",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",

@@ -63,6 +63,9 @@ class CustomUser(AbstractUser):
         next_week_plans = models.TextField()
         date_submitted = models.DateField()
         is_verified =models.BooleanField(default=False)
+        class Meta:
+            unique_together =['student','placement','week_number']
+            ordering = ['week_number']
 
         def __str__(self):
             return f"Week {self.week_number} - {self.student}"

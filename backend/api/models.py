@@ -12,7 +12,7 @@ class CustomUser(AbstractUser):
     skills = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.username} ({self.user_type})"
+        return f"{self.username}({self.user_type})"
 class InternshipPlacement(models.Model):
     student = models.ForeignKey(
         CustomUser,

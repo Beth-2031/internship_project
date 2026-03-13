@@ -8,7 +8,7 @@ class CustomUser(AbstractUser):
         ('academic_supervisor','Academic Supervisor')
         ('intership_admin','Intership Administrator')
     ]
-    user_type = models.CharField(max_length=30, choices=USER_TYPE, default='student')
+    user_type = models.CharField(max_length=30, choices=USER_TYPES, default='student')
     skills = models.TextFeild(blank=True, null=True)
 
     def __str__(self):

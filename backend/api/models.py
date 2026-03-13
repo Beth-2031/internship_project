@@ -8,7 +8,7 @@ class CustomUser(AbstractUser):
         ('academic_supervisor','Academic Supervisor')
         ('intership_admin','Intership Administrator')
     ]
-    user_type = models.CharField(max_length=30, choices=USER_TYPE, default='student')
+    user_type = models.CharField(max_length=30, choices=USER_TYPES, default='student')
     skills = models.TextFeild(blank=True, null=True)
 
     def __str__(self):
@@ -63,6 +63,9 @@ class CustomUser(AbstractUser):
         next_week_plans = models.TextField()
         date_submitted = models.DateField()
         is_verified =models.BooleanField(default=False)
+        class Meta:
+            unique_together =['student','placement','week_number']
+            ordering = ['week_number']
 
         def __str__(self):
             return f"Week {self.week_number} - {self.student}"

@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.user_type})"
-    class IntershipPlacement(models.Model):
+class IntershipPlacement(models.Model):
         student = models.ForeignKey(
             CustomUser,
             on_delete=models.CASCADE,
@@ -44,7 +44,7 @@ class CustomUser(AbstractUser):
         def __str__(self):
             return f"{self.student} - {self.company_name}"
         
-    class WeeklyLog(models.Model):
+class WeeklyLog(models.Model):
         student = models.ForeignKey(
             CustomUser,
             on_delete=models.CASCADE,
@@ -69,7 +69,7 @@ class CustomUser(AbstractUser):
 
         def __str__(self):
             return f"Week {self.week_number} - {self.student}"
-    class SafetyReport(models.Model):
+class SafetyReport(models.Model):
         student = models.ForeignKey(
             CustomUser,
             on_delete=models.CASCADE,
@@ -83,7 +83,7 @@ class CustomUser(AbstractUser):
         def __str__(self):
             return f"Safety Report - {self.student} ({self.date_reported})"
         
-    class CourseCompletion(models.Model):
+class CourseCompletion(models.Model):
         student = models.ForeignKey(
             CustomUser,
             on_delete=models.CASCADE,

@@ -26,6 +26,7 @@ class InternshipPlacement(models.Model):
             CustomUser,
             on_delete=models.SET_NULL,
             null=True,
+            blank=True,
             related_name='supervised_placements',
             limit_choices_to={'user_type': 'workplace_supervisor'}
         )
@@ -96,6 +97,6 @@ class CourseCompletion(models.Model):
         minimum_hours_required = models.IntegerField()
         approved_hours = models.IntegerField()
         is_completed = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"{self.student} - {self.course_name}"
+        
+        def __str__(self):
+           return f"{self.student} - {self.course_name}"

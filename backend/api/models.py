@@ -4,16 +4,18 @@ from django.db import models
 class CustomUser(AbstractUser):
     USER_TYPES = [
         ('student', 'Student'),
-        ('workplace_supervisor','Workplace Supervisor')
-        ('academic_supervisor','Academic Supervisor')
-        ('intership_admin','Intership Administrator')
+        ('workplace_supervisor','Workplace Supervisor'),
+        ('academic_supervisor','Academic Supervisor'),
+        ('internship_admin','Internship Administrator')
     ]
     user_type = models.CharField(max_length=30, choices=USER_TYPES, default='student')
-    skills = models.TextFeild(blank=True, null=True)
+    skills = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.username} ({self.user_type})"
-class IntershipPlacement(models.Model):
+    
+
+class InternshipPlacement(models.Model):
         student = models.ForeignKey(
             CustomUser,
             on_delete=models.CASCADE,
@@ -38,8 +40,8 @@ class IntershipPlacement(models.Model):
         location = models.CharField(max_length=200)
         department = models.CharField(max_length=200)
         start_date = models.DateField()
-        end_date = models.dateField()
-        is_approved = models.BooleanField(defalt=False)
+        end_date = models.DateField()
+        is_approved = models.BooleanField(default=False)
 
         def __str__(self):
             return f"{self.student} - {self.company_name}"
@@ -48,16 +50,16 @@ class WeeklyLog(models.Model):
         student = models.ForeignKey(
             CustomUser,
             on_delete=models.CASCADE,
-            related_name='weekly_logs,'
+            related_name='weekly_logs',
             limit_choices_to={'user_type': 'student'}
         )
         placement = models.ForeignKey(
-            InternshipPLacement,
+            InternshipPlacement,
             on_delete=models.CASCADE,
             related_name='logs'
         )
-        week_number = models.IntergerField()
-        tasks_done = models.TextFeild()
+        week_number = models.IntegerField()
+        tasks_done = models.TextField()
         hours_worked = models.DecimalField(max_digits=5, decimal_places=2)
         challenges_faced = models.TextField()
         next_week_plans = models.TextField()
@@ -73,7 +75,7 @@ class SafetyReport(models.Model):
         student = models.ForeignKey(
             CustomUser,
             on_delete=models.CASCADE,
-            related_name='safety_reports'
+            related_name='safety_reports',
             limit_choices_to={'user_type': 'student'}
         )
         description = models.TextField()
@@ -87,11 +89,11 @@ class CourseCompletion(models.Model):
         student = models.ForeignKey(
             CustomUser,
             on_delete=models.CASCADE,
-            related_name='safety_reports'
+            related_name='course_completions',
             limit_choices_to={'user_type': 'student'}    
         )
         course_name = models.CharField(max_length=200)
-        minimum_hours_required = models.InterField()
+        minimum_hours_required = models.IntegerField()
         approved_hours = models.IntegerField()
         is_completed = models.BooleanField(default=False)
 

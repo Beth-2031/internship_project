@@ -97,5 +97,5 @@ class CourseCompletion(models.Model):
         approved_hours = models.IntegerField()
         is_completed = models.BooleanField(default=False)
 
-        def __str__(self):
-            return f"{self.student} - {self.course_name}"
+    def __str__(self):
+        return f"{self.student} - {self.course_name}"

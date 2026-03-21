@@ -1,0 +1,322 @@
+/* LoginPage.css */
+
+.home-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.app-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.welcome-text {
+  font-size: 20px;
+  margin: 5px 0;
+  color: #444;
+}
+
+.tagline {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.roles-grid {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.role-button {
+  flex: 1;
+  padding: 10px;
+  margin: 0 5px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.role-button.active {
+  background: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.login-form {
+  text-align: left;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #333;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field .toggle-visibility {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.forgot-link {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-button:hover {
+  background: #0056b3;
+}
+
+/* Home Page Styles */
+.home-container {
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #333;
+  padding: 0;
+}
+
+.home-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 60px 20px;
+  text-align: center;
+  border-bottom: 3px solid var(--accent);
+}
+
+.home-header .app-title {
+  font-size: 48px;
+  margin: 0 0 10px 0;
+  color: white;
+  font-weight: 700;
+}
+
+.tagline {
+  font-size: 18px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.home-nav {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  padding: 10px 20px;
+  margin: 0 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+  background: white;
+  color: #667eea;
+  transform: translateY(-2px);
+}
+
+.hero-section {
+  background: white;
+  padding: 60px 40px;
+  text-align: center;
+  margin: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.hero-section h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.hero-section p {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.cta-button {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  background: #764ba2;
+  transform: scale(1.05);
+}
+
+.features-section {
+  background: white;
+  padding: 60px 40px;
+  margin: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.features-section h2 {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.feature-card {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  padding: 25px;
+  border-radius: 10px;
+  border-left: 4px solid #667eea;
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.feature-card h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.feature-card p {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.roles-section {
+  background: white;
+  padding: 60px 40px;
+  margin: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.roles-section h2 {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.role-box {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.role-box:hover {
+  transform: translateY(-8px);
+}
+
+.role-box h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.role-box p {
+  font-size: 14px;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.role-button {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.role-button:hover {
+  background: #f0f0f0;
+  transform: scale(1.05);
+}
+
+.home-footer {
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
+  text-align: center;
+  padding: 30px;
+  font-size: 14px;
+  margin-top: 30px;
+}

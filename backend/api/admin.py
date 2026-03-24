@@ -17,8 +17,8 @@ class AcademicSupervisorAdmin(admin.ModelAdmin):
     list_display = ("id","name","department","email")
     search_fields = ("name","department","email")
 
-    admin.site.register(Student,StudentAdmin)
+    admin.site.register(student,StudentAdmin)
     admin.site.register(internshipAdmin,InternishipAdminAdmin)
     admin.site.register(WorkplaceSupervisor,WorkplaceSupervisorAdmin)
     admin.site.register(AcademicSupervisor,AcademicSupervisorAdmin)
-    
+

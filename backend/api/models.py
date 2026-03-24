@@ -170,7 +170,7 @@ class CourseCompletion(models.Model):
         CustomUser,
         on_delete=models.CASCADE,
         related_name='course_completions',
-        limit_choices_to={'user_type': 'student'}    
+        limit_choices_to={'user_type':'student'}    
     )
     course_name = models.CharField(max_length=200)
     minimum_hours_required = models.IntegerField()

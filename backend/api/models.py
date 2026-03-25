@@ -8,10 +8,11 @@ class CustomUser(AbstractUser):
         ('academic_supervisor','Academic Supervisor'),
         ('internship_admin','Internship Administrator')
     ]
-    user_type = models.CharField(max_length=30, choices=USER_TYPES, default='student')
+    user_type = models.CharField(max_length=30, choices= USER_TYPES, default='student')
     skills = models.TextField(blank=True, null=True)
 
     def __str__(self):
+<<<<<<< HEAD
         return f"{self.username} ({self.user_type})"
 <<<<<<< HEAD
     
@@ -99,6 +100,9 @@ class CourseCompletion(models.Model):
         approved_hours = models.IntegerField()
         is_completed = models.BooleanField(default=False)
 =======
+=======
+        return f"{self.username}({self.user_type})"
+>>>>>>> 879cc5c8d4381b4ae7483ca5ca0972ff9606ad9b
 class InternshipPlacement(models.Model):
     student = models.ForeignKey(
         CustomUser,
@@ -171,13 +175,12 @@ class CourseCompletion(models.Model):
         CustomUser,
         on_delete=models.CASCADE,
         related_name='course_completions',
-        limit_choices_to={'user_type': 'student'}    
+        limit_choices_to={'user_type':'student'}    
     )
     course_name = models.CharField(max_length=200)
     minimum_hours_required = models.IntegerField()
     approved_hours = models.IntegerField()
     is_completed = models.BooleanField(default=False)
->>>>>>> Thomas
 
     def __str__(self):
         return f"{self.student} - {self.course_name}"

@@ -5,7 +5,7 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = ("id","name","email")
     search_fields = ("name", "email")
 
-class InternishipAdminAdmin(admin.ModelAdmin):
+class InternshipAdminAdmin(admin.ModelAdmin):
     list_display = ("id","name","email")
     search_fields = ("name", "email")
 
@@ -18,7 +18,7 @@ class AcademicSupervisorAdmin(admin.ModelAdmin):
     search_fields = ("name","department","email")
 
     admin.site.register(student,StudentAdmin)
-    admin.site.register(internshipAdmin,InternishipAdminAdmin)
+    admin.site.register(internshipAdmin,InternshipAdminAdmin)
     admin.site.register(WorkplaceSupervisor,WorkplaceSupervisorAdmin)
     admin.site.register(AcademicSupervisor,AcademicSupervisorAdmin)
 

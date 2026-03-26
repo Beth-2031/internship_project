@@ -5,7 +5,7 @@
   max-width: 480px;
   margin: 0 auto;
   padding: 40px 24px;
-  background-color: #0d1117;
+  background-color:#0a0a0a;
   min-height: 100vh;
   font-family: Arial, sans-serif;
   text-align: center;
@@ -14,7 +14,7 @@
 .app-title {
   font-size: 22px;
   font-weight: 700;
-  color: #ffffff;
+  color:  #00e676;
   letter-spacing: -0.3px;
 }
 
@@ -43,17 +43,25 @@
   flex: 1;
   padding: 10px;
   margin: 0 5px;
-  border: 1px solid #ccc;
-  background:#f9f9f9;
+  border:  1px solid #00e676;
+  background: #111111;
+  color: #ffffff;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 50px;
   font-size: 14px;
+  transition: all 0.25s ease;
+}
+.role-button:hover,
+.role-button.active:hover {
+  background: #00e676 !important;
+  border-color: #00e676 !important;
+  color: #000000!important;
 }
 
 .role-button.active {
-  background: #007bff;
-  color: #fff;
-  border-color: #007bff;
+  background: #00c853;
+  color: #000000;
+  border-color: #00c853;
 }
 
 .login-form {
@@ -64,15 +72,18 @@
   display: block;
   margin-bottom: 5px;
   font-size: 14px;
-  color: #333;
+  color: #00e676;
 }
 
 .login-form input {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+  border: 1px solid #00e676;
+  border-radius: 50px;
+  background:#111111;
+  color: #ffffff;
+  box-sizing: border-box;
 }
 
 .password-field {
@@ -91,7 +102,7 @@
   display: block;
   margin-bottom: 20px;
   font-size: 13px;
-  color: #007bff;
+  color: #00e676;
   text-decoration: none;
 }
 
@@ -102,39 +113,44 @@
 .login-button {
   width: 100%;
   padding: 12px;
-  background: #007bff;
+  background:  #00e676;
   border: none;
-  border-radius: 8px;
-  color: #fff;
+  border-radius: 50px;
+  color: #000000;
   font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
+  transition:all 0.25s ease;
 }
 
 .login-button:hover {
-  background: #0056b3;
+  background: #00e676 ;
+  color: #000000;
+  box-shadow: 0 4px 20px rgba(0, 230, 118, 0.5);
+  transform: translateY(-2px);
 }
 
 /* Home Page Styles */
 .home-container {
   width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background:  #0a0a0a;
   min-height: 100vh;
-  color: #333;
+  color: #ffffff;
   padding: 0;
 }
 
 .home-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #0d1f0d 100%);
   color: white;
   padding: 60px 20px;
   text-align: center;
-  border-bottom: 3px solid var(--accent);
+  border-bottom: 3px solid  #00e676;
 }
 
 .home-header .app-title {
   font-size: 48px;
   margin: 0 0 10px 0;
-  color: white;
+  color: #00e676;
   font-weight: 700;
 }
 
@@ -145,19 +161,19 @@
 }
 
 .home-nav {
-  background: rgba(255, 255, 255, 0.1);
+  background: #111111;
   padding: 20px;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 230, 118, 0.2);
 }
 
 .nav-button {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 2px solid white;
+  background: transparent;
+  color:  #00e676;
+  border: 2px solid #00e676;
   padding: 10px 20px;
   margin: 0 10px;
-  border-radius: 6px;
+  border-radius: 50px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
@@ -165,39 +181,40 @@
 }
 
 .nav-button:hover {
-  background: white;
-  color: #667eea;
+  background: #00e676;
+  color:  #000000 ;
   transform: translateY(-2px);
 }
 
 .hero-section {
-  background: white;
+  background: #161616;
   padding: 60px 40px;
   text-align: center;
   margin: 30px;
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 230, 118, 0.15);
 }
 
 .hero-section h2 {
   font-size: 36px;
   margin-bottom: 20px;
-  color: #333;
+  color: #00e676;
 }
 
 .hero-section p {
   font-size: 18px;
-  color: #666;
+  color: #9ca3af;
   margin-bottom: 30px;
   line-height: 1.6;
 }
 
 .cta-button {
-  background: #667eea;
-  color: white;
+  background:  #00e676;
+  color: #000000;
   border: none;
   padding: 15px 40px;
-  border-radius: 6px;
+  border-radius: 50px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -205,23 +222,26 @@
 }
 
 .cta-button:hover {
-  background: #764ba2;
+  background:  #00e676 !important;
+  color: #000000 !important;
+   box-shadow: 0 6px 24px rgba(0, 230, 118, 0.5);
   transform: scale(1.05);
 }
 
 .features-section {
-  background: white;
+  background: #161616;
   padding: 60px 40px;
   margin: 30px;
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  border:1px solid rgba(0, 230, 118, 0.15);
 }
 
 .features-section h2 {
   font-size: 32px;
   text-align: center;
   margin-bottom: 40px;
-  color: #333;
+  color: #00e676;
 }
 
 .features-grid {
@@ -231,10 +251,10 @@
 }
 
 .feature-card {
-  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  background: rgba(0, 230, 118, 0.05);
   padding: 25px;
   border-radius: 10px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #00e676;
   transition: transform 0.3s ease;
 }
 
@@ -245,28 +265,29 @@
 .feature-card h3 {
   font-size: 18px;
   margin-bottom: 12px;
-  color: #333;
+  color: #00e676;
 }
 
 .feature-card p {
-  color: #666;
+  color: #9ca3af;
   font-size: 14px;
   line-height: 1.6;
 }
 
 .roles-section {
-  background: white;
+  background:  #161616;
   padding: 60px 40px;
   margin: 30px;
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  box-shadow:  0 10px 40px rgba(0, 0, 0, 0.4);
+  border:1px solid rgba(0, 230, 118, 0.15);
 }
 
 .roles-section h2 {
   font-size: 32px;
   text-align: center;
   margin-bottom: 40px;
-  color: #333;
+  color: #00e676;
 }
 
 .roles-grid {
@@ -276,12 +297,13 @@
 }
 
 .role-box {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background:  #111111;
   color: white;
   padding: 30px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 5px 20px rgba(0, 230, 118, 0.1);
+  border:1px solid rgba(0, 230, 118, 0.2);
   transition: transform 0.3s ease;
 }
 
@@ -292,6 +314,7 @@
 .role-box h3 {
   font-size: 20px;
   margin-bottom: 12px;
+  color: #00e676;
 }
 
 .role-box p {
@@ -301,11 +324,11 @@
 }
 
 .role-button {
-  background: white;
-  color: #667eea;
+  background: #00e676;
+  color:  #000000;
   border: none;
   padding: 12px 24px;
-  border-radius: 6px;
+  border-radius: 50px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -313,13 +336,15 @@
 }
 
 .role-button:hover {
-  background: #f0f0f0;
+  background:  #00e676 !important;
+  color: #000000 !important;
+  box-shadow: 0 4px 18px rgba(0, 230, 118, 0.5);
   transform: scale(1.05);
 }
 
 .home-footer {
-  background: rgba(0, 0, 0, 0.2);
-  color: white;
+  background:  #111111;
+  color: rgba(255, 255, 255, 0.6);
   text-align: center;
   padding: 30px;
   font-size: 14px;

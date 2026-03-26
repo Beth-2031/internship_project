@@ -1,8 +1,20 @@
-import './App.css';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from './loginPage';
+import ProtectedRoute from './ProtectedRoute';
 
 function App() {
-  return <LoginPage />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <h1>Welcome to Dashboard</h1>
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
 export default App;

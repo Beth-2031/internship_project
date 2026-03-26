@@ -5,7 +5,7 @@
   max-width: 480px;
   margin: 0 auto;
   padding: 40px 24px;
-  background-color:#0a0a0a;
+  background-color:#f0f2f5;
   min-height: 100vh;
   font-family: Arial, sans-serif;
   text-align: center;
@@ -133,7 +133,7 @@
 /* Home Page Styles */
 .home-container {
   width: 100%;
-  background:  #0a0a0a;
+  background:  white;
   min-height: 100vh;
   color: #ffffff;
   padding: 0;

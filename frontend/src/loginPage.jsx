@@ -14,7 +14,9 @@ export default function LoginPage(){
 
     const handleLogin = (e) => {
         e.preventDefault();
-        console.log('Logging in as:',selectedRole, email);
+        const user = { email, role: selectedRole };
+        localStorage.setItem('user', JSON.stringify(user));
+        window.location.href = '/dashboard';
     };
 
     return (

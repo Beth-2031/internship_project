@@ -14,28 +14,20 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-]
 from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('dashboard/', views.student_dashboard, name='dashboard'),
+    path('redirect/', views.redirect_user, name='redirect_user'),
 
-    path('placements/', views.placement_list, name='placement_list'),
-    path('placements/<int:pk>/', views.placement_detail, name='placement_detail'),
+    path('student/', views.student_dashboard, name='student_dashboard'),
+    path('workplace/', views.workplace_dashboard, name='workplace_dashboard'),
+    path('academic/', views.academic_dashboard, name='academic_dashboard'),
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
 
-    path('logs/', views.weekly_logs, name='weekly_logs'),
-    path('logs/<int:pk>/', views.log_detail, name='log_detail'),
+    path('approve/<int:pk>/', views.approve_placement, name='approve_placement'),
+    path('verify-log/<int:pk>/', views.verify_log, name='verify_log'),
 
-    path('reports/', views.safety_reports, name='safety_reports'),
-    path('reports/<int:pk>/', views.report_detail, name='report_detail'),
-
-    path('courses/', views.course_list, name='course_list'),
-    path('courses/<int:pk>/', views.course_detail, name='course_detail'),
+    path('placement/<int:pk>/', views.placement_detail, name='placement_detail'),
+    path('log/<int:pk>/', views.log_detail, name='log_detail'),
 ]

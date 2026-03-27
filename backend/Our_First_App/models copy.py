@@ -100,8 +100,8 @@ class CourseCompletion(models.Model):
         approved_hours = models.IntegerField()
         is_completed = models.BooleanField(default=False)
 =======
-=======
-        return f"{self.username}({self.user_type})"
+=======def __str__(self):
+            return f"{self.username}({self.user_type})"
 >>>>>>> 879cc5c8d4381b4ae7483ca5ca0972ff9606ad9b
 class InternshipPlacement(models.Model):
     student = models.ForeignKey(

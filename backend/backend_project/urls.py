@@ -26,5 +26,5 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
     # App routes
-    path('', include('yourapp.urls')),
+    path('', include('INTERNSHIP_PROJECT.urls')),
 ]

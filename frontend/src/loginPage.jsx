@@ -12,12 +12,26 @@ export default function LoginPage(){
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        const user = { email, role: selectedRole };
-        localStorage.setItem('user', JSON.stringify(user));
-        window.location.href = '/dashboard';
-    };
+        try {
+          const response = await fetch('http://127.0.0.1:8000/api/login/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ email, password, role: selectedRole}),
+          });
+          const data = await response.json();
+          if (response.ok) {
+            const user = { email, role: selectedRole };
+            localStorage.setItem('user', JSON.stringify(user));
+            window.location.href = '/dashboard';
+          } else {
+            alert(data.error);
+          }
+        } catch (error) {
+          alert('Server error. Is Django running?');
+        }
+      };
 
     return (
       <div className="login-container">

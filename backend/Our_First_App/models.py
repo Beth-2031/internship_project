@@ -62,11 +62,11 @@ class WeeklyLog(models.Model):
     )
     week_number = models.IntegerField()
     tasks_done = models.TextField()
-    hours_worked = models.DecimalField(max_digits=5, decimal_places=2)
+    hours_worked = models.DecimalField(max_digits=5, decimal_places=2, null=False)
     challenges_faced = models.TextField()
     next_week_plans = models.TextField()
-    date_submitted = models.DateField()
-    is_verified = models.BooleanField(default=False)
+    date_submitted = models.DateField(auto_now_add=True)
+    is_verified = models.BooleanField(default=False, null=False)
 
     class Meta:
         unique_together = ['student', 'placement', 'week_number']

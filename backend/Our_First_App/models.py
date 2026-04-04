@@ -83,9 +83,9 @@ class SafetyReport(models.Model):
         related_name='safety_reports',
         limit_choices_to={'user_type': 'student'}
     )
-    description = models.TextField()
+    description = models.TextField(blank=False, null=False)
     date_reported = models.DateField(auto_now_add=True)
-    is_resolved = models.BooleanField(default=False)
+    is_resolved = models.BooleanField(default=False, null=False)
 
     def __str__(self):
         return f"Safety Report - {self.student} ({self.date_reported})"
@@ -98,10 +98,10 @@ class CourseCompletion(models.Model):
         related_name='course_completions',
         limit_choices_to={'user_type': 'student'}
     )
-    course_name = models.CharField(max_length=200)
+    course_name = models.CharField(max_length=200, blank=False, null=False)
     minimum_hours_required = models.IntegerField()
     approved_hours = models.IntegerField()
-    is_completed = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False, null=False)
 
     def __str__(self):
         return f"{self.student} - {self.course_name}"

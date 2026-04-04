@@ -37,12 +37,12 @@ class InternshipPlacement(models.Model):
         related_name='academic_placements',
         limit_choices_to={'user_type': 'academic_supervisor'}
     )
-    company_name = models.CharField(max_length=200)
-    location = models.CharField(max_length=200)
-    department = models.CharField(max_length=200)
+    company_name = models.CharField(max_length=200, blank=False, null=False)
+    location = models.CharField(max_length=200, blank=False, null=False)
+    department = models.CharField(max_length=200, blank=False, nill=False)
     start_date = models.DateField()
     end_date = models.DateField()
-    is_approved = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=False, null=False)
 
     def __str__(self):
         return f"{self.student} - {self.company_name}"

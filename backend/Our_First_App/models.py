@@ -39,7 +39,7 @@ class InternshipPlacement(models.Model):
     )
     company_name = models.CharField(max_length=200, blank=False, null=False)
     location = models.CharField(max_length=200, blank=False, null=False)
-    department = models.CharField(max_length=200, blank=False, nill=False)
+    department = models.CharField(max_length=200, blank=False, null=False)
     start_date = models.DateField()
     end_date = models.DateField()
     is_approved = models.BooleanField(default=False, null=False)

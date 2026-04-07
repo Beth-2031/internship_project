@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from './loginPage';
+import RegisterPage from './RegisterPage';
 import ProtectedRoute from './ProtectedRoute';
 import StudentDashboard     from './pages/student/StudentDashboard';
 import SupervisorDashboard  from './pages/supervisor/SupervisorDashboard';

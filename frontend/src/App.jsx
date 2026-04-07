@@ -2,10 +2,10 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from './loginPage';
 import ProtectedRoute from './ProtectedRoute';
-import StudentDashboard     from './pages/student/StudentDashboard';
-import SupervisorDashboard  from './pages/supervisor/SupervisorDashboard';
-import AcademicDashboard    from './pages/academic/AcademicDashboard';
-import AdminDashboard       from './pages/admin/AdminDashboard';
+import StudentDashboard     from './pages/student/Dashboard';
+import SupervisorDashboard  from './pages/supervisor/Dashboard';
+import AcademicDashboard    from './pages/academic/Dashboard';
+import AdminDashboard       from './pages/admin/Dashboard';
 
 
 function App() {

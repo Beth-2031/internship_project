@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 
 
-class OurFirstAppConfig(AppConfig):
-    name = 'Our_First_App'
+class InternshipConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'Our_First_App'  

@@ -12,12 +12,19 @@ export default function LoginPage(){
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         const user = { email, role: selectedRole };
         localStorage.setItem('user', JSON.stringify(user));
-        window.location.href = '/dashboard';
+        
+        const redirectMap = {
+            student:    '/student/dashboard',
+            workplace:  '/supervisor/dashboard',
+            academic:   '/academic/dashboard',
+            admin:      '/admin/dashboard',
     };
+        window.location.href = redirectMap[selectedRole];
+};
 
     return (
       <div className="login-container">

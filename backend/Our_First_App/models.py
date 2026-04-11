@@ -37,12 +37,12 @@ class InternshipPlacement(models.Model):
         related_name='academic_placements',
         limit_choices_to={'user_type': 'academic_supervisor'}
     )
-    company_name = models.CharField(max_length=200)
-    location = models.CharField(max_length=200)
-    department = models.CharField(max_length=200)
+    company_name = models.CharField(max_length=200, blank=False, null=False)
+    location = models.CharField(max_length=200, blank=False, null=False)
+    department = models.CharField(max_length=200, blank=False, null=False)
     start_date = models.DateField()
     end_date = models.DateField()
-    is_approved = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=False, null=False)
 
     def __str__(self):
         return f"{self.student} - {self.company_name}"
@@ -62,11 +62,11 @@ class WeeklyLog(models.Model):
     )
     week_number = models.IntegerField()
     tasks_done = models.TextField()
-    hours_worked = models.DecimalField(max_digits=5, decimal_places=2)
+    hours_worked = models.DecimalField(max_digits=5, decimal_places=2, null=False)
     challenges_faced = models.TextField()
     next_week_plans = models.TextField()
-    date_submitted = models.DateField()
-    is_verified = models.BooleanField(default=False)
+    date_submitted = models.DateField(auto_now_add=True)
+    is_verified = models.BooleanField(default=False, null=False)
 
     class Meta:
         unique_together = ['student', 'placement', 'week_number']
@@ -83,9 +83,9 @@ class SafetyReport(models.Model):
         related_name='safety_reports',
         limit_choices_to={'user_type': 'student'}
     )
-    description = models.TextField()
+    description = models.TextField(blank=False, null=False)
     date_reported = models.DateField(auto_now_add=True)
-    is_resolved = models.BooleanField(default=False)
+    is_resolved = models.BooleanField(default=False, null=False)
 
     def __str__(self):
         return f"Safety Report - {self.student} ({self.date_reported})"
@@ -98,10 +98,10 @@ class CourseCompletion(models.Model):
         related_name='course_completions',
         limit_choices_to={'user_type': 'student'}
     )
-    course_name = models.CharField(max_length=200)
+    course_name = models.CharField(max_length=200, blank=False, null=False)
     minimum_hours_required = models.IntegerField()
     approved_hours = models.IntegerField()
-    is_completed = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False, null=False)
 
     def __str__(self):
         return f"{self.student} - {self.course_name}"

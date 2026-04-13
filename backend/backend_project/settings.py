@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+qx#l6w-olg)41pe%)6o_#hxz8(xp$0v%bha*!lkhn0qvaoc$)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -76,12 +76,8 @@ WSGI_APPLICATION = 'backend_project.wsgi.application'
 DATABASES = {
     
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'myprojectdb',
-        'USER': 'myprojectuser',
-        'PASSWORD': 'migadde',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -125,3 +121,5 @@ AUTH_USER_MODEL = 'Our_First_App.CustomUser'
 LOGIN_REDIRECT_URL = 'redirect_user'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
+STATIC_URL = '/static/'
+

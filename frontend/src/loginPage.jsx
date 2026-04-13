@@ -14,24 +14,17 @@ export default function LoginPage(){
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        try {
-          const response = await fetch('http://127.0.0.1:8000/api/login/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify({ email, password, role: selectedRole}),
-          });
-          const data = await response.json();
-          if (response.ok) {
-            const user = { email, role: selectedRole };
-            localStorage.setItem('user', JSON.stringify(user));
-            window.location.href = '/dashboard';
-          } else {
-            alert(data.error);
-          }
-        } catch (error) {
-          alert('Server error. Is Django running?');
-        }
-      };
+        const user = { email, role: selectedRole };
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        const redirectMap = {
+            student:    '/student/dashboard',
+            workplace:  '/supervisor/dashboard',
+            academic:   '/academic/dashboard',
+            admin:      '/admin/dashboard',
+    };
+        window.location.href = redirectMap[selectedRole];
+};
 
     return (
       <div className="login-container">

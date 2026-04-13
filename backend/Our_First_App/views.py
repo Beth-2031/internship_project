@@ -1,11 +1,4 @@
 from django.shortcuts import render
-from rest_framework import viewset
-from .models import InternshipPlacement
-from .serializers import InternshipPlacementSerializer
-
-class InternshipPlacementPlacementViewSet(viewsets.ModelViewSet):
-    queryset = InternshipPlacement.objects.all()
-    serializer_class = InternshipPlacementSerializer
 from rest_framework import viewsets
 from .models import InternshipPlacement
 from .serializers import InternshipPlacementSerializer
@@ -13,6 +6,8 @@ from .serializers import InternshipPlacementSerializer
 class InternshipPlacementViewSet(viewsets.ModelViewSet):
     queryset = InternshipPlacement.objects.all()
     serializer_class = InternshipPlacementSerializer
+
+
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 
@@ -33,8 +28,7 @@ def admin_dashboard(request):
 
 
 
-<<<<<<< HEAD
-=======
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import (
@@ -199,4 +193,4 @@ def add_course(request):
         return redirect('dashboard')
 
     return render(request, 'add_course.html')
->>>>>>> 348e6a365d89b49ac4e587b3e9947c21bcd17aa1
+

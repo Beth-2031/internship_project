@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
+from Our_First_App.models import CustomUser
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -26,8 +26,8 @@ def register_view(request):
     password = request.data.get('password')
     role = request.data.get('role')
 
-    if User.objects.filter(username=email).exists():
+    if CustomUser.objects.filter(username=email).exists():
         return Response({'error': 'User already exists'}, status=400)
 
-    user = User.objects.create_user(username=email, email=email, password=password)
+    user = CustomUser.objects.create_user(username=email, email=email, password=password)
     return Response({'message': 'Registration successful'})

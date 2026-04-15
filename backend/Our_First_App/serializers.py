@@ -12,3 +12,15 @@ class InternshipPlacementSerializer(serializers.ModelSerializer):
                 'This placement has been approved and cannot be edited.'
             )
         return super().update(instance, validated_data)
+    
+class WeeklyLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WeeklyLog
+        fields = '__all__'
+
+    def updates(self, instance, validated_data):
+        if instance.is_verified:
+            raise serializers.ValidationError(
+                'This log has been  erified and cannot be edited.'
+            )
+        return super().update(instance, validated_data)

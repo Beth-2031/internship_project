@@ -1,26 +1,24 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from . import views
+from .views import InternshipPlacementViewSet
+
+# DRF Router
+router = DefaultRouter()
+router.register(r'placements', InternshipPlacementViewSet, basename='placements')
 
 urlpatterns = [
-    # DASHBOARD
+    # ===========================
+    # DASHBOARDS
+    # ===========================
     path('', views.dashboard, name='dashboard'),
+    path('student/', views.student_dashboard, name='student_dashboard'),
+    path('workplace/', views.workplace_dashboard, name='workplace_dashboard'),
+    path('academic/', views.academic_dashboard, name='academic_dashboard'),
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
 
-    # INTERNSHIP PLACEMENT
-    
-    path('placement/create/', views.create_placement, name='create_placement'),
-    path('placement/approve/<int:placement_id>/', views.approve_placement, name='approve_placement'),
-
-    # WEEKLY LOGS
-    
-    path('log/create/<int:placement_id>/', views.create_weekly_log, name='create_weekly_log'),
-    path('log/verify/<int:log_id>/', views.verify_log, name='verify_log'),
-
-    
-    # SAFETY REPORT
-    
-    path('safety/report/', views.report_safety_issue, name='report_safety'),
-    path('safety/resolve/<int:report_id>/', views.resolve_safety_issue, name='resolve_safety'),
-
-    
-    path('course/add/', views.add_course, name='add_course'),
+    # ===========================
+    # API
+    # ===========================
+    path('api/', include(router.urls)),
 ]

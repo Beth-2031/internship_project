@@ -13,17 +13,18 @@ function progressPercent(start, end) {
 export default function StudentDashboard() {
   const { data: placement, loading: lp } = useFetch(getMyPlacement)
   const { data: logs,      loading: ll } = useFetch(getWeeklyLogs)
+  console.log('logs data:', logs)
   const { data: safety,    loading: ls } = useFetch(getSafetyReports)
   const { data: course,    loading: lc } = useFetch(getCourseCompletion)
 
   if (lp || ll || ls || lc) return <LoadingScreen />
 
-  const totalHours   = logs?.reduce((s, l) => s + parseFloat(l.hours_worked), 0) ?? 0
-  const verified     = logs?.filter(l => l.is_verified).length ?? 0
+  const totalHours   = Array.isArray(logs) ? logs.reduce((s, l) => s + parseFloat(l.hours_worked), 0) : 0
+  const verified     = Array.isArray(logs) ? logs.filter(l => l.is_verified).length : 0
   const pct          = placement ? progressPercent(placement.start_date, placement.end_date) : 0
   const currentWeek  = placement ? Math.min(26, Math.floor(pct / 100 * 26) + 1) : '—'
   const safetyOpen   = safety?.filter(r => !r.is_resolved).length ?? 0
-  const recentLogs   = [...(logs || [])].sort((a,b) => b.week_number - a.week_number).slice(0, 5)
+  const recentLogs   = Array.isArray(logs) ? [...logs].sort((a,b) => b.week_number - a.week_number).slice(0, 5) : []
 
   return (
     <div className="fade-up">

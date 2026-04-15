@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+qx#l6w-olg)41pe%)6o_#hxz8(xp$0v%bha*!lkhn0qvaoc$)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Our_First_App',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -122,4 +123,4 @@ LOGIN_REDIRECT_URL = 'redirect_user'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
 STATIC_URL = '/static/'
-
+CORS_ALLOW_ALL_ORIGINS = True

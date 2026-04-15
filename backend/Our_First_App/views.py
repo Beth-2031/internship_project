@@ -207,3 +207,23 @@ def edit_weekly_log(request, log_id):
         return redirect('dashboard')
     
     return render (request, 'edit_week_log.html', {'log': log})
+
+@login_required
+def edit_placement(request, placement_id):
+    placement = get_object_or_404(InternshipPlacement, id=placement_id)
+
+    if placement.is_approved:
+        return JsonResponse(
+            {'error': 'This placement has been approved and cannot be edited'},
+            status=403
+        )
+    if request.method == 'POST':
+        placement.company_name = request.POST.get('company_name')
+        placement.location = request.POST.get('location')
+        placement.department = request.POST.get('department')
+        placement.start_date = request.POST.get('start_date')
+        placement.end_date = request.POST.get('end_date')
+        placement.save()
+        return redirect('dashboard')
+    
+    return render(request, 'edit_placement.html', {'placement': placement})

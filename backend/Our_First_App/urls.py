@@ -21,4 +21,7 @@ urlpatterns = [
     # API
     # ===========================
     path('api/', include(router.urls)),
+
+    path('log/<int:log_id>/edit/', views.edit_weekly_log, name='edit_weekly_log'),
+    path('placement/<int:placement_id>/edit/', views.edit_placement, name='edit_placement'),
 ]

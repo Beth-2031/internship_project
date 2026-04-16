@@ -10,7 +10,7 @@ from .models import (
     SafetyReport,
     CourseCompletion
 )
-from .serializers import InternshipPlacementSerializer
+from .serializers import InternshipPlacementSerializer, WeeklyLogSerializer
 
 
 # =========================
@@ -185,3 +185,45 @@ def add_course(request):
         return redirect('dashboard')
 
     return render(request, 'add_course.html')
+
+@login_required
+def edit_weekly_log(request, log_id):
+    log = get_object_or_404(WeeklyLog, d=log_id)
+
+    if log.is_verified:
+        return JsonResponse(
+            {'error': 'This log has been verified and cannot be edited.'},
+            status=403
+        )
+    
+    if log.student != request.user:
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+    if request.method == 'POST':
+        log.tasks_done = request.POST.get('tasks_done')
+        log.hours_worked = request.POST.get('hours_worked')
+        log.challenges_faced = request.POST.get('challenges_faced')
+        log.next_week_plans = request.POST.get('next_week_plans')
+        log.save()
+        return redirect('dashboard')
+    
+    return render (request, 'edit_week_log.html', {'log': log})
+
+@login_required
+def edit_placement(request, placement_id):
+    placement = get_object_or_404(InternshipPlacement, id=placement_id)
+
+    if placement.is_approved:
+        return JsonResponse(
+            {'error': 'This placement has been approved and cannot be edited'},
+            status=403
+        )
+    if request.method == 'POST':
+        placement.company_name = request.POST.get('company_name')
+        placement.location = request.POST.get('location')
+        placement.department = request.POST.get('department')
+        placement.start_date = request.POST.get('start_date')
+        placement.end_date = request.POST.get('end_date')
+        placement.save()
+        return redirect('dashboard')
+    
+    return render(request, 'edit_placement.html', {'placement': placement})

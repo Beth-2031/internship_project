@@ -55,3 +55,25 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
                 "placement": "The selected student is not assigned to this placement."
             })
         return data
+
+
+class SafetyReportSerializer(serializers.ModelSerializer):
+    student = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(user_type='student')
+    )
+
+    class Meta:
+        model = SafetyReport
+        fields = '__all__'
+        read_only_fields = ['date_reported']
+
+
+
+class CourseCompletionSerializer(serializers.ModelSerializer):
+    student = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(user_type='student')
+    )
+
+    class Meta:
+        model = CourseCompletion
+        fields = '__all__'        

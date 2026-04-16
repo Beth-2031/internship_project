@@ -31,3 +31,27 @@ class InternshipPlacementSerializer(serializers.ModelSerializer):
                     "end_date": "End date must be after start date."
                 })
         return data   
+    
+
+class WeeklyLogSerializer(serializers.ModelSerializer):
+    student = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(user_type='student')
+    )
+    placement = serializers.PrimaryKeyRelatedField(
+        queryset=InternshipPlacement.objects.all()
+    )
+
+    class Meta:
+        model = WeeklyLog
+        fields = '__all__'
+        read_only_fields = ['date_submitted']
+
+    def validate(self, data):
+        student = data.get('student', getattr(self.instance, 'student', None))
+        placement = data.get('placement', getattr(self.instance, 'placement', None))
+        
+        if student and placement and placement.student != student:
+            raise serializers.ValidationError({
+                "placement": "The selected student is not assigned to this placement."
+            })
+        return data

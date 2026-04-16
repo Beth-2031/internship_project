@@ -18,3 +18,16 @@ class InternshipPlacementSerializer(serializers.ModelSerializer):
         queryset=CustomUser.objects.filter(user_type='academic_supervisor'),
         required=False,
         allow_null=True)
+    
+    class Meta:
+        model = InternshipPlacement
+        fields = '__all__'
+
+
+    def validate(self, data):
+        if data.get('start_date') and data.get('end_date'):
+            if data['start_date'] >= data['end_date']:
+                raise serializers.ValidationError({
+                    "end_date": "End date must be after start date."
+                })
+        return data   

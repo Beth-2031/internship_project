@@ -31,6 +31,11 @@ class SafetyReportViewSet(viewsets.ModelViewSet):
     serializer_class = SafetyReportSerializer
     permission_classes = [permissions.IsAuthenticated]    
 
+class CourseCompletionViewSet(viewsets.ModelViewSet):
+    queryset = CourseCompletion.objects.all()
+    serializer_class = CourseCompletionSerializer
+    permission_classes = [permissions.IsAuthenticated]    
+
 # =========================
 # SIMPLE DASHBOARDS
 # =========================

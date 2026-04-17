@@ -6,6 +6,10 @@ from .views import InternshipPlacementViewSet , WeeklyLogViewSet, SafetyReportVi
 # DRF Router
 router = DefaultRouter()
 router.register(r'placements', InternshipPlacementViewSet, basename='placements')
+router.register(r'weekly-logs', WeeklyLogViewSet, basename='weekly-logs')
+router.register(r'safety-reports', SafetyReportViewSet, basename='safety-reports')
+router.register(r'course-completions', CourseCompletionViewSet, basename='course-completions')
+
 
 urlpatterns = [
     # ===========================

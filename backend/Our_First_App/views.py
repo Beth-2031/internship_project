@@ -10,7 +10,7 @@ from .models import (
     SafetyReport,
     CourseCompletion
 )
-from .serializers import InternshipPlacementSerializer, WeeklyLogSerializer
+from .serializers import InternshipPlacementSerializer, WeeklyLogSerializer, WeeklyLogSerializer, SafetyReportSerializer, CourseCompletionSerializer
 
 
 # =========================

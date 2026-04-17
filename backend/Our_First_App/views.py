@@ -26,6 +26,11 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
     serializer_class = WeeklyLogSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+class SafetyReportViewSet(viewsets.ModelViewSet):
+    queryset = SafetyReport.objects.all()
+    serializer_class = SafetyReportSerializer
+    permission_classes = [permissions.IsAuthenticated]    
+
 # =========================
 # SIMPLE DASHBOARDS
 # =========================

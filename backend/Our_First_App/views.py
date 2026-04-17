@@ -35,7 +35,6 @@ class CourseCompletionViewSet(viewsets.ModelViewSet):
     queryset = CourseCompletion.objects.all()
     serializer_class = CourseCompletionSerializer
     permission_classes = [permissions.IsAuthenticated]    
-
 # =========================
 # SIMPLE DASHBOARDS
 # =========================

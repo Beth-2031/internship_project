@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import InternshipPlacementViewSet
+from .views import InternshipPlacementViewSet , WeeklyLogViewSet, SafetyReportViewSet, CourseCompletionViewSet
 
 # DRF Router
 router = DefaultRouter()

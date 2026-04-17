@@ -10,7 +10,7 @@ from .models import (
     SafetyReport,
     CourseCompletion
 )
-from .serializers import InternshipPlacementSerializer, WeeklyLogSerializer, WeeklyLogSerializer, SafetyReportSerializer, CourseCompletionSerializer
+from .serializers import InternshipPlacementSerializer, WeeklyLogSerializer, SafetyReportSerializer, CourseCompletionSerializer
 
 
 # =========================
@@ -21,6 +21,10 @@ class InternshipPlacementViewSet(viewsets.ModelViewSet):
     serializer_class = InternshipPlacementSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+class WeeklyLogViewSet(viewsets.ModelViewSet):
+    queryset = WeeklyLog.objects.all()
+    serializer_class = WeeklyLogSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 # =========================
 # SIMPLE DASHBOARDS

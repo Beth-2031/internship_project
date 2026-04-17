@@ -3,8 +3,6 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from rest_framework import viewsets, permissions
 
-from rest_framework import viewsets, permissions
-
 from .models import (
     InternshipPlacement,
     WeeklyLog,

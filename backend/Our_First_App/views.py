@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-
 from rest_framework import viewsets, permissions
 
 from .models import (
@@ -10,7 +9,7 @@ from .models import (
     SafetyReport,
     CourseCompletion
 )
-from .serializers import InternshipPlacementSerializer, WeeklyLogSerializer
+from .serializers import InternshipPlacementSerializer, WeeklyLogSerializer, SafetyReportSerializer, CourseCompletionSerializer
 
 
 # =========================
@@ -21,7 +20,20 @@ class InternshipPlacementViewSet(viewsets.ModelViewSet):
     serializer_class = InternshipPlacementSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+class WeeklyLogViewSet(viewsets.ModelViewSet):
+    queryset = WeeklyLog.objects.all()
+    serializer_class = WeeklyLogSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
+class SafetyReportViewSet(viewsets.ModelViewSet):
+    queryset = SafetyReport.objects.all()
+    serializer_class = SafetyReportSerializer
+    permission_classes = [permissions.IsAuthenticated]    
+
+class CourseCompletionViewSet(viewsets.ModelViewSet):
+    queryset = CourseCompletion.objects.all()
+    serializer_class = CourseCompletionSerializer
+    permission_classes = [permissions.IsAuthenticated]    
 # =========================
 # SIMPLE DASHBOARDS
 # =========================

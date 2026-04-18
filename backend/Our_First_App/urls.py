@@ -1,11 +1,15 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import InternshipPlacementViewSet
+from .views import InternshipPlacementViewSet , WeeklyLogViewSet, SafetyReportViewSet, CourseCompletionViewSet
 
 # DRF Router
 router = DefaultRouter()
 router.register(r'placements', InternshipPlacementViewSet, basename='placements')
+router.register(r'weekly-logs', WeeklyLogViewSet, basename='weekly-logs')
+router.register(r'safety-reports', SafetyReportViewSet, basename='safety-reports')
+router.register(r'course-completions', CourseCompletionViewSet, basename='course-completions')
+
 
 urlpatterns = [
     # ===========================

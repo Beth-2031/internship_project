@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'Our_First_App',
     'rest_framework',
     'corsheaders',
@@ -74,7 +75,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.backend_project.wsgi.application'
+WSGI_APPLICATION = 'backend_project.wsgi.application'
 
 
 # Database

@@ -13,30 +13,37 @@ from .models import (
 from .serializers import InternshipPlacementSerializer, WeeklyLogSerializer, SafetyReportSerializer, CourseCompletionSerializer
 
 
-# =========================
-# API VIEWSET
-# =========================
+from django_filters.rest_framework import DjangoFilterBackend
+
 class InternshipPlacementViewSet(viewsets.ModelViewSet):
     queryset = InternshipPlacement.objects.all()
     serializer_class = InternshipPlacementSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['is_approved', 'student', 'company_name']
 
 class WeeklyLogViewSet(viewsets.ModelViewSet):
     queryset = WeeklyLog.objects.all()
     serializer_class = WeeklyLogSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['is_verified', 'week_number', 'student']
 
 class SafetyReportViewSet(viewsets.ModelViewSet):
     queryset = SafetyReport.objects.all()
     serializer_class = SafetyReportSerializer
-    permission_classes = [permissions.IsAuthenticated]    
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['is_resolved', 'student']  
 
-class CourseCompletionViewSet(viewsets.ModelViewSet):
+ class CourseCompletionViewSet(viewsets.ModelViewSet):
     queryset = CourseCompletion.objects.all()
     serializer_class = CourseCompletionSerializer
-    permission_classes = [permissions.IsAuthenticated]    
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['is_completed', 'student']
 # =========================
-# SIMPLE DASHBOARDS
+# SIMPLE DASHBOARDS 
 # =========================
 @login_required
 def redirect_user(request):
@@ -201,7 +208,7 @@ def add_course(request):
 
 @login_required
 def edit_weekly_log(request, log_id):
-    log = get_object_or_404(WeeklyLog, d=log_id)
+    log = get_object_or_404(WeeklyLog, id=log_id)
 
     if log.is_verified:
         return JsonResponse(

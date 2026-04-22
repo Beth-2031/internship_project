@@ -19,25 +19,14 @@ api.interceptors.response.use(
 export default api
 
 // ── Auth ──
-<<<<<<< HEAD
-export const login = (email, password, role) =>
-  api.post('/login/', { email, password, role })
-
-// Backend does not currently expose /api/auth/me/
-=======
 export const login = (email, password) =>
   api.post('/login/', { email, password })
-
->>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
 export const getMe = () => api.get('/me/')
 
 export const register = (data) =>
   api.post('/register/', data)
-<<<<<<< HEAD
-=======
 
 export const logout = () => api.post('/logout/')
->>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
 
 // ── Student endpoints ──
 export const getMyPlacement = () =>

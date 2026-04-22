@@ -41,17 +41,9 @@ INSTALLED_APPS = [
     'django_filters',
     'Our_First_App',
     'rest_framework',
-<<<<<<< HEAD
-    'django_filters',
-    
-=======
-<<<<<<< HEAD
-=======
-    'django_filters',
-    
->>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
->>>>>>> Bonitah
 ]
+
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -140,7 +132,8 @@ LOGIN_REDIRECT_URL = 'redirect_user'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
 STATIC_URL = '/static/'
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",   # React (CRA)

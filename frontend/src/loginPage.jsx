@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './context/Authcontext';
 import './STYLES/loginPage.css';
-import { useAuth } from './context/Authcontext'
 const roles =[
     {label:'Student Intern',value: 'student'},
     {label:'Workplace Supervisor',value: 'workplace_supervisor'},
@@ -10,13 +9,8 @@ const roles =[
     {label:'Internship Adiministator',value: 'internship_admin'},
 ];
 export default function LoginPage(){
-<<<<<<< HEAD
-    const navigate = useNavigate();
-    const { login } = useAuth()
-=======
     const { login } = useAuth();
     const navigate = useNavigate();
->>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
     const [selectedRole, setSelectedRole] = useState('student');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -26,20 +20,6 @@ export default function LoginPage(){
 
     const handleLogin = async (e) => {
         e.preventDefault();
-<<<<<<< HEAD
-        try {
-          await login(email, password, selectedRole)
-        } catch (error) {
-          const msg =
-            error?.response?.data?.error ||
-            error?.message ||
-            'Login failed. Is Django running?'
-          alert(msg)
-          return
-        }
-        
-=======
->>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
         const redirectMap = {
             student:    '/student/dashboard',
             workplace_supervisor:  '/supervisor/dashboard',
@@ -66,11 +46,6 @@ export default function LoginPage(){
           setLoading(false);
         }
     };
-<<<<<<< HEAD
-        navigate(redirectMap[selectedRole]);
-};
-=======
->>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
 
     return (
       <div className="login-container">

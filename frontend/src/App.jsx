@@ -4,32 +4,17 @@ import LoginPage from './loginPage';
 import RegisterPage from './RegisterPage';
 import './STYLES/App.css'
 import ProtectedRoute from './ProtectedRoute';
-<<<<<<< HEAD
-import StudentDashboard     from './pages/student/Dashboard';
-import StudentPlacements    from './pages/student/Placements';
-import StudentMyPlacement   from './pages/student/MyPlacement';
-import SupervisorDashboard  from './pages/supervisor/Dashboard';
-import SupervisorPlacements from './pages/supervisor/Placements';
-import SupervisorStudents   from './pages/supervisor/Students';
-import AcademicDashboard    from './pages/academic/Dashboard';
-import AcademicPlacements   from './pages/academic/Placements';
-import AcademicStudents     from './pages/academic/Students';
-import AdminDashboard       from './pages/admin/Dashboard';
-import AdminPlacements       from './pages/admin/AllPlacements';
-=======
 import StudentDashboard from './pages/student/Dashboard';
-import StudentPlacements from './pages/student/MyPlacement';
+import StudentPlacements from './pages/student/Placements';
+import StudentMyPlacement from './pages/student/MyPlacement';
 import SupervisorDashboard from './pages/supervisor/Dashboard';
-import SupervisorPlacements from './pages/supervisor/Students';
+import SupervisorPlacements from './pages/supervisor/Placements';
+import SupervisorStudents from './pages/supervisor/Students';
 import AcademicDashboard from './pages/academic/Dashboard';
-import AcademicPlacements from './pages/academic/Students';
+import AcademicPlacements from './pages/academic/Placements';
+import AcademicStudents from './pages/academic/Students';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminPlacements from './pages/admin/AllPlacements';
-<<<<<<< HEAD
->>>>>>> 71a0c62228a9d8918103b3f13de553f883dc136d
-=======
->>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
->>>>>>> Bonitah
 
 
 function App() {
@@ -75,11 +60,6 @@ function App() {
         } />
         <Route path="/supervisor/students" element={
           <ProtectedRoute allowedRoles={['workplace_supervisor']}>
-            <SupervisorPlacements />
-          </ProtectedRoute>
-        } />
-        <Route path="/supervisor/students" element={
-          <ProtectedRoute allowedRoles={['workplace']}>
             <SupervisorStudents />
           </ProtectedRoute>
         } />
@@ -100,11 +80,6 @@ function App() {
         } />
         <Route path="/academic/students" element={
           <ProtectedRoute allowedRoles={['academic_supervisor']}>
-            <AcademicPlacements />
-          </ProtectedRoute>
-        } />
-        <Route path="/academic/students" element={
-          <ProtectedRoute allowedRoles={['academic']}>
             <AcademicStudents />
           </ProtectedRoute>
         } />
@@ -113,13 +88,6 @@ function App() {
             <AdminDashboard />
           </ProtectedRoute>
         } />
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-        <Route path="/admin/placements" element={
-          <ProtectedRoute allowedRoles={['admin']}>
-=======
->>>>>>> Bonitah
         <Route path="/admin" element={
           <ProtectedRoute allowedRoles={['internship_admin']}>
             <AdminDashboard />
@@ -127,10 +95,6 @@ function App() {
         } />
         <Route path="/admin/placements" element={
           <ProtectedRoute allowedRoles={['internship_admin']}>
-<<<<<<< HEAD
-=======
->>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
->>>>>>> Bonitah
             <AdminPlacements />
           </ProtectedRoute>
         } />  

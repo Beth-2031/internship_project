@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './STYLES/loginPage.css';
+import { register as apiRegister } from './api/client'
 
 const roles =[
     {label: 'Student Intern', value: 'student' },
-    {label: 'Workplace Supervisor', value: 'workplace' },
-    {label: 'Academic Supervisor', value: 'academic' },
-    {label: 'Internship Adimistrator', value: 'admin' },
+    {label: 'Workplace Supervisor', value: 'workplace_supervisor' },
+    {label: 'Academic Supervisor', value: 'academic_supervisor' },
+    {label: 'Internship Adimistrator', value: 'internship_admin' },
 ];
 
 export default function RegisterPage() {
@@ -13,24 +15,20 @@ export default function RegisterPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate()
 
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-          const response = await fetch('http://127.0.0.1:8000/api/register/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password, role: selectedRole }),
-          });
-          const data = await response.json();
-          if (response.ok) {
-            alert('Registration successful! Please login');
-            window.location.href = '/';
-          } else {
-            alert(data.error);
-          }
+          await apiRegister({ email, password, role: selectedRole })
+          alert('Registration successful! Please login')
+          navigate('/')
         } catch (error) {
-            alert('Server error. Is Django running?');
+            const msg =
+              error?.response?.data?.error ||
+              error?.message ||
+              'Server error. Is Django running?'
+            alert(msg);
         }
       };
 

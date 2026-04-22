@@ -1,31 +1,76 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './context/Authcontext';
 import './STYLES/loginPage.css';
+import { useAuth } from './context/Authcontext'
 const roles =[
     {label:'Student Intern',value: 'student'},
-    {label:'Workplace Supervisor',value: 'workplace'},
-    {label:'Academic Supervisor',value: 'academic'},   
-    {label:'Internship Adiministator',value: 'admin'},  
+    {label:'Workplace Supervisor',value: 'workplace_supervisor'},
+    {label:'Academic Supervisor',value: 'academic_supervisor'},
+    {label:'Internship Adiministator',value: 'internship_admin'},
 ];
 export default function LoginPage(){
+<<<<<<< HEAD
+    const navigate = useNavigate();
+    const { login } = useAuth()
+=======
+    const { login } = useAuth();
+    const navigate = useNavigate();
+>>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
     const [selectedRole, setSelectedRole] = useState('student');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const user = { email, role: selectedRole };
-        localStorage.setItem('user', JSON.stringify(user));
+<<<<<<< HEAD
+        try {
+          await login(email, password, selectedRole)
+        } catch (error) {
+          const msg =
+            error?.response?.data?.error ||
+            error?.message ||
+            'Login failed. Is Django running?'
+          alert(msg)
+          return
+        }
         
+=======
+>>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
         const redirectMap = {
             student:    '/student/dashboard',
-            workplace:  '/supervisor/dashboard',
-            academic:   '/academic/dashboard',
-            admin:      '/admin/dashboard',
+            workplace_supervisor:  '/supervisor/dashboard',
+            academic_supervisor:   '/academic/dashboard',
+            internship_admin:      '/admin/dashboard',
+        };
+
+        setError('');
+        setLoading(true);
+        try {
+          const user = await login(email, password);
+          if (!user) {
+            setError('Login failed. Please try again.');
+            return;
+          }
+          if (selectedRole !== user.user_type) {
+            setError(`This account is ${user.user_type.replaceAll('_', ' ')}. Please select the correct role.`);
+            return;
+          }
+          navigate(redirectMap[user.user_type] || '/');
+        } catch {
+          setError('Invalid email or password.');
+        } finally {
+          setLoading(false);
+        }
     };
-        window.location.href = redirectMap[selectedRole];
+<<<<<<< HEAD
+        navigate(redirectMap[selectedRole]);
 };
+=======
+>>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
 
     return (
       <div className="login-container">
@@ -46,6 +91,7 @@ export default function LoginPage(){
         </div>   
         
         <form className="login-form" onSubmit={handleLogin}>
+           {error && <div className="forgot-link" style={{ color: '#ef4444', marginBottom: '10px' }}>{error}</div>}
            <label>Email</label>
            <input
               type="email"
@@ -74,7 +120,7 @@ export default function LoginPage(){
 
             <a href="#" className="forgot-link">Forgot password?</a>
 
-             <button type="submit" className="Login-button">Login</button>
+             <button type="submit" className="Login-button" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
            </form>
          </div>
         );

@@ -1,5 +1,23 @@
 from rest_framework import serializers
+<<<<<<< HEAD
+<<<<<<< HEAD
 from .models import InternshipPlacement, WeeklyLog, WeeklyLog, SafetyReport, CourseCompletion, CustomUser
+=======
+=======
+>>>>>>> Bonitah
+from .models import InternshipPlacement, CustomUser, WeeklyLog, SafetyReport, CourseCompletion
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'user_type','skills']
+<<<<<<< HEAD
+>>>>>>> Bonitah
+=======
+=======
+from .models import InternshipPlacement, WeeklyLog, WeeklyLog, SafetyReport, CourseCompletion, CustomUser
+>>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
+>>>>>>> Bonitah
 
 class InternshipPlacementSerializer(serializers.ModelSerializer):
     student = serializers.PrimaryKeyRelatedField(
@@ -70,22 +88,4 @@ class CourseCompletionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CourseCompletion
-        fields = '__all__'        
-    def update(self, instance, validated_data):
-        if instance.is_approved:
-            raise serializers.ValidationError(
-                'This placement has been approved and cannot be edited.'
-            )
-        return super().update(instance, validated_data)
-    
-class WeeklyLogSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = WeeklyLog
         fields = '__all__'
-
-    def updates(self, instance, validated_data):
-        if instance.is_verified:
-            raise serializers.ValidationError(
-                'This log has been  erified and cannot be edited.'
-            )
-        return super().update(instance, validated_data)

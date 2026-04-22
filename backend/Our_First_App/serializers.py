@@ -1,0 +1,91 @@
+from rest_framework import serializers
+from .models import InternshipPlacement, WeeklyLog, WeeklyLog, SafetyReport, CourseCompletion, CustomUser
+
+class InternshipPlacementSerializer(serializers.ModelSerializer):
+    student = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(user_type='student'))
+    workplace_supervisor = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.filter(
+        user_type='workplace_supervisor'), 
+        required=False,
+        allow_null=True)        
+    academic_supervisor = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(user_type='academic_supervisor'),
+        required=False,
+        allow_null=True)
+    
+    class Meta:
+        model = InternshipPlacement
+        fields = '__all__'
+
+
+    def validate(self, data):
+        if data.get('start_date') and data.get('end_date'):
+            if data['start_date'] >= data['end_date']:
+                raise serializers.ValidationError({
+                    "end_date": "End date must be after start date."
+                })
+        return data   
+    
+
+class WeeklyLogSerializer(serializers.ModelSerializer):
+    student = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(user_type='student')
+    )
+    placement = serializers.PrimaryKeyRelatedField(
+        queryset=InternshipPlacement.objects.all()
+    )
+
+    class Meta:
+        model = WeeklyLog
+        fields = '__all__'
+        read_only_fields = ['date_submitted']
+
+    def validate(self, data):
+        student = data.get('student', getattr(self.instance, 'student', None))
+        placement = data.get('placement', getattr(self.instance, 'placement', None))
+        
+        if student and placement and placement.student != student:
+            raise serializers.ValidationError({
+                "placement": "The selected student is not assigned to this placement."
+            })
+        return data
+
+
+class SafetyReportSerializer(serializers.ModelSerializer):
+    student = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(user_type='student')
+    )
+
+    class Meta:
+        model = SafetyReport
+        fields = '__all__'
+        read_only_fields = ['date_reported']
+
+
+
+class CourseCompletionSerializer(serializers.ModelSerializer):
+    student = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(user_type='student')
+    )
+
+    class Meta:
+        model = CourseCompletion
+        fields = '__all__'        
+    def update(self, instance, validated_data):
+        if instance.is_approved:
+            raise serializers.ValidationError(
+                'This placement has been approved and cannot be edited.'
+            )
+        return super().update(instance, validated_data)
+    
+class WeeklyLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WeeklyLog
+        fields = '__all__'
+
+    def updates(self, instance, validated_data):
+        if instance.is_verified:
+            raise serializers.ValidationError(
+                'This log has been  erified and cannot be edited.'
+            )
+        return super().update(instance, validated_data)

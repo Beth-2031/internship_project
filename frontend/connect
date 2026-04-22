@@ -1,0 +1,6 @@
+import axios from "axios";
+
+useEffect(() => {
+    axios.get("http://127.0.0.1:8000/api/home/dashboard/")
+        .then(res => console.log(res.data));
+}, []);

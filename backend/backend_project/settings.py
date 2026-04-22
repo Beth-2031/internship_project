@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'Our_First_App',
     'rest_framework',
+    'django_filters',
     
 ]
 

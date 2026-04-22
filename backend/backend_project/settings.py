@@ -131,7 +131,8 @@ LOGIN_REDIRECT_URL = 'redirect_user'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
 STATIC_URL = '/static/'
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",   # React (CRA)

@@ -5,9 +5,9 @@ import { register as apiRegister } from './api/client'
 
 const roles =[
     {label: 'Student Intern', value: 'student' },
-    {label: 'Workplace Supervisor', value: 'workplace' },
-    {label: 'Academic Supervisor', value: 'academic' },
-    {label: 'Internship Adimistrator', value: 'admin' },
+    {label: 'Workplace Supervisor', value: 'workplace_supervisor' },
+    {label: 'Academic Supervisor', value: 'academic_supervisor' },
+    {label: 'Internship Adimistrator', value: 'internship_admin' },
 ];
 
 export default function RegisterPage() {

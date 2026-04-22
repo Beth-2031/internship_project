@@ -32,12 +32,16 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
 class SafetyReportViewSet(viewsets.ModelViewSet):
     queryset = SafetyReport.objects.all()
     serializer_class = SafetyReportSerializer
-    permission_classes = [permissions.IsAuthenticated]    
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['is_resolved', 'student']  
 
-class CourseCompletionViewSet(viewsets.ModelViewSet):
+ class CourseCompletionViewSet(viewsets.ModelViewSet):
     queryset = CourseCompletion.objects.all()
     serializer_class = CourseCompletionSerializer
-    permission_classes = [permissions.IsAuthenticated]    
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['is_completed', 'student']
 # =========================
 # SIMPLE DASHBOARDS
 # =========================

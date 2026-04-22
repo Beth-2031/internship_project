@@ -29,5 +29,5 @@ def register_view(request):
     if CustomUser.objects.filter(username=email).exists():
         return Response({'error': 'User already exists'}, status=400)
 
-    user = CustomUser.objects.create_user(username=email, email=email, password=password)
+    user = CustomUser.objects.create_user(username=email, email=email, password=password, user_type=role)
     return Response({'message': 'Registration successful'})

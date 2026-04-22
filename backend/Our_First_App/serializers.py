@@ -1,4 +1,5 @@
 from rest_framework import serializers
+<<<<<<< HEAD
 from .models import InternshipPlacement, CustomUser, WeeklyLog, SafetyReport, CourseCompletion
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -6,6 +7,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'user_type','skills']
 
+=======
+from .models import InternshipPlacement, WeeklyLog
+>>>>>>> Jill
 
 class InternshipPlacementSerializer(serializers.ModelSerializer):
     student = serializers.PrimaryKeyRelatedField(

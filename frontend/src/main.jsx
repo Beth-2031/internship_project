@@ -3,7 +3,11 @@ import { createRoot } from 'react-dom/client'
 import { AuthProvider } from './context/Authcontext'
 import './STYLES/index.css'
 import App from './App'
+<<<<<<< HEAD
 import './STYLES/index.css'
+=======
+
+>>>>>>> Jill
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

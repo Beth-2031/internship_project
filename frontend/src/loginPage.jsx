@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './STYLES/loginPage.css';
+import { useAuth } from './context/Authcontext'
 const roles =[
     {label:'Student Intern',value: 'student'},
     {label:'Workplace Supervisor',value: 'workplace'},
@@ -8,6 +9,8 @@ const roles =[
     {label:'Internship Adiministator',value: 'admin'},  
 ];
 export default function LoginPage(){
+    const navigate = useNavigate();
+    const { login } = useAuth()
     const [selectedRole, setSelectedRole] = useState('student');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,8 +18,16 @@ export default function LoginPage(){
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const user = { email, role: selectedRole };
-        localStorage.setItem('user', JSON.stringify(user));
+        try {
+          await login(email, password, selectedRole)
+        } catch (error) {
+          const msg =
+            error?.response?.data?.error ||
+            error?.message ||
+            'Login failed. Is Django running?'
+          alert(msg)
+          return
+        }
         
         const redirectMap = {
             student:    '/student/dashboard',
@@ -24,7 +35,7 @@ export default function LoginPage(){
             academic:   '/academic/dashboard',
             admin:      '/admin/dashboard',
     };
-        window.location.href = redirectMap[selectedRole];
+        navigate(redirectMap[selectedRole]);
 };
 
     return (

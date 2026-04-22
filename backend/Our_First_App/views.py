@@ -36,7 +36,7 @@ class SafetyReportViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_resolved', 'student']  
 
- class CourseCompletionViewSet(viewsets.ModelViewSet):
+class CourseCompletionViewSet(viewsets.ModelViewSet):
     queryset = CourseCompletion.objects.all()
     serializer_class = CourseCompletionSerializer
     permission_classes = [permissions.IsAuthenticated]

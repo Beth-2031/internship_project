@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { login as apiLogin, getMe } from '../api/client'
+import { login as apiLogin } from '../api/client'
 
 const AuthContext = createContext(null)
 
@@ -8,28 +8,27 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem('access')
-    if (token) {
-      getMe()
-        .then(r => setUser(r.data))
-        .catch(() => { localStorage.clear(); setUser(null) })
-        .finally(() => setLoading(false))
-    } else {
+    try {
+      const raw = localStorage.getItem('user')
+      setUser(raw ? JSON.parse(raw) : null)
+    } catch {
+      localStorage.removeItem('user')
+      setUser(null)
+    } finally {
       setLoading(false)
     }
   }, [])
 
-  const login = async (username, password) => {
-    const { data } = await apiLogin(username, password)
-    localStorage.setItem('access',  data.access)
-    localStorage.setItem('refresh', data.refresh)
-    const me = await getMe()
-    setUser(me.data)
-    return me.data
+  const login = async (email, password, role) => {
+    await apiLogin(email, password, role)
+    const nextUser = { email, role }
+    localStorage.setItem('user', JSON.stringify(nextUser))
+    setUser(nextUser)
+    return nextUser
   }
 
   const logout = () => {
-    localStorage.clear()
+    localStorage.removeItem('user')
     setUser(null)
   }
 

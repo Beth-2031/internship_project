@@ -4,17 +4,14 @@ import LoginPage from './loginPage';
 import RegisterPage from './RegisterPage';
 import './STYLES/App.css'
 import ProtectedRoute from './ProtectedRoute';
-import StudentDashboard     from './pages/student/Dashboard';
-import StudentPlacements    from './pages/student/Placements';
-import SupervisorDashboard  from './pages/supervisor/Dashboard';
-import SupervisorPlacements from './pages/supervisor/Placements';
-import AcademicDashboard    from './pages/academic/Dashboard';
-import AcademicPlacements   from './pages/academic/Placements';
-import AdminDashboard       from './pages/admin/Dashboard';
-import StudentPlacements     from './pages/student/MyPlacement';
-import SupervisorPlacements  from './pages/supervisor/Students';
-import AcademicPlacements    from './pages/academic/Students';
-import AdminPlacements       from './pages/admin/AllPlacements';
+import StudentDashboard from './pages/student/Dashboard';
+import StudentPlacements from './pages/student/MyPlacement';
+import SupervisorDashboard from './pages/supervisor/Dashboard';
+import SupervisorPlacements from './pages/supervisor/Students';
+import AcademicDashboard from './pages/academic/Dashboard';
+import AcademicPlacements from './pages/academic/Students';
+import AdminDashboard from './pages/admin/Dashboard';
+import AdminPlacements from './pages/admin/AllPlacements';
 
 
 function App() {
@@ -58,24 +55,9 @@ function App() {
             <AdminDashboard />
           </ProtectedRoute>
         } />
-      <Route path="/student/placements" element={
-          <ProtectedRoute allowedRoles={['student']}>
-            <StudentDashboard />
-          </ProtectedRoute>
-        } />
-         <Route path="/supervisor/placements" element={
-          <ProtectedRoute allowedRoles={['workplace']}>
-            <SupervisorDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/academic/placements" element={
-          <ProtectedRoute allowedRoles={['academic']}>
-            <AcademicDashboard />
-          </ProtectedRoute>
-        } />
         <Route path="/admin/placements" element={
           <ProtectedRoute allowedRoles={['admin']}>
-            <AdminDashboard />
+            <AdminPlacements />
           </ProtectedRoute>
         } />  
       </Routes>

@@ -13,7 +13,6 @@ function progressPercent(start, end) {
 export default function StudentDashboard() {
   const { data: placement, loading: lp } = useFetch(getMyPlacement)
   const { data: logs,      loading: ll } = useFetch(getWeeklyLogs)
-  console.log('logs data:', logs)
   const { data: safety,    loading: ls } = useFetch(getSafetyReports)
   const { data: course,    loading: lc } = useFetch(getCourseCompletion)
 
@@ -27,10 +26,22 @@ export default function StudentDashboard() {
   const recentLogs   = Array.isArray(logs) ? [...logs].sort((a,b) => b.week_number - a.week_number).slice(0, 5) : []
 
   return (
-    <div className="fade-up">
-      <div className="page-header">
-        <h1>My Internship</h1>
-        <p>{placement?.company_name ?? 'No active placement'}</p>
+    <div className="fade-up dash">
+      <div className="page-header page-header--split">
+        <div>
+          <h1>Student Dashboard</h1>
+          <p className="muted">
+            {placement?.company_name ? (
+              <>Placement at <strong>{placement.company_name}</strong></>
+            ) : (
+              'No active placement assigned yet'
+            )}
+          </p>
+        </div>
+        <div className="header-actions">
+          <Link to="/student/logs/new" className="btn btn-primary btn-sm">Submit weekly log</Link>
+          <Link to="/student/safety" className="btn btn-danger btn-sm">Report safety issue</Link>
+        </div>
       </div>
 
       {/* Stats */}
@@ -45,16 +56,15 @@ export default function StudentDashboard() {
         <div>
           {/* Placement card */}
           {placement ? (
-            <div className="card fade-up" style={{ marginBottom: 18 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+            <div className="card card--soft" style={{ marginBottom: 18 }}>
+              <div className="row-between" style={{ marginBottom: 12 }}>
                 <div>
-                  <div style={{ fontFamily: 'var(--font-head)', fontSize: 16, fontWeight: 700, letterSpacing: '-.02em' }}>
-                    {placement.company_name}
-                  </div>
-                  <div style={{ color: 'var(--text3)', fontSize: 12, marginTop: 3 }}>
+                  <div className="card-kicker">Placement</div>
+                  <div className="card-title" style={{ marginTop: 6 }}>{placement.company_name}</div>
+                  <div className="card-sub" style={{ marginTop: 4 }}>
                     {placement.department} · {placement.location}
                   </div>
-                  <div style={{ color: 'var(--text3)', fontSize: 12, marginTop: 2 }}>
+                  <div className="card-sub" style={{ marginTop: 2 }}>
                     {placement.start_date} → {placement.end_date}
                   </div>
                 </div>
@@ -62,21 +72,18 @@ export default function StudentDashboard() {
                   {placement.is_approved ? 'Approved' : 'Pending'}
                 </Badge>
               </div>
-              <div style={{ display: 'flex', gap: 20, fontSize: 12, color: 'var(--text3)', marginBottom: 10 }}>
-                <span>Workplace: <strong style={{ color: 'var(--text)' }}>{placement.workplace_supervisor_name ?? '—'}</strong></span>
-                <span>Academic: <strong style={{ color: 'var(--text)' }}>{placement.academic_supervisor_name ?? '—'}</strong></span>
+              <div className="meta-row" style={{ marginBottom: 10 }}>
+                <span>Workplace Supervisor: <strong>{placement.workplace_supervisor_name ?? '—'}</strong></span>
+                <span>Academic Supervisor: <strong>{placement.academic_supervisor_name ?? '—'}</strong></span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text3)', marginBottom: 5 }}>
-                <span>Placement progress</span><span>{pct}%</span>
+              <div className="row-between meta-small" style={{ marginBottom: 6 }}>
+                <span>Progress</span><span><strong>{pct}%</strong></span>
               </div>
               <Progress value={pct} color="fill-blue" />
             </div>
           ) : (
             <div className="alert alert-amber" style={{ marginBottom: 18 }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
-                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-              </svg>
-              <span>No active placement. Contact your academic supervisor.</span>
+              No active placement. Contact your academic supervisor to get assigned.
             </div>
           )}
 
@@ -84,7 +91,7 @@ export default function StudentDashboard() {
           <Card
             title="Weekly Logs"
             subtitle="Recent submissions"
-            action={<Link to="/student/logs/new" className="btn btn-primary btn-sm">+ Submit Log</Link>}
+            action={<Link to="/student/logs/new" className="btn btn-primary btn-sm">+ New log</Link>}
           >
             {recentLogs.length > 0 ? recentLogs.map(log => (
               <div className="item-row" key={log.id}>
@@ -110,8 +117,8 @@ export default function StudentDashboard() {
         <div>
           {course && (
             <Card title="Course Completion" subtitle={course.course_name} style={{ marginBottom: 16 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 8 }}>
-                <span style={{ color: 'var(--text3)' }}>Approved hours</span>
+              <div className="row-between" style={{ fontSize: 13, marginBottom: 8 }}>
+                <span className="muted">Approved hours</span>
                 <strong>{course.approved_hours} / {course.minimum_hours_required}</strong>
               </div>
               <Progress

@@ -39,8 +39,8 @@ export default function StudentDashboard() {
           </p>
         </div>
         <div className="header-actions">
-          <Link to="/student/logs/new" className="btn btn-primary btn-sm">Submit weekly log</Link>
-          <Link to="/student/safety" className="btn btn-danger btn-sm">Report safety issue</Link>
+          <Link to="/student/placements" className="btn btn-primary btn-sm">Submit weekly log</Link>
+          <Link to="/student/my-placement" className="btn btn-danger btn-sm">Report safety issue</Link>
         </div>
       </div>
 
@@ -91,7 +91,7 @@ export default function StudentDashboard() {
           <Card
             title="Weekly Logs"
             subtitle="Recent submissions"
-            action={<Link to="/student/logs/new" className="btn btn-primary btn-sm">+ New log</Link>}
+            action={<Link to="/student/placements" className="btn btn-primary btn-sm">+ New log</Link>}
           >
             {recentLogs.length > 0 ? recentLogs.map(log => (
               <div className="item-row" key={log.id}>
@@ -107,7 +107,7 @@ export default function StudentDashboard() {
             )) : <Empty text="No logs submitted yet" />}
             {logs?.length > 5 && (
               <div style={{ marginTop: 10, textAlign: 'center' }}>
-                <Link to="/student/logs" className="btn btn-sm">View all {logs.length} logs</Link>
+                <Link to="/student/placements" className="btn btn-sm">View all {logs.length} logs</Link>
               </div>
             )}
           </Card>
@@ -152,7 +152,7 @@ export default function StudentDashboard() {
               </div>
             )) : <Empty text="No safety reports" />}
             <div style={{ marginTop: 12 }}>
-              <Link to="/student/safety" className="btn btn-sm btn-danger" style={{ width: '100%', justifyContent: 'center' }}>
+              <Link to="/student/my-placement" className="btn btn-sm btn-danger" style={{ width: '100%', justifyContent: 'center' }}>
                 Report an Issue
               </Link>
             </div>

@@ -46,7 +46,7 @@ export default function AcademicDashboard() {
       {openSafety.length > 0 && (
         <Alert variant="red">
           {openSafety.length} unresolved safety report{openSafety.length > 1 ? 's' : ''} from your students.{' '}
-          <Link to="/academic/safety" style={{ color: 'var(--red)', textDecoration: 'underline' }}>Review now</Link>
+          <Link to="/academic/placements" style={{ color: 'var(--red)', textDecoration: 'underline' }}>Review now</Link>
         </Alert>
       )}
 

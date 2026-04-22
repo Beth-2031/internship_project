@@ -5,11 +5,14 @@ import RegisterPage from './RegisterPage';
 import './STYLES/App.css'
 import ProtectedRoute from './ProtectedRoute';
 import StudentDashboard from './pages/student/Dashboard';
-import StudentPlacements from './pages/student/MyPlacement';
+import StudentPlacements from './pages/student/Placements';
+import StudentMyPlacement from './pages/student/MyPlacement';
 import SupervisorDashboard from './pages/supervisor/Dashboard';
-import SupervisorPlacements from './pages/supervisor/Students';
+import SupervisorPlacements from './pages/supervisor/Placements';
+import SupervisorStudents from './pages/supervisor/Students';
 import AcademicDashboard from './pages/academic/Dashboard';
-import AcademicPlacements from './pages/academic/Students';
+import AcademicPlacements from './pages/academic/Placements';
+import AcademicStudents from './pages/academic/Students';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminPlacements from './pages/admin/AllPlacements';
 
@@ -35,6 +38,11 @@ function App() {
             <StudentPlacements />
           </ProtectedRoute>
         } />
+        <Route path="/student/my-placement" element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentMyPlacement />
+          </ProtectedRoute>
+        } />
          <Route path="/supervisor/dashboard" element={
           <ProtectedRoute allowedRoles={['workplace_supervisor']}>
             <SupervisorDashboard />
@@ -52,7 +60,7 @@ function App() {
         } />
         <Route path="/supervisor/students" element={
           <ProtectedRoute allowedRoles={['workplace_supervisor']}>
-            <SupervisorPlacements />
+            <SupervisorStudents />
           </ProtectedRoute>
         } />
         <Route path="/academic/dashboard" element={
@@ -72,7 +80,7 @@ function App() {
         } />
         <Route path="/academic/students" element={
           <ProtectedRoute allowedRoles={['academic_supervisor']}>
-            <AcademicPlacements />
+            <AcademicStudents />
           </ProtectedRoute>
         } />
         <Route path="/admin/dashboard" element={

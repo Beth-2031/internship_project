@@ -35,16 +35,29 @@ def register_view(request):
     password = request.data.get('password')
     role = request.data.get('role')
 
+    role_map = {
+        'student': 'student',
+        'workplace': 'workplace_supervisor',
+        'academic': 'academic_supervisor',
+        'admin': 'internship_admin',
+        'workplace_supervisor': 'workplace_supervisor',
+        'academic_supervisor': 'academic_supervisor',
+        'internship_admin': 'internship_admin',
+    }
+    user_type = role_map.get(role)
+    if not user_type:
+        return Response({'error': 'Invalid role'}, status=400)
+
     if CustomUser.objects.filter(username=email).exists():
         return Response({'error': 'User already exists'}, status=400)
 
-    user = CustomUser.objects.create_user(
+    CustomUser.objects.create_user(
         username=email,
         email=email,
         password=password,
-        user_type=role
+        user_type=user_type,
     )
-    return Response({'message': 'Registration successful'})
+    return Response({'message': 'Registration successful', 'user_type': user_type})
 
 
 @api_view(['GET'])

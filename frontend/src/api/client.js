@@ -21,7 +21,6 @@ export default api
 // ── Auth ──
 export const login = (email, password) =>
   api.post('/login/', { email, password })
-
 export const getMe = () => api.get('/me/')
 
 export const register = (data) =>

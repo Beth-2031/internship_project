@@ -1,13 +1,22 @@
 from rest_framework import serializers
 <<<<<<< HEAD
+<<<<<<< HEAD
 from .models import InternshipPlacement, WeeklyLog, WeeklyLog, SafetyReport, CourseCompletion, CustomUser
 =======
+=======
+>>>>>>> Bonitah
 from .models import InternshipPlacement, CustomUser, WeeklyLog, SafetyReport, CourseCompletion
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'user_type','skills']
+<<<<<<< HEAD
+>>>>>>> Bonitah
+=======
+=======
+from .models import InternshipPlacement, WeeklyLog, WeeklyLog, SafetyReport, CourseCompletion, CustomUser
+>>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
 >>>>>>> Bonitah
 
 class InternshipPlacementSerializer(serializers.ModelSerializer):

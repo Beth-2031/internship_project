@@ -25,7 +25,11 @@ import AcademicDashboard from './pages/academic/Dashboard';
 import AcademicPlacements from './pages/academic/Students';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminPlacements from './pages/admin/AllPlacements';
+<<<<<<< HEAD
 >>>>>>> 71a0c62228a9d8918103b3f13de553f883dc136d
+=======
+>>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
+>>>>>>> Bonitah
 
 
 function App() {
@@ -109,6 +113,13 @@ function App() {
             <AdminDashboard />
           </ProtectedRoute>
         } />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        <Route path="/admin/placements" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+=======
+>>>>>>> Bonitah
         <Route path="/admin" element={
           <ProtectedRoute allowedRoles={['internship_admin']}>
             <AdminDashboard />
@@ -116,6 +127,10 @@ function App() {
         } />
         <Route path="/admin/placements" element={
           <ProtectedRoute allowedRoles={['internship_admin']}>
+<<<<<<< HEAD
+=======
+>>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
+>>>>>>> Bonitah
             <AdminPlacements />
           </ProtectedRoute>
         } />  

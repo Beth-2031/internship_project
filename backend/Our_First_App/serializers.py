@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import InternshipPlacement
+from .models import InternshipPlacement, WeeklyLog
 
 class InternshipPlacementSerializer(serializers.ModelSerializer):
     class Meta:

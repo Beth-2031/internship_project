@@ -8,6 +8,10 @@ import StudentDashboard     from './pages/student/Dashboard';
 import SupervisorDashboard  from './pages/supervisor/Dashboard';
 import AcademicDashboard    from './pages/academic/Dashboard';
 import AdminDashboard       from './pages/admin/Dashboard';
+import StudentPlacements     from './pages/student/MyPlacement';
+import SupervisorPlacements  from './pages/supervisor/Students';
+import AcademicPlacements    from './pages/academic/Students';
+import AdminPlacements       from './pages/admin/AllPlacements';
 
 
 function App() {
@@ -15,6 +19,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/student/dashboard" element={
           <ProtectedRoute allowedRoles={['student']}>
             <StudentDashboard />
@@ -35,6 +40,26 @@ function App() {
             <AdminDashboard />
           </ProtectedRoute>
         } />
+      <Route path="/student/placements" element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentDashboard />
+          </ProtectedRoute>
+        } />
+         <Route path="/supervisor/placements" element={
+          <ProtectedRoute allowedRoles={['workplace']}>
+            <SupervisorDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/academic/placements" element={
+          <ProtectedRoute allowedRoles={['academic']}>
+            <AcademicDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/placements" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />  
       </Routes>
 
     </BrowserRouter>

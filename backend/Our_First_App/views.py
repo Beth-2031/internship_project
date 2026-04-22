@@ -43,7 +43,7 @@ class SafetyReportViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_completed', 'student']
 # =========================
-# SIMPLE DASHBOARDS
+# SIMPLE DASHBOARDS 
 # =========================
 @login_required
 def redirect_user(request):
@@ -208,7 +208,7 @@ def add_course(request):
 
 @login_required
 def edit_weekly_log(request, log_id):
-    log = get_object_or_404(WeeklyLog, d=log_id)
+    log = get_object_or_404(WeeklyLog, id=log_id)
 
     if log.is_verified:
         return JsonResponse(

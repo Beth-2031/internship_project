@@ -37,13 +37,14 @@ api.interceptors.response.use(
 export default api
 
 // ── Auth ──
-export const login = (username, password) =>
-  api.post('/auth/login/', { username, password })
+export const login = (email, password, role) =>
+  api.post('/login/', { email, password, role })
 
-export const getMe = () => api.get('/auth/me/')
+// Backend does not currently expose /api/auth/me/
+export const getMe = () => api.get('/me/')
 
 export const register = (data) =>
-  api.post('/auth/register/', data)
+  api.post('/register/', data)
 
 // ── Student endpoints ──
 export const getMyPlacement = () => api.get('/placements/my/')

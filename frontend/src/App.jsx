@@ -39,6 +39,11 @@ function App() {
             <StudentDashboard />
           </ProtectedRoute>
         } />
+        <Route path="/student" element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentDashboard />
+          </ProtectedRoute>
+        } />
         <Route path="/student/placements" element={
           <ProtectedRoute allowedRoles={['student']}>
             <StudentPlacements />
@@ -50,12 +55,22 @@ function App() {
           </ProtectedRoute>
         } />
          <Route path="/supervisor/dashboard" element={
-          <ProtectedRoute allowedRoles={['workplace']}>
+          <ProtectedRoute allowedRoles={['workplace_supervisor']}>
+            <SupervisorDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/supervisor" element={
+          <ProtectedRoute allowedRoles={['workplace_supervisor']}>
             <SupervisorDashboard />
           </ProtectedRoute>
         } />
         <Route path="/supervisor/placements" element={
-          <ProtectedRoute allowedRoles={['workplace']}>
+          <ProtectedRoute allowedRoles={['workplace_supervisor']}>
+            <SupervisorPlacements />
+          </ProtectedRoute>
+        } />
+        <Route path="/supervisor/students" element={
+          <ProtectedRoute allowedRoles={['workplace_supervisor']}>
             <SupervisorPlacements />
           </ProtectedRoute>
         } />
@@ -65,12 +80,22 @@ function App() {
           </ProtectedRoute>
         } />
         <Route path="/academic/dashboard" element={
-          <ProtectedRoute allowedRoles={['academic']}>
+          <ProtectedRoute allowedRoles={['academic_supervisor']}>
+            <AcademicDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/academic" element={
+          <ProtectedRoute allowedRoles={['academic_supervisor']}>
             <AcademicDashboard />
           </ProtectedRoute>
         } />
         <Route path="/academic/placements" element={
-          <ProtectedRoute allowedRoles={['academic']}>
+          <ProtectedRoute allowedRoles={['academic_supervisor']}>
+            <AcademicPlacements />
+          </ProtectedRoute>
+        } />
+        <Route path="/academic/students" element={
+          <ProtectedRoute allowedRoles={['academic_supervisor']}>
             <AcademicPlacements />
           </ProtectedRoute>
         } />
@@ -80,12 +105,17 @@ function App() {
           </ProtectedRoute>
         } />
         <Route path="/admin/dashboard" element={
-          <ProtectedRoute allowedRoles={['admin']}>
+          <ProtectedRoute allowedRoles={['internship_admin']}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin" element={
+          <ProtectedRoute allowedRoles={['internship_admin']}>
             <AdminDashboard />
           </ProtectedRoute>
         } />
         <Route path="/admin/placements" element={
-          <ProtectedRoute allowedRoles={['admin']}>
+          <ProtectedRoute allowedRoles={['internship_admin']}>
             <AdminPlacements />
           </ProtectedRoute>
         } />  

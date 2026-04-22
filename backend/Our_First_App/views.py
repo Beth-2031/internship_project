@@ -26,6 +26,8 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
     queryset = WeeklyLog.objects.all()
     serializer_class = WeeklyLogSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['is_verified', 'week_number', 'student']
 
 class SafetyReportViewSet(viewsets.ModelViewSet):
     queryset = SafetyReport.objects.all()

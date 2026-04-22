@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_filters',
     'Our_First_App',
     'rest_framework',
+    'django_filters',
     
 ]
 

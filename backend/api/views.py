@@ -28,6 +28,7 @@ def login_view(request):
     else:
         return Response({'error': 'Invalid credentials'}, status=400)
 
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_view(request):

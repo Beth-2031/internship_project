@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/Authcontext';
 import './STYLES/loginPage.css';
 
@@ -12,12 +12,21 @@ const roles =[
 export default function LoginPage(){
     const { login } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [selectedRole, setSelectedRole] = useState('student');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+      const routedMessage = location.state?.authMessage;
+      if (routedMessage) {
+        setError(routedMessage);
+        navigate(location.pathname, { replace: true, state: {} });
+      }
+    }, [location, navigate]);
 
     const handleLogin = async (e) => {
         e.preventDefault();

@@ -1,4 +1,5 @@
-import { useAuth } from '../../context/AuthContext'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/Authcontext'
 
 const Icon = ({ d, d2 }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -9,8 +10,8 @@ const Icon = ({ d, d2 }) => (
 const NAV = {
   student: [
     { label: 'Overview', links: [
-      { to: '/student',         icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', text: 'Dashboard' },
-      { to: '/student/placement', icon: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', text: 'My Placement' },
+      { to: '/student/dashboard', icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', text: 'Dashboard' },
+      { to: '/student/placements', icon: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', text: 'My Placement' },
     ]},
     { label: 'Activity', links: [
       { to: '/student/logs',       icon: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z', text: 'Weekly Logs' },
@@ -21,7 +22,7 @@ const NAV = {
   ],
   workplace_supervisor: [
     { label: 'Overview', links: [
-      { to: '/supervisor',          icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', text: 'Dashboard' },
+      { to: '/supervisor/dashboard',          icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', text: 'Dashboard' },
       { to: '/supervisor/students', icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 100 8 4 4 0 000-8z', text: 'My Students' },
     ]},
     { label: 'Actions', links: [
@@ -31,7 +32,7 @@ const NAV = {
   ],
   academic_supervisor: [
     { label: 'Overview', links: [
-      { to: '/academic',              icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', text: 'Dashboard' },
+      { to: '/academic/dashboard',              icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', text: 'Dashboard' },
       { to: '/academic/students',     icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 100 8 4 4 0 000-8z', text: 'My Students' },
     ]},
     { label: 'Actions', links: [
@@ -42,7 +43,7 @@ const NAV = {
   ],
   internship_admin: [
     { label: 'Overview', links: [
-      { to: '/admin',               icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', text: 'Dashboard' },
+      { to: '/admin/dashboard',               icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', text: 'Dashboard' },
     ]},
     { label: 'Placements', links: [
       { to: '/admin/placements',    icon: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', text: 'All Placements' },
@@ -110,7 +111,7 @@ export default function Sidebar({ badges = {} }) {
             <div className="user-role">{user?.user_type?.replace(/_/g,' ')}</div>
           </div>
           <button
-            onClick={() => { logout(); navigate('/login') }}
+            onClick={async () => { await logout(); navigate('/') }}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text3)', padding: '2px' }}
             title="Sign out"
           >

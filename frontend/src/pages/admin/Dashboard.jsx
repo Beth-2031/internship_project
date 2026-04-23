@@ -52,7 +52,7 @@ export default function AdminDashboard() {
           <h1>Admin Panel</h1>
           <p>System-wide overview and management</p>
         </div>
-        <Link to="/admin/users/new" className="btn btn-primary">
+        <Link to="/admin/placements" className="btn btn-primary">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Add User
         </Link>
@@ -142,7 +142,7 @@ export default function AdminDashboard() {
                 <div className="item-name">{stats?.students ?? '—'} students</div>
                 <div className="item-meta">Registered in system</div>
               </div>
-              <Link to="/admin/users?type=student" className="btn btn-sm">Manage</Link>
+              <Link to="/admin/placements" className="btn btn-sm">Manage</Link>
             </div>
             <div className="item-row">
               <div className="item-icon icon-green">
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
               <div className="item-body">
                 <div className="item-name">{stats?.supervisors ?? '—'} workplace supervisors</div>
               </div>
-              <Link to="/admin/users?type=workplace_supervisor" className="btn btn-sm">Manage</Link>
+              <Link to="/admin/placements" className="btn btn-sm">Manage</Link>
             </div>
             <div className="divider" />
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>

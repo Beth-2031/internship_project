@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { login as apiLogin, getMe } from '../api/client'
+import { login as apiLogin, getMe, logout as apiLogout } from '../api/client'
 
 const AuthContext = createContext(null)
 
@@ -8,28 +8,25 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem('access')
-    if (token) {
-      getMe()
-        .then(r => setUser(r.data))
-        .catch(() => { localStorage.clear(); setUser(null) })
-        .finally(() => setLoading(false))
-    } else {
-      setLoading(false)
-    }
+    getMe()
+      .then(r => setUser(r.data))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false))
   }, [])
 
-  const login = async (username, password) => {
-    const { data } = await apiLogin(username, password)
-    localStorage.setItem('access',  data.access)
-    localStorage.setItem('refresh', data.refresh)
-    const me = await getMe()
-    setUser(me.data)
-    return me.data
+  const login = async (email, password) => {
+    const { data } = await apiLogin(email, password)
+    const currentUser = data?.user ?? null
+    setUser(currentUser)
+    return currentUser
   }
 
-  const logout = () => {
-    localStorage.clear()
+  const logout = async () => {
+    try {
+      await apiLogout()
+    } catch {
+      // Ignore network/auth logout errors and clear local state anyway.
+    }
     setUser(null)
   }
 

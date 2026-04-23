@@ -5,29 +5,32 @@ from rest_framework.response import Response
 from django.contrib.auth import authenticate, login, logout
 from Our_First_App.models import CustomUser
 
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
     email = request.data.get('email')
     password = request.data.get('password')
 
-    user = authenticate(request, username=email, password=password)
-
-    if user is not None:
-        login(request, user)
-        return Response({
-            'message': 'Login successful',
-            'user': {
-                'id': user.id,
-                'username': user.username,
-                'email': user.email,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'user_type': user.user_type,
-            }
-        })
-    else:
-        return Response({'error': 'Invalid credentials'}, status=400)
+    try:
+        user = CustomUser.objects.get(username=email)
+        if user.check_password(password):
+            login(request, user)
+            return Response({
+                'message': 'Login successful',
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'user_type': user.user_type,
+                }
+            })
+        else:
+            return Response({'error': 'Invalid credentials'}, status=400)
+    except CustomUser.DoesNotExist:
+        return Response({'error': 'Invalid credential'}, status=400)
 
 @csrf_exempt
 @api_view(['POST'])

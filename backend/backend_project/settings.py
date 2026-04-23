@@ -41,18 +41,13 @@ INSTALLED_APPS = [
     'django_filters',
     'Our_First_App',
     'rest_framework',
-<<<<<<< HEAD
-    'django_filters',
-    
-=======
-<<<<<<< HEAD
-=======
-    'django_filters',
-    
->>>>>>> 0dd4b50f06a16c2d17639cce34f89964ed7958a3
->>>>>>> Bonitah
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -64,8 +59,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
+CSRF_TRUSTED_ORIGINS =[
+    "http://localhost:5173",
+    "http://localhost:3000",
 ]
 
 ROOT_URLCONF = 'backend_project.urls'

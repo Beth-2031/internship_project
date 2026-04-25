@@ -6,7 +6,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'user_type','skills']
 
-from .models import InternshipPlacement, WeeklyLog, WeeklyLog, SafetyReport, CourseCompletion, CustomUser
 
 class InternshipPlacementSerializer(serializers.ModelSerializer):
     student = serializers.PrimaryKeyRelatedField(

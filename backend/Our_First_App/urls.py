@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
 from .views import InternshipPlacementViewSet , WeeklyLogViewSet, SafetyReportViewSet, CourseCompletionViewSet
+from django.views.decorators.csrf import csrf_exempt
 
 # DRF Router
 router = DefaultRouter()

@@ -17,13 +17,23 @@ import StudentMyPlacement from './pages/student/MyPlacement';
 import SupervisorDashboard from './pages/supervisor/Dashboard';
 import SupervisorPlacements from './pages/supervisor/Placements';
 import SupervisorStudents from './pages/supervisor/Students';
+import VerifyLogs from './pages/supervisor/VerifyLogs';
+import SupervisorSafety from './pages/supervisor/Safety';
+import LogDetail from './pages/supervisor/LogDetail';
 
 import AcademicDashboard from './pages/academic/Dashboard';
 import AcademicPlacements from './pages/academic/Placements';
 import AcademicStudents from './pages/academic/Students';
+import ApprovePlacements from './pages/academic/ApprovePlacements';
+import CourseCompletions from './pages/academic/CourseCompletions';
+import AcademicSafety from './pages/academic/safety';
 
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminPlacements from './pages/admin/AllPlacements';
+import ManageUsers from './pages/admin/ManageUsers';
+import RegisterUser from './pages/admin/RegisterUser';
+import AdminSafety from './pages/admin/Safety';
+import ExportData from './pages/admin/ExportData';
 
 function App() {
   return (
@@ -46,6 +56,9 @@ function App() {
           <Route path="/supervisor/dashboard" element={<SupervisorDashboard />} />
           <Route path="/supervisor/placements" element={<SupervisorPlacements />} />
           <Route path="/supervisor/students" element={<SupervisorStudents />} />
+          <Route path="/supervisor/logs" element={<VerifyLogs />} />
+          <Route path="/supervisor/logs/:id" element={<LogDetail />} />
+          <Route path="/supervisor/safety" element={<SupervisorSafety />} />
         </Route>
 
         {/* Academic Supervisor routes */}
@@ -54,6 +67,9 @@ function App() {
           <Route path="/academic/dashboard" element={<AcademicDashboard />} />
           <Route path="/academic/placements" element={<AcademicPlacements />} />
           <Route path="/academic/students" element={<AcademicStudents />} />
+          <Route path="/academic/placements/approve" element={<ApprovePlacements />} />
+          <Route path="/academic/courses" element={<CourseCompletions />} />
+          <Route path="/academic/safety" element={<AcademicSafety />} />
         </Route>
 
         {/* Admin routes */}
@@ -61,6 +77,11 @@ function App() {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/placements" element={<AdminPlacements />} />
+          <Route path="/admin/placements/pending" element={<AdminPlacements pendingOnly />} />
+          <Route path="/admin/users" element={<ManageUsers />} />
+          <Route path="/admin/users/new" element={<RegisterUser />} />
+          <Route path="/admin/safety" element={<AdminSafety />} />
+          <Route path="/admin/export" element={<ExportData />} />
         </Route>
 
       </Routes>

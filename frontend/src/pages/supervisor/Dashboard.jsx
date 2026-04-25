@@ -66,7 +66,7 @@ export default function SupervisorDashboard() {
 
         {/* Pending logs */}
         <Card title="Logs Awaiting Verification" subtitle="Review and verify submissions"
-          action={<Link to="/supervisor/placements" className="btn btn-sm">View all</Link>}
+          action={<Link to="/supervisor/logs" className="btn btn-sm">View all</Link>}
         >
           {pendingLogs?.length > 0 ? pendingLogs.slice(0, 4).map(log => (
             <div key={log.id} style={{ padding: '12px 0', borderBottom: '1px solid var(--border)' }}>
@@ -85,7 +85,7 @@ export default function SupervisorDashboard() {
                 {log.tasks_done?.substring(0, 110)}…
               </div>
               <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                <Link to="/supervisor/placements" className="btn btn-sm">View full</Link>
+                <Link to={`/supervisor/logs/${log.id}`} className="btn btn-sm">View full</Link>
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => handleVerify(log.id)}

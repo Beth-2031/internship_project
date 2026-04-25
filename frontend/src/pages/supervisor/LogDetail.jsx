@@ -5,7 +5,7 @@ import api from '../../api/client'
 
 export default function LogDetail() {
   const { id } = useParams()
-  const { data: log, loading } = useFetch(() => api.get(`/logs/${id}/`), [id])
+  const { data: log, loading } = useFetch(() => api.get(`/weekly-logs/${id}/`), [id])
   if (loading) return <LoadingScreen />
   if (!log) return <div style={{ padding: 24, color: 'var(--text3)' }}>Log not found.</div>
 

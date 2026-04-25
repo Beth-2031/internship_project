@@ -8,26 +8,19 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('user')
-      setUser(raw ? JSON.parse(raw) : null)
-    } catch {
-      localStorage.removeItem('user')
-      setUser(null)
-    } finally {
-      setLoading(false)
-    }
+    getMe()
+      .then(r => setUser(r.data))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false))
   }, [])
 
-  const login = async (email, password, role) => {
-    await apiLogin(email, password, role)
-    const nextUser = { email, role }
-    localStorage.setItem('user', JSON.stringify(nextUser))
-    setUser(nextUser)
-    return nextUser
+  const login = async (email, password) => {
+    const { data } = await apiLogin(email, password)
+    const currentUser = data?.user ?? null
+    setUser(currentUser)
+    return currentUser
   }
 
- 
   const logout = async () => {
     try {
       await apiLogout()

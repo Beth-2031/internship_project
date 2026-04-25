@@ -19,10 +19,8 @@ api.interceptors.response.use(
 export default api
 
 // ── Auth ──
-export const login = (email, password, role) =>
-  api.post('/login/', { email, password, role })
-
-// Backend does not currently expose /api/auth/me/
+export const login = (email, password) =>
+  api.post('/login/', { email, password })
 export const getMe = () => api.get('/me/')
 
 export const register = (data) =>

@@ -3,8 +3,16 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import viewsets, serializers, status
+from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from Our_First_App.models import CustomUser
+import csv
+from Our_First_App.models import (
+    CustomUser,
+    InternshipPlacement,
+    WeeklyLog,
+    SafetyReport,
+    CourseCompletion,
+)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -12,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'username', 'first_name', 'last_name', 'user_type', 'password']
+        fields = ['id', 'email', 'username', 'first_name', 'last_name', 'user_type', 'skills', 'password']
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
@@ -155,3 +163,137 @@ def me_view(request):
 def logout_view(request):
     logout(request)
     return Response({'message': 'Logged out'})
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def users_view(request):
+    if request.user.user_type != 'internship_admin':
+        return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+
+    if request.method == 'GET':
+        role_map = {
+            'student': 'student',
+            'workplace': 'workplace_supervisor',
+            'academic': 'academic_supervisor',
+            'admin': 'internship_admin',
+            'workplace_supervisor': 'workplace_supervisor',
+            'academic_supervisor': 'academic_supervisor',
+            'internship_admin': 'internship_admin',
+        }
+        requested_type = request.query_params.get('type')
+        queryset = CustomUser.objects.all().order_by('id')
+        if requested_type:
+            queryset = queryset.filter(user_type=role_map.get(requested_type, requested_type))
+        data = UserSerializer(queryset, many=True).data
+        return Response(data)
+
+    payload = dict(request.data)
+    payload['user_type'] = {
+        'student': 'student',
+        'workplace': 'workplace_supervisor',
+        'academic': 'academic_supervisor',
+        'admin': 'internship_admin',
+        'workplace_supervisor': 'workplace_supervisor',
+        'academic_supervisor': 'academic_supervisor',
+        'internship_admin': 'internship_admin',
+    }.get(payload.get('user_type'), payload.get('user_type'))
+    payload.setdefault('username', payload.get('email'))
+
+    serializer = UserSerializer(data=payload)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    user = serializer.save()
+    return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def admin_stats_view(request):
+    if request.user.user_type != 'internship_admin':
+        return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+
+    return Response({
+        'total_placements': InternshipPlacement.objects.count(),
+        'pending_placements': InternshipPlacement.objects.filter(is_approved=False).count(),
+        'safety_reports': SafetyReport.objects.count(),
+        'open_safety': SafetyReport.objects.filter(is_resolved=False).count(),
+        'completed': CourseCompletion.objects.filter(is_completed=True).count(),
+        'students': CustomUser.objects.filter(user_type='student').count(),
+        'supervisors': CustomUser.objects.filter(user_type='workplace_supervisor').count(),
+    })
+
+
+def _write_csv_response(filename, headers, rows):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    writer = csv.writer(response)
+    writer.writerow(headers)
+    for row in rows:
+        writer.writerow(row)
+    return response
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def export_view(request):
+    if request.user.user_type != 'internship_admin':
+        return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+
+    export_type = request.query_params.get('type', '').strip().lower()
+
+    if export_type == 'placements':
+        rows = InternshipPlacement.objects.select_related('student', 'workplace_supervisor', 'academic_supervisor').all()
+        return _write_csv_response(
+            'placements.csv',
+            ['id', 'student', 'company_name', 'department', 'location', 'start_date', 'end_date', 'is_approved', 'workplace_supervisor', 'academic_supervisor'],
+            [
+                [
+                    p.id,
+                    p.student.username if p.student else '',
+                    p.company_name,
+                    p.department,
+                    p.location,
+                    p.start_date,
+                    p.end_date,
+                    p.is_approved,
+                    p.workplace_supervisor.username if p.workplace_supervisor else '',
+                    p.academic_supervisor.username if p.academic_supervisor else '',
+                ]
+                for p in rows
+            ],
+        )
+
+    if export_type == 'logs':
+        rows = WeeklyLog.objects.select_related('student', 'placement').all()
+        return _write_csv_response(
+            'logs.csv',
+            ['id', 'student', 'placement_id', 'week_number', 'hours_worked', 'is_verified', 'date_submitted'],
+            [[l.id, l.student.username if l.student else '', l.placement_id, l.week_number, l.hours_worked, l.is_verified, l.date_submitted] for l in rows],
+        )
+
+    if export_type == 'safety':
+        rows = SafetyReport.objects.select_related('student').all()
+        return _write_csv_response(
+            'safety.csv',
+            ['id', 'student', 'description', 'date_reported', 'is_resolved'],
+            [[r.id, r.student.username if r.student else '', r.description, r.date_reported, r.is_resolved] for r in rows],
+        )
+
+    if export_type == 'users':
+        rows = CustomUser.objects.all()
+        return _write_csv_response(
+            'users.csv',
+            ['id', 'username', 'email', 'first_name', 'last_name', 'user_type', 'skills'],
+            [[u.id, u.username, u.email, u.first_name, u.last_name, u.user_type, u.skills] for u in rows],
+        )
+
+    if export_type == 'courses':
+        rows = CourseCompletion.objects.select_related('student').all()
+        return _write_csv_response(
+            'courses.csv',
+            ['id', 'student', 'course_name', 'minimum_hours_required', 'approved_hours', 'is_completed'],
+            [[c.id, c.student.username if c.student else '', c.course_name, c.minimum_hours_required, c.approved_hours, c.is_completed] for c in rows],
+        )
+
+    return Response({'error': 'Invalid export type'}, status=status.HTTP_400_BAD_REQUEST)

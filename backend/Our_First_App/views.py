@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from .models import (
     CustomUser,
@@ -30,6 +32,78 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_verified', 'week_number', 'student']
+
+    def get_queryset(self):
+        user = getattr(self.request, "user", None)
+        if not user or not user.is_authenticated:
+            return WeeklyLog.objects.none()
+
+        if user.user_type == 'student':
+            return WeeklyLog.objects.filter(student=user)
+
+        if user.user_type == 'workplace_supervisor':
+            return WeeklyLog.objects.filter(placement__workplace_supervisor=user)
+
+        if user.user_type == 'academic_supervisor':
+            return WeeklyLog.objects.filter(placement__academic_supervisor=user)
+
+        if user.user_type == 'internship_admin':
+            return WeeklyLog.objects.all()
+
+        return WeeklyLog.objects.none()
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        if user.user_type != 'student':
+            raise permissions.PermissionDenied("Only students can submit weekly logs.")
+        serializer.save(student=user)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # Once verified, a student can't edit their log.
+        if instance.is_verified and request.user == instance.student:
+            return Response(
+                {"error": "This log has been verified and cannot be edited."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        # Only supervisors/admin can set is_verified via the API.
+        if "is_verified" in request.data:
+            if request.user.user_type not in [
+                "workplace_supervisor",
+                "academic_supervisor",
+                "internship_admin",
+            ]:
+                return Response(
+                    {"error": "You are not allowed to verify weekly logs."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        # Reuse the same checks as update().
+        return self.update(request, *args, **kwargs)
+
+    @action(detail=False, methods=["get"], url_path="progress")
+    def progress(self, request):
+        """
+        Lightweight progress summary for the current user's visible logs.
+        """
+        qs = self.filter_queryset(self.get_queryset())
+        total = qs.count()
+        verified = qs.filter(is_verified=True).count()
+        pending = qs.filter(is_verified=False).count()
+        weeks = list(qs.values_list("week_number", flat=True))
+        return Response(
+            {
+                "total_logs": total,
+                "verified_logs": verified,
+                "pending_logs": pending,
+                "weeks_submitted": sorted(set(weeks)),
+            }
+        )
 
 class SafetyReportViewSet(viewsets.ModelViewSet):
     queryset = SafetyReport.objects.all()

@@ -17,6 +17,9 @@ import StudentMyPlacement from './pages/student/MyPlacement';
 import SupervisorDashboard from './pages/supervisor/Dashboard';
 import SupervisorPlacements from './pages/supervisor/Placements';
 import SupervisorStudents from './pages/supervisor/Students';
+import VerifyLogs from './pages/supervisor/VerifyLogs';
+import SupervisorSafety from './pages/supervisor/Safety';
+import LogDetail from './pages/supervisor/LogDetail';
 
 import AcademicDashboard from './pages/academic/Dashboard';
 import AcademicPlacements from './pages/academic/Placements';
@@ -50,6 +53,9 @@ function App() {
           <Route path="/supervisor/dashboard" element={<SupervisorDashboard />} />
           <Route path="/supervisor/placements" element={<SupervisorPlacements />} />
           <Route path="/supervisor/students" element={<SupervisorStudents />} />
+          <Route path="/supervisor/logs" element={<VerifyLogs />} />
+          <Route path="/supervisor/logs/:id" element={<LogDetail />} />
+          <Route path="/supervisor/safety" element={<SupervisorSafety />} />
         </Route>
 
         {/* Academic Supervisor routes */}

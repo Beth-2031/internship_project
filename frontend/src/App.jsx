@@ -44,7 +44,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<RegisterPage />} />
-        <Route path="/register" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
 
         {/* Student routes */}
         <Route element={<ProtectedRoute allowedRoles={['student']}><StudentLayout /></ProtectedRoute>}>

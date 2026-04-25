@@ -15,6 +15,18 @@ from Our_First_App.models import (
 )
 
 
+def _normalize_user_type(user_type):
+    return 'internship_admin' if user_type == 'admin' else user_type
+
+
+def _is_admin_user(user):
+    return (
+        _normalize_user_type(getattr(user, 'user_type', '')) == 'internship_admin'
+        or getattr(user, 'is_staff', False)
+        or getattr(user, 'is_superuser', False)
+    )
+
+
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
 
@@ -59,7 +71,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.user_type not in ('internship_admin',):
+        if not _is_admin_user(user):
             return CustomUser.objects.none()
         qs = CustomUser.objects.all().order_by('id')
         user_type = self.request.query_params.get('type')
@@ -78,7 +90,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return qs
 
     def create(self, request, *args, **kwargs):
-        if request.user.user_type != 'internship_admin':
+        if not _is_admin_user(request.user):
             return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
         return super().create(request, *args, **kwargs)
 
@@ -102,7 +114,7 @@ def login_view(request):
                     'email': user.email,
                     'first_name': user.first_name,
                     'last_name': user.last_name,
-                    'user_type': user.user_type,
+                    'user_type': _normalize_user_type(user.user_type),
                 }
             })
         else:
@@ -154,7 +166,7 @@ def me_view(request):
         'email': user.email,
         'first_name': user.first_name,
         'last_name': user.last_name,
-        'user_type': user.user_type,
+        'user_type': _normalize_user_type(user.user_type),
     })
 
 
@@ -168,7 +180,7 @@ def logout_view(request):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def users_view(request):
-    if not (request.user.user_type in ('internship_admin', 'admin') or request.user.is_staff or request.user.is_superuser):
+    if not _is_admin_user(request.user):
         return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'GET':
@@ -210,7 +222,7 @@ def users_view(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def admin_stats_view(request):
-    if request.user.user_type != 'internship_admin':
+    if not _is_admin_user(request.user):
         return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
 
     return Response({
@@ -237,7 +249,7 @@ def _write_csv_response(filename, headers, rows):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def export_view(request):
-    if request.user.user_type != 'internship_admin':
+    if not _is_admin_user(request.user):
         return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
 
     export_type = request.query_params.get('type', '').strip().lower()

@@ -24,6 +24,10 @@ import AcademicStudents from './pages/academic/Students';
 
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminPlacements from './pages/admin/AllPlacements';
+import ManageUsers from './pages/admin/ManageUsers';
+import RegisterUser from './pages/admin/RegisterUser';
+import AdminSafety from './pages/admin/Safety';
+import ExportData from './pages/admin/ExportData';
 
 function App() {
   return (
@@ -61,6 +65,11 @@ function App() {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/placements" element={<AdminPlacements />} />
+          <Route path="/admin/placements/pending" element={<AdminPlacements pendingOnly />} />
+          <Route path="/admin/users" element={<ManageUsers />} />
+          <Route path="/admin/users/new" element={<RegisterUser />} />
+          <Route path="/admin/safety" element={<AdminSafety />} />
+          <Route path="/admin/export" element={<ExportData />} />
         </Route>
 
       </Routes>

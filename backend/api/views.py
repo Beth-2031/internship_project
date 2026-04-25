@@ -168,7 +168,7 @@ def logout_view(request):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def users_view(request):
-    if request.user.user_type != 'internship_admin':
+    if not (request.user.user_type in ('internship_admin', 'admin') or request.user.is_staff or request.user.is_superuser):
         return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'GET':

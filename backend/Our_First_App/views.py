@@ -112,6 +112,12 @@ class SafetyReportViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_resolved', 'student']  
 
+    def perform_create(self, serializer):
+        user = self.request.user
+        if user.user_type != 'student':
+            raise permissions.PermissionDenied("Only students can submit safety reports.")
+        serializer.save(student=user)
+
 class CourseCompletionViewSet(viewsets.ModelViewSet):
     queryset = CourseCompletion.objects.all()
     serializer_class = CourseCompletionSerializer

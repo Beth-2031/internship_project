@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { submitLog, getWeeklyLogs } from '../../api/client'
+import { submitLog, getWeeklyLogs, getMyPlacement } from '../../api/client'
 import { useFetch } from '../../hooks/useFetch'
 import { Card, Badge, Alert } from '../../components/ui'
 
 export default function SubmitLog() {
   const navigate = useNavigate()
   const { data: prevLogs } = useFetch(getWeeklyLogs)
+  const { data: myPlacement } = useFetch(getMyPlacement)
 
   const nextWeek = prevLogs?.length
     ? Math.max(...prevLogs.map(l => l.week_number)) + 1
@@ -25,9 +26,19 @@ export default function SubmitLog() {
   const handleSubmit = async e => {
     e.preventDefault()
     setError('')
+    if (!myPlacement?.id) {
+      setError('No active placement found. Contact your supervisor before submitting logs.')
+      return
+    }
     setLoading(true)
     try {
-      await submitLog(form)
+      const weekNumber = Number(form.week_number || nextWeek)
+      const payload = {
+        ...form,
+        week_number: weekNumber,
+        placement: myPlacement?.id,
+      }
+      await submitLog(payload)
       setSuccess(true)
       setTimeout(() => navigate('/student/logs'), 1200)
     } catch (err) {

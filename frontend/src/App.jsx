@@ -24,6 +24,9 @@ import LogDetail from './pages/supervisor/LogDetail';
 import AcademicDashboard from './pages/academic/Dashboard';
 import AcademicPlacements from './pages/academic/Placements';
 import AcademicStudents from './pages/academic/Students';
+import ApprovePlacements from './pages/academic/ApprovePlacements';
+import CourseCompletions from './pages/academic/CourseCompletions';
+import AcademicSafety from './pages/academic/safety';
 
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminPlacements from './pages/admin/AllPlacements';
@@ -64,6 +67,9 @@ function App() {
           <Route path="/academic/dashboard" element={<AcademicDashboard />} />
           <Route path="/academic/placements" element={<AcademicPlacements />} />
           <Route path="/academic/students" element={<AcademicStudents />} />
+          <Route path="/academic/placements/approve" element={<ApprovePlacements />} />
+          <Route path="/academic/courses" element={<CourseCompletions />} />
+          <Route path="/academic/safety" element={<AcademicSafety />} />
         </Route>
 
         {/* Admin routes */}

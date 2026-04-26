@@ -13,6 +13,7 @@ import AdminLayout from './layouts/AdminLayout';
 import StudentDashboard from './pages/student/Dashboard';
 import StudentPlacements from './pages/student/Placements';
 import StudentMyPlacement from './pages/student/MyPlacement';
+import RequestPlacement from './pages/student/RequestPlacement';
 import WeeklyLogs from './pages/student/WeeklyLogs';
 import SubmitLog from './pages/student/SubmitLog';
 import SafetyReport from './pages/student/SafetyReport';
@@ -57,6 +58,7 @@ function App() {
           <Route path="/student" element={<StudentDashboard />} />
           <Route path="/student/dashboard" element={<StudentDashboard />} />
           <Route path="/student/placements" element={<StudentPlacements />} />
+          <Route path="/student/placements/request" element={<RequestPlacement />} />
           <Route path="/student/my-placement" element={<StudentMyPlacement />} />
           <Route path="/student/logs" element={<WeeklyLogs />} />
           <Route path="/student/logs/new" element={<SubmitLog />} />

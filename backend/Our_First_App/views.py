@@ -6,6 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.decorators import action
 from rest_framework.response import Response
+import json
+from django.contrib.auth import authenticate, login
+
 
 from .models import (
     CustomUser,
@@ -25,6 +28,48 @@ class InternshipPlacementViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_approved', 'student', 'company_name']
+
+    def get_queryset(self):
+        user = self.request.user
+        if not user or not user.is_authenticated:
+            return InternshipPlacement.objects.none()
+        if user.user_type == 'student':
+            return InternshipPlacement.objects.filter(student=user)
+        if user.user_type == 'workplace_supervisor':
+            return InternshipPlacement.objects.filter(workplace_supervisor=user)
+        if user.user_type == 'academic_supervisor':
+            return InternshipPlacement.objects.filter(academic_supervisor=user)
+        if user.user_type == 'internship_admin':
+            return InternshipPlacement.objects.all()
+        return InternshipPlacement.objects.none()
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        if user.user_type != 'student':
+            raise permissions.PermissionDenied("Only students can request placements.")
+        serializer.save(student=user, is_approved=False)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        user = request.user
+        is_admin = user.user_type == 'internship_admin' or user.is_staff or user.is_superuser
+
+        if not is_admin:
+            if instance.student != user:
+                return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+            if instance.is_approved:
+                return Response(
+                    {'error': 'This placement has been approved and cannot be edited.'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            for field in ['is_approved', 'workplace_supervisor', 'academic_supervisor']:
+                if field in request.data:
+                    return Response(
+                        {'error': f'You cannot change {field}.'},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+
+        return super().update(request, *args, **kwargs)
 
 class WeeklyLogViewSet(viewsets.ModelViewSet):
     queryset = WeeklyLog.objects.all()
@@ -58,7 +103,7 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
             raise permissions.PermissionDenied("Only students can submit weekly logs.")
         serializer.save(student=user)
 
-    def update(self, request, ):
+    def update(self, request, *args, **kwargs):
         instance = self.get_object()
 
         # Once verified, a student can't edit their log.
@@ -356,3 +401,4 @@ def login_view(request):
         return JsonResponse({'error': 'Invalid credentials'}, status=401)
 
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+

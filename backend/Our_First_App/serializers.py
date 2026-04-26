@@ -9,20 +9,40 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 class InternshipPlacementSerializer(serializers.ModelSerializer):
     student = serializers.PrimaryKeyRelatedField(
-        queryset=CustomUser.objects.filter(user_type='student'))
-    workplace_supervisor = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.filter(
-        user_type='workplace_supervisor'), 
+        queryset=CustomUser.objects.filter(user_type='student'),
         required=False,
-        allow_null=True)        
+        allow_null=True)
+    workplace_supervisor = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(user_type='workplace_supervisor'),
+        required=False,
+        allow_null=True)
     academic_supervisor = serializers.PrimaryKeyRelatedField(
         queryset=CustomUser.objects.filter(user_type='academic_supervisor'),
         required=False,
         allow_null=True)
-    
+
+    student_name = serializers.SerializerMethodField()
+    workplace_supervisor_name = serializers.SerializerMethodField()
+    academic_supervisor_name = serializers.SerializerMethodField()
+
     class Meta:
         model = InternshipPlacement
         fields = '__all__'
 
+    def get_student_name(self, obj):
+        if obj.student:
+            return obj.student.get_full_name() or obj.student.username
+        return None
+
+    def get_workplace_supervisor_name(self, obj):
+        if obj.workplace_supervisor:
+            return obj.workplace_supervisor.get_full_name() or obj.workplace_supervisor.username
+        return None
+
+    def get_academic_supervisor_name(self, obj):
+        if obj.academic_supervisor:
+            return obj.academic_supervisor.get_full_name() or obj.academic_supervisor.username
+        return None
 
     def validate(self, data):
         if data.get('start_date') and data.get('end_date'):
@@ -35,7 +55,10 @@ class InternshipPlacementSerializer(serializers.ModelSerializer):
 
 class WeeklyLogSerializer(serializers.ModelSerializer):
     student = serializers.PrimaryKeyRelatedField(
-        queryset=CustomUser.objects.filter(user_type='student')
+        queryset=CustomUser.objects.filter(user_type='student'),
+        required=False,
+        allow_null=True,
+        default=serializers.CurrentUserDefault()
     )
     placement = serializers.PrimaryKeyRelatedField(
         queryset=InternshipPlacement.objects.all()
@@ -44,7 +67,7 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = WeeklyLog
         fields = '__all__'
-        read_only_fields = ['date_submitted', 'student']
+        read_only_fields = ['date_submitted']
 
     def validate(self, data):
         student = data.get('student', getattr(self.instance, 'student', None))
@@ -59,13 +82,16 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
 
 class SafetyReportSerializer(serializers.ModelSerializer):
     student = serializers.PrimaryKeyRelatedField(
-        queryset=CustomUser.objects.filter(user_type='student')
+        queryset=CustomUser.objects.filter(user_type='student'),
+        required=False,
+        allow_null=True,
+        default=serializers.CurrentUserDefault()
     )
 
     class Meta:
         model = SafetyReport
         fields = '__all__'
-        read_only_fields = ['date_reported', 'student']
+        read_only_fields = ['date_reported']
 
 
 
@@ -76,4 +102,12 @@ class CourseCompletionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CourseCompletion
-        fields = '__all__'
+        fields = '__all__'        
+    def update(self, instance, validated_data):
+        if instance.is_approved:
+            raise serializers.ValidationError(
+                'This placement has been approved and cannot be edited.'
+            )
+        return super().update(instance, validated_data)
+    
+

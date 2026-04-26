@@ -6,6 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.decorators import action
 from rest_framework.response import Response
+import json
+from django.contrib.auth import authenticate, login
+
 
 from .models import (
     CustomUser,
@@ -356,3 +359,4 @@ def login_view(request):
         return JsonResponse({'error': 'Invalid credentials'}, status=401)
 
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+

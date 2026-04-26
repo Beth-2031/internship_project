@@ -14,6 +14,7 @@ const NAV = {
       { to: '/student/placements', icon: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', text: 'My Placement' },
     ]},
     { label: 'Activity', links: [
+      { to: '/student/placements/request', icon: 'M12 5v14M5 12h14', text: 'Request Placement' },
       { to: '/student/logs',       icon: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z', text: 'Weekly Logs' },
       { to: '/student/logs/new',   icon: 'M12 5v14M5 12h14', text: 'Submit Log' },
       { to: '/student/safety',     icon: 'M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z', text: 'Safety Report' },

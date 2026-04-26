@@ -29,6 +29,26 @@ class InternshipPlacementViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_approved', 'student', 'company_name']
 
+    def get_queryset(self):
+        user = self.request.user
+        if not user or not user.is_authenticated:
+            return InternshipPlacement.objects.none()
+        if user.user_type == 'student':
+            return InternshipPlacement.objects.filter(student=user)
+        if user.user_type == 'workplace_supervisor':
+            return InternshipPlacement.objects.filter(workplace_supervisor=user)
+        if user.user_type == 'academic_supervisor':
+            return InternshipPlacement.objects.filter(academic_supervisor=user)
+        if user.user_type == 'internship_admin':
+            return InternshipPlacement.objects.all()
+        return InternshipPlacement.objects.none()
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        if user.user_type != 'student':
+            raise permissions.PermissionDenied("Only students can request placements.")
+        serializer.save(student=user, is_approved=False)
+
 class WeeklyLogViewSet(viewsets.ModelViewSet):
     queryset = WeeklyLog.objects.all()
     serializer_class = WeeklyLogSerializer

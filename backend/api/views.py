@@ -32,7 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'username', 'first_name', 'last_name', 'user_type', 'skills', 'password']
+        fields = ['id', 'email', 'username', 'first_name', 'last_name', 'user_type', 'skills', 'course', 'department', 'password']
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
@@ -131,7 +131,10 @@ def login_view(request):
 def register_view(request):
     email = request.data.get('email')
     password = request.data.get('password')
-    role = request.data.get('role')
+    role = request.data.get('role', 'student')
+    full_name = request.data.get('full_name', '')
+    course = request.data.get('course', '')
+    department = request.data.get('department', '')
 
     role_map = {
         'student': 'student',
@@ -142,18 +145,25 @@ def register_view(request):
         'academic_supervisor': 'academic_supervisor',
         'internship_admin': 'internship_admin',
     }
-    user_type = role_map.get(role)
-    if not user_type:
-        return Response({'error': 'Invalid role'}, status=400)
+    user_type = role_map.get(role, 'student')
 
     if CustomUser.objects.filter(username=email).exists():
         return Response({'error': 'User already exists'}, status=400)
+
+    # Split full name into first and last
+    name_parts = full_name.strip().split(' ', 1)
+    first_name = name_parts[0]
+    last_name = name_parts[1] if len(name_parts) > 1 else ''
 
     CustomUser.objects.create_user(
         username=email,
         email=email,
         password=password,
         user_type=user_type,
+        first_name=first_name,
+        last_name=last_name,
+        course=course or None,
+        department=department or None,
     )
     return Response({'message': 'Registration successful', 'user_type': user_type})
 
@@ -169,6 +179,8 @@ def me_view(request):
         'first_name': user.first_name,
         'last_name': user.last_name,
         'user_type': _normalize_user_type(user.user_type),
+        'course': user.course,
+        'department': user.department,
     })
 
 

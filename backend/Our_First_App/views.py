@@ -329,3 +329,30 @@ def edit_placement(request, placement_id):
         return redirect('dashboard')
     
     return render(request, 'edit_placement.html', {'placement': placement})
+
+# =========================
+# AUTH
+# =========================
+@csrf_exempt
+def login_view(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get('email')
+        password = data.get('password')
+
+        try:
+            user = CustomUser.objects.get(email=email)
+            user = authenticate(request, username=user.username, password=password)
+        except CustomUser.DoesNotExist:
+            user = None
+
+        if user:
+            login(request, user)
+            return JsonResponse({
+                'message': 'Login successful',
+                'user_type': user.user_type
+            })
+
+        return JsonResponse({'error': 'Invalid credentials'}, status=401)
+
+    return JsonResponse({'error': 'Method not allowed'}, status=405)

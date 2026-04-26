@@ -44,7 +44,7 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = WeeklyLog
         fields = '__all__'
-        read_only_fields = ['date_submitted', 'student']
+        read_only_fields = ['date_submitted']
 
     def validate(self, data):
         student = data.get('student', getattr(self.instance, 'student', None))
@@ -65,7 +65,7 @@ class SafetyReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = SafetyReport
         fields = '__all__'
-        read_only_fields = ['date_reported', 'student']
+        read_only_fields = ['date_reported']
 
 
 
@@ -76,4 +76,22 @@ class CourseCompletionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CourseCompletion
+        fields = '__all__'        
+    def update(self, instance, validated_data):
+        if instance.is_approved:
+            raise serializers.ValidationError(
+                'This placement has been approved and cannot be edited.'
+            )
+        return super().update(instance, validated_data)
+    
+class WeeklyLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WeeklyLog
         fields = '__all__'
+
+    def updates(self, instance, validated_data):
+        if instance.is_verified:
+            raise serializers.ValidationError(
+                'This log has been  erified and cannot be edited.'
+            )
+        return super().update(instance, validated_data)

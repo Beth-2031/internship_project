@@ -81,7 +81,7 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
             raise permissions.PermissionDenied("Only students can submit weekly logs.")
         serializer.save(student=user)
 
-    def update(self, request, ):
+    def update(self, request, *args, **kwargs):
         instance = self.get_object()
 
         # Once verified, a student can't edit their log.

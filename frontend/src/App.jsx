@@ -43,8 +43,14 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+<<<<<<< HEAD
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+=======
+        <Route path="/" element={<RegisterPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+>>>>>>> c7389cd7099998bcfdcebe8bc47a9b0dd8c077a5
 
         {/* Student routes */}
         <Route element={<ProtectedRoute allowedRoles={['student']}><StudentLayout /></ProtectedRoute>}>

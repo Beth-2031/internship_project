@@ -79,7 +79,7 @@ export default function RegisterPage() {
 
                   <button type="submit" className="login-button">Register</button>
 
-                  <a href="/" className="forgot-link">Already have an account? Login</a>
+                  <a href="/login" className="forgot-link">Already have an account? Login</a>
                 </form>
              </div>
       );

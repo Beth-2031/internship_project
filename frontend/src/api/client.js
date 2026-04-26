@@ -31,6 +31,7 @@ export const logout = () => api.post('/logout/')
 // ── Student endpoints ──
 export const getMyPlacement = () =>
   api.get('/placements/').then(res => ({ ...res, data: Array.isArray(res.data) ? (res.data[0] ?? null) : res.data }))
+export const createPlacement = data => api.post('/placements/', data)
 export const getWeeklyLogs  = () => api.get('/weekly-logs/')
 export const submitLog      = data => api.post('/weekly-logs/', data)
 export const getSafetyReports    = () => api.get('/safety-reports/')

@@ -49,6 +49,28 @@ class InternshipPlacementViewSet(viewsets.ModelViewSet):
             raise permissions.PermissionDenied("Only students can request placements.")
         serializer.save(student=user, is_approved=False)
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        user = request.user
+        is_admin = user.user_type == 'internship_admin' or user.is_staff or user.is_superuser
+
+        if not is_admin:
+            if instance.student != user:
+                return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+            if instance.is_approved:
+                return Response(
+                    {'error': 'This placement has been approved and cannot be edited.'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            for field in ['is_approved', 'workplace_supervisor', 'academic_supervisor']:
+                if field in request.data:
+                    return Response(
+                        {'error': f'You cannot change {field}.'},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+
+        return super().update(request, *args, **kwargs)
+
 class WeeklyLogViewSet(viewsets.ModelViewSet):
     queryset = WeeklyLog.objects.all()
     serializer_class = WeeklyLogSerializer

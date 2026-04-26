@@ -55,7 +55,10 @@ class InternshipPlacementSerializer(serializers.ModelSerializer):
 
 class WeeklyLogSerializer(serializers.ModelSerializer):
     student = serializers.PrimaryKeyRelatedField(
-        queryset=CustomUser.objects.filter(user_type='student')
+        queryset=CustomUser.objects.filter(user_type='student'),
+        required=False,
+        allow_null=True,
+        default=serializers.CurrentUserDefault()
     )
     placement = serializers.PrimaryKeyRelatedField(
         queryset=InternshipPlacement.objects.all()
@@ -79,7 +82,10 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
 
 class SafetyReportSerializer(serializers.ModelSerializer):
     student = serializers.PrimaryKeyRelatedField(
-        queryset=CustomUser.objects.filter(user_type='student')
+        queryset=CustomUser.objects.filter(user_type='student'),
+        required=False,
+        allow_null=True,
+        default=serializers.CurrentUserDefault()
     )
 
     class Meta:

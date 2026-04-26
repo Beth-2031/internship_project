@@ -1,3 +1,6 @@
+import json
+from django.contrib.auth import authenticate, login
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -354,5 +357,30 @@ def login_view(request):
             })
 
         return JsonResponse({'error': 'Invalid credentials'}, status=401)
+
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+@csrf_exempt
+def register_view(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get('email')
+        password = data.get('password')
+        user_type = data.get('user_type', 'student')
+        first_name = data.get('first_name', '')
+        last_name = data.get('last_name', '')
+
+        if CustomUser.objects.filter(email=email).exists():
+            return JsonResponse({'error': 'Email already registered'}, status=400)
+
+        user = CustomUser.objects.create_user(
+            username=email,
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+            user_type=user_type
+        )
+
+        return JsonResponse({'message': 'Registration successful'}, status=201)
 
     return JsonResponse({'error': 'Method not allowed'}, status=405)

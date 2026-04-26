@@ -22,6 +22,8 @@ class CustomUser(AbstractUser):
     ]
     user_type = models.CharField(max_length=30, choices=USER_TYPES, default='student')
     skills = models.TextField(blank=True, null=True)
+    course = models.CharField(max_length=100, blank=True, null=True)
+    department = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return f"{self.username} ({self.user_type})"

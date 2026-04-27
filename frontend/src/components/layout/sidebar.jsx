@@ -112,7 +112,7 @@ export default function Sidebar({ badges = {} }) {
             <div className="user-role">{user?.user_type?.replace(/_/g,' ')}</div>
           </div>
           <button
-            onClick={async () => { await logout(); navigate('/') }}
+            onClick={async () => { await logout(); navigate('/login') }}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text3)', padding: '2px' }}
             title="Sign out"
           >

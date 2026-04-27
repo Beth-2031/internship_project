@@ -3,11 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import './STYLES/loginPage.css';
 import { register as apiRegister } from './api/client'
 
-const roles =[
+const roles = [
     {label: 'Student Intern', value: 'student' },
-    {label: 'Workplace Supervisor', value: 'workplace_supervisor' },
-    {label: 'Academic Supervisor', value: 'academic_supervisor' },
-    {label: 'Internship Adimistrator', value: 'internship_admin' },
+    {label: 'Internship Administrator', value: 'internship_admin' },
 ];
 
 export default function RegisterPage() {

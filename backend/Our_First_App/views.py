@@ -283,3 +283,4 @@ def submit_weekly_log(request):
         "message": "Weekly log submitted successfully!",
         "return_url": dashboard_map.get(request.user.user_type, 'dashboard')
     }
+    return render(request, 'success.html', content)

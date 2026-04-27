@@ -29,6 +29,7 @@ def _is_admin_user(user):
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
+    username = serializers.CharField(required=False)
 
     class Meta:
         model = CustomUser
@@ -48,7 +49,8 @@ class UserSerializer(serializers.ModelSerializer):
         }
         validated_data['user_type'] = role_map.get(role, role)
         email = validated_data.get('email', '')
-        validated_data.setdefault('username', email)
+        if not validated_data.get('username'):
+            validated_data['username'] = email
         user = CustomUser(**validated_data)
         if password:
             user.set_password(password)
@@ -146,6 +148,9 @@ def register_view(request):
         'internship_admin': 'internship_admin',
     }
     user_type = role_map.get(role, 'student')
+
+    if user_type in ('workplace_supervisor', 'academic_supervisor'):
+        return Response({'error': 'This role can only be created by an administrator.'}, status=status.HTTP_403_FORBIDDEN)
 
     if CustomUser.objects.filter(username=email).exists():
         return Response({'error': 'User already exists'}, status=400)

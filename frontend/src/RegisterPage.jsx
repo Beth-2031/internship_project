@@ -32,7 +32,7 @@ export default function RegisterPage() {
             department,
           })
           alert('Registration successful! Please login')
-          navigate('/')
+          navigate('/login')
         } catch (error) {
             const msg =
               error?.response?.data?.error ||

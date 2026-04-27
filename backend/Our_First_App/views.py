@@ -30,13 +30,14 @@ def some_view(request):
             message="This is a test notification."
         )
         send_notification_email(sender=Notification, instance=notification, created=True)
-
-send_mail(
-    subject="New Notification",
-    message="You have a new alert in your app.",
-    from_email="thomasmigadde@gmail.com",
-    recipient_list= [request.user.email],
-)
+    if request.user.email:
+        send_mail(
+            subject="New Notification",
+            message="You have a new alert in your app.",
+            from_email="thomasmigadde@gmail.com",
+            recipient_list= [request.user.email],
+        )
+        
 
 
 class InternshipPlacementViewSet(viewsets.ModelViewSet):

@@ -22,7 +22,7 @@ from .models import Notification
 from .signals import send_notification_email
 
 
-def some_view(request):
+def notification_view(request):
     # Example of creating a notification
     if request.user.is_authenticated:
         notification = Notification.objects.create(
@@ -37,7 +37,7 @@ def some_view(request):
             from_email="thomasmigadde@gmail.com",
             recipient_list= [request.user.email],
         )
-        
+    return render(request, 'success.html')    
 
 
 class InternshipPlacementViewSet(viewsets.ModelViewSet):

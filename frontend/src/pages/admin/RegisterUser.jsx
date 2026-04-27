@@ -7,7 +7,6 @@ const USER_TYPES = [
   { value: 'student',              label: 'Student' },
   { value: 'workplace_supervisor', label: 'Workplace Supervisor' },
   { value: 'academic_supervisor',  label: 'Academic Supervisor' },
-  { value: 'internship_admin',     label: 'Internship Administrator' },
 ]
 
 export default function RegisterUser() {

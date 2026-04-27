@@ -303,6 +303,11 @@ a { color: inherit; }
   background: rgba(124, 58, 237, 0.06);
 }
 
+select.form-control option {
+  background: #0f172a;
+  color: rgba(255, 255, 255, 0.9);
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;

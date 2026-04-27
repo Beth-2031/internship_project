@@ -45,6 +45,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<RegisterPage />} />
+<<<<<<< HEAD
+=======
+        <Route path="/register" element={<RegisterPage />} />
+>>>>>>> 11b4fb227817edba34a0aaf906d47cb917743682
         <Route path="/login" element={<LoginPage />} />
 
         {/* Student routes */}

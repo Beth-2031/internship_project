@@ -48,7 +48,7 @@ export default function LoginPage(){
             setError(`This account is ${user.user_type.replaceAll('_', ' ')}. Please select the correct role.`);
             return;
           }
-          navigate(redirectMap[user.user_type] || '/');
+          navigate(redirectMap[user.user_type] || '/login');
         } catch {
           setError('Invalid email or password.');
         } finally {

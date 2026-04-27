@@ -11,7 +11,7 @@ export default function ProtectedRoute({ children, allowedRoles }) {
     if (!user) {
       return (
         <Navigate
-          to="/"
+          to="/login"
           replace
           state={{
             authMessage: 'Please log in to access that page.',
@@ -23,7 +23,7 @@ export default function ProtectedRoute({ children, allowedRoles }) {
     if (allowedRoles && !allowedRoles.includes(user.user_type)) {
       return (
         <Navigate
-          to="/"
+          to="/login"
           replace
           state={{
             authMessage: `Access denied for ${user.user_type.replaceAll('_', ' ')}.`,

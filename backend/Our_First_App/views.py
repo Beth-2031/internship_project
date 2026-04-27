@@ -21,25 +21,6 @@ from django.conf import settings
 from .models import Notification
 from .signals import send_notification_email
 
-
-def notification_view(request):
-    # Example of creating a notification
-    if request.user.is_authenticated:
-        notification = Notification.objects.create(
-            user=request.user,
-            message="This is a test notification."
-        )
-        send_notification_email(sender=Notification, instance=notification, created=True)
-    if request.user.email:
-        send_mail(
-            subject="New Notification",
-            message="You have a new alert in your app.",
-            from_email="thomasmigadde@gmail.com",
-            recipient_list= [request.user.email],
-        )
-    return render(request, 'success.html')    
-
-
 class InternshipPlacementViewSet(viewsets.ModelViewSet):
     queryset = InternshipPlacement.objects.all()
     serializer_class = InternshipPlacementSerializer
@@ -272,3 +253,28 @@ def edit_placement(request, placement_id):
         return redirect('dashboard')
     
     return render(request, 'edit_placement.html', {'placement': placement})
+
+def notification_view(request):
+    # Example of creating a notification
+    if request.user.is_authenticated:
+        notification = Notification.objects.create(
+            user=request.user,
+            message="This is a test notification."
+        )
+        send_notification_email(sender=Notification, instance=notification, created=True)
+    if request.user.email:
+        send_mail(
+            subject="New Notification",
+            message="You have a new alert in your app.",
+            from_email="thomasmigadde@gmail.com",
+            recipient_list= [request.user.email],
+        )
+    return render(request, 'success.html')    
+
+def submit_weekly_log(request):
+    dashboard_map = {
+        'student': 'student_dashboard',
+        'workplace_supervisor': 'workplace_dashboard',
+        'academic_supervisor': 'academic_dashboard',
+        'internship_admin': 'admin_dashboard'
+    }

@@ -9,8 +9,9 @@ from django.conf import settings
 def send_notification_email(sender, instance, created, **kwargs):
     if created:
         subject = "New Notification"
-        message = f"You have a new notification: {instance.message}"
+        message = instance.message
         from_email = settings.DEFAULT_FROM_EMAIL
         recipient_list = [instance.user.email]
+        fail_silently = False
 
-        send_mail(subject, message, from_email, recipient_list)
+        send_mail(subject, message, from_email, recipient_list, fail_silently=fail_silently)

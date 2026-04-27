@@ -77,14 +77,18 @@ export default function RegisterPage() {
                   required
                   />
 
-                <label>Course</label>
-                <input
-                  type="text"
-                  placeholder="e.g. BSc Computer Science"
-                  value={course}
-                  onChange={(e) => setCourse(e.target.value)}
-                  required
-                  />
+                {selectedRole === 'student' && (
+                  <>
+                    <label>Course</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. BSc Computer Science"
+                      value={course}
+                      onChange={(e) => setCourse(e.target.value)}
+                      required
+                    />
+                  </>
+                )}
 
                 <label>Department</label>
                 <input

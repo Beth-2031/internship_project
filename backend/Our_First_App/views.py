@@ -278,3 +278,8 @@ def submit_weekly_log(request):
         'academic_supervisor': 'academic_dashboard',
         'internship_admin': 'admin_dashboard'
     }
+
+    content = {
+        "message": "Weekly log submitted successfully!",
+        "return_url": dashboard_map.get(request.user.user_type, 'dashboard')
+    }

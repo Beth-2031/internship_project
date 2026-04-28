@@ -92,6 +92,10 @@ class WeeklyLog(models.Model):
         unique_together = ['student', 'placement', 'week_number']
         ordering = ['week_number']
 
+    def is_locked(self):
+        """Lock editing onc verified/approved."""
+        return self.is_verified
+
     def __str__(self):
         return f"Week {self.week_number} - {self.student}"
 

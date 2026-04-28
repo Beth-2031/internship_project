@@ -86,6 +86,8 @@ class WeeklyLog(models.Model):
     date_submitted = models.DateField(auto_now_add=True)
     is_verified = models.BooleanField(default=False, null=False)
 
+    submission_deadline = models.DateField(null=True, blank=True)
+    
     class Meta:
         unique_together = ['student', 'placement', 'week_number']
         ordering = ['week_number']

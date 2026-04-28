@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 
 class Notification(models.Model):
     user = models.ForeignKey('Our_First_App.CustomUser', on_delete=models.CASCADE, related_name='notifications')
@@ -119,8 +120,30 @@ class SupervisorReview(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     comments =models.TextField(blank=True, null=True)
     reviewed_at = models.DateTimeField(null=True, blank=True)
+    previous_status = models.CharField(max_length=10, blank=True, null=True)
 
+    def approve(self, supervisor):
+        """Approve the log and lock it."""
+        self.previous_status = self.status
+        self.status = 'approved'
+        self.supervisor = supervisor
+        self.reviewed_at = timezone.now()
+        self.log.is_verified = True
+        self.log.save()
+        self.save()
 
+    def reject(self, supervisor, comments=''):
+        """Reject the log with comments."""
+        self.previous_status = self.status
+        self.status = 'rejected'
+        self.supervisor = supervisor
+        self.comments = comments
+        self.reviewed_at = timezone.now()
+        self.save()
+
+    def __str__(self):
+        return f"Review for {self.log} - {self.status}"
+    
 class SafetyReport(models.Model):
     student = models.ForeignKey(
         CustomUser,

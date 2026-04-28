@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/Authcontext';
 import './STYLES/loginPage.css';
-
 const roles =[
     {label:'Student Intern',value: 'student'},
     {label:'Workplace Supervisor',value: 'workplace_supervisor'},
@@ -30,17 +29,6 @@ export default function LoginPage(){
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        try {
-          await login(email, password, selectedRole)
-        } catch (error) {
-          const msg =
-            error?.response?.data?.error ||
-            error?.message ||
-            'Login failed. Is Django running?'
-          alert(msg)
-          return
-        }
-        
         const redirectMap = {
             student:    '/student/dashboard',
             workplace_supervisor:  '/supervisor/dashboard',
@@ -67,7 +55,6 @@ export default function LoginPage(){
           setLoading(false);
         }
     };
-    
 
     return (
       <div className="login-container">
@@ -121,4 +108,4 @@ export default function LoginPage(){
            </form>
          </div>
         );
-      }
+    }

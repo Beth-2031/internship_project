@@ -7,13 +7,12 @@ const USER_TYPES = [
   { value: 'student',              label: 'Student' },
   { value: 'workplace_supervisor', label: 'Workplace Supervisor' },
   { value: 'academic_supervisor',  label: 'Academic Supervisor' },
-  { value: 'internship_admin',     label: 'Internship Administrator' },
 ]
 
 export default function RegisterUser() {
   const navigate = useNavigate()
   const [form, setForm] = useState({
-    first_name: '', last_name: '', username: '',
+    first_name: '', last_name: '',
     email: '', password: '', user_type: 'student', skills: '',
   })
   const [error,   setError]   = useState('')
@@ -60,12 +59,8 @@ export default function RegisterUser() {
           </div>
           <div className="form-row">
             <div className="form-group">
-              <label className="form-label">Username</label>
-              <input className="form-control" required value={form.username} onChange={e => set('username', e.target.value)} />
-            </div>
-            <div className="form-group">
               <label className="form-label">Email</label>
-              <input className="form-control" type="email" value={form.email} onChange={e => set('email', e.target.value)} />
+              <input className="form-control" type="email" required value={form.email} onChange={e => set('email', e.target.value)} />
             </div>
           </div>
           <div className="form-row">

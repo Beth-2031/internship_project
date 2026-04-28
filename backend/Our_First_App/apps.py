@@ -6,4 +6,5 @@ class InternshipConfig(AppConfig):
     name = 'Our_First_App'  
 
     def ready(self):
+        import Our_First_App.signals
         print("app is ready")

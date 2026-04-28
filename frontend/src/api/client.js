@@ -8,8 +8,9 @@ const api = axios.create({
 api.interceptors.response.use(
   res => res,
   err => {
-    if (err.response?.status === 401 && window.location.pathname !== '/') {
-      window.location.href = '/'
+    const publicPaths = ['/', '/login', '/register']
+    if (err.response?.status === 401 && !publicPaths.includes(window.location.pathname)) {
+      window.location.href = '/login'
     }
     return Promise.reject(err)
 
@@ -19,10 +20,8 @@ api.interceptors.response.use(
 export default api
 
 // ── Auth ──
-export const login = (email, password, role) =>
-  api.post('/login/', { email, password, role })
-
-// Backend does not currently expose /api/auth/me/
+export const login = (email, password) =>
+  api.post('/login/', { email, password })
 export const getMe = () => api.get('/me/')
 
 export const register = (data) =>
@@ -33,6 +32,7 @@ export const logout = () => api.post('/logout/')
 // ── Student endpoints ──
 export const getMyPlacement = () =>
   api.get('/placements/').then(res => ({ ...res, data: Array.isArray(res.data) ? (res.data[0] ?? null) : res.data }))
+export const createPlacement = data => api.post('/placements/', data)
 export const getWeeklyLogs  = () => api.get('/weekly-logs/')
 export const submitLog      = data => api.post('/weekly-logs/', data)
 export const getSafetyReports    = () => api.get('/safety-reports/')
@@ -58,6 +58,7 @@ export const getAcademicSafetyReports = () => api.get('/safety-reports/')
 export const getAllPlacements        = () => api.get('/placements/')
 export const adminApprovePlacement   = id  => api.patch(`/placements/${id}/`, { is_approved: true })
 export const adminDenyPlacement      = id  => api.delete(`/placements/${id}/`)
+export const updatePlacement         = (id, data) => api.patch(`/placements/${id}/`, data)
 export const getAllSafetyReports     = () => api.get('/safety-reports/')
 export const resolveReport           = id  => api.patch(`/safety-reports/${id}/`, { is_resolved: true })
 export const getUsers                = (type = '') => api.get(`/users/${type ? `?type=${type}` : ''}`)

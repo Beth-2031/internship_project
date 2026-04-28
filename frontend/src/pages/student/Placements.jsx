@@ -3,6 +3,7 @@ import { Card, Progress } from '../../components/ui'
 import { getMyPlacement } from '../../api/client'
 import Placements from '../../components/ui/placements'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // Simple progress calculator (weeks over 26-week internship)
 function progressPercent(startDate, endDate) {
@@ -15,6 +16,7 @@ function progressPercent(startDate, endDate) {
 }
 
 export default function StudentPlacements() {
+  const navigate = useNavigate()
   const { data: placement, loading } = useFetch(getMyPlacement)
   const [progress, setProgress] = useState(0)
 
@@ -31,7 +33,10 @@ export default function StudentPlacements() {
           <div style={{ textAlign: 'center', padding: '4rem 2rem', color: 'var(--text3)' }}>
             <div style={{ fontSize: 64, marginBottom: 16, opacity: 0.5 }}>📋</div>
             <div style={{ fontSize: 18, marginBottom: 8 }}>No active placement</div>
-            <div>Contact your academic supervisor to register an internship</div>
+            <div style={{ marginBottom: 20 }}>Submit a request and your supervisor will review it.</div>
+            <button className="btn btn-primary" onClick={() => navigate('/student/placements/request')}>
+              Request Placement
+            </button>
           </div>
         </Card>
       </div>

@@ -98,6 +98,27 @@ class WeeklyLog(models.Model):
 
     def __str__(self):
         return f"Week {self.week_number} - {self.student}"
+    
+class SupervisorReview(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]    
+    log = models.OneToOneField(
+        WeeklyLog,
+        on_delete=models.CASCADE,
+        related_name='review'
+    )
+    supervisor = models.ForeignKey(
+    CustomUser,
+    on_delete=models.SET_NULL,
+    null=True,
+    related_name='reviews_given'
+    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    comments =models.TextField(blank=True, null=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
 
 
 class SafetyReport(models.Model):

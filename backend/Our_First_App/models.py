@@ -157,6 +157,15 @@ class Evaluation(models.Model):
     is_submitted = models.BooleanField(default=False)
     submitted_at = models.DateTimeField(null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        self.total_score = (
+            (self.supervisor_score * 40 / 100) +
+            (self.logbook_score * 30 / 100) +
+            (self.academic_score * 30 / 100)+
+        )
+        if self.is_submitted and not self.submitted_at:
+            self.submitted_at = timezone.now()
+        super().save(*args, **kwargs)
     
 class SafetyReport(models.Model):
     student = models.ForeignKey(

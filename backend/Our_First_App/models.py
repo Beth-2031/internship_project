@@ -62,6 +62,11 @@ class InternshipPlacement(models.Model):
 
 
 class WeeklyLog(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('submitted', 'Submitted'),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
     student = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,

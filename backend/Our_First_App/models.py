@@ -144,6 +144,20 @@ class SupervisorReview(models.Model):
     def __str__(self):
         return f"Review for {self.log} - {self.status}"
     
+class Evaluation(models.Model):
+    placement = models.OneToOneField(
+        InternshipPlacement,
+        on_delete=models.CASCADE,
+        related_name='evaluation'
+    )
+    supervisor_score = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    logbook_score = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    academic_score = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    total_score = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    is_submitted = models.BooleanField(default=False)
+    submitted_at = models.DateTimeField(null=True, blank=True)
+
+    
 class SafetyReport(models.Model):
     student = models.ForeignKey(
         CustomUser,

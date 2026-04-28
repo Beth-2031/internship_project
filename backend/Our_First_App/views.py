@@ -1,7 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
+
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from .models import (
     CustomUser,
@@ -18,32 +21,140 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .signals import create_notification
 
 class InternshipPlacementViewSet(viewsets.ModelViewSet):
-    queryset = InternshipPlacement.objects.all()
     serializer_class = InternshipPlacementSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_approved', 'student', 'company_name']
 
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return InternshipPlacement.objects.none()
+        if user.user_type == 'student':
+            return InternshipPlacement.objects.filter(student=user)
+        if user.user_type == 'workplace_supervisor':
+            return InternshipPlacement.objects.filter(workplace_supervisor=user)
+        if user.user_type == 'academic_supervisor':
+            return InternshipPlacement.objects.filter(academic_supervisor=user)
+        if user.user_type == 'internship_admin':
+            return InternshipPlacement.objects.all()
+        return InternshipPlacement.objects.none()
+
+
 class WeeklyLogViewSet(viewsets.ModelViewSet):
-    queryset = WeeklyLog.objects.all()
     serializer_class = WeeklyLogSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_verified', 'week_number', 'student']
 
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return WeeklyLog.objects.none()
+        if user.user_type == 'student':
+            return WeeklyLog.objects.filter(student=user)
+        if user.user_type == 'workplace_supervisor':
+            return WeeklyLog.objects.filter(placement__workplace_supervisor=user)
+        if user.user_type == 'academic_supervisor':
+            return WeeklyLog.objects.filter(placement__academic_supervisor=user)
+        if user.user_type == 'internship_admin':
+            return WeeklyLog.objects.all()
+        return WeeklyLog.objects.none()
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        if user.user_type != 'student':
+            raise permissions.PermissionDenied("Only students can submit weekly logs.")
+        serializer.save(student=user)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if instance.is_verified and request.user == instance.student:
+            return Response(
+                {"error": "This log has been verified and cannot be edited."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        if "is_verified" in request.data:
+            if request.user.user_type not in [
+                "workplace_supervisor",
+                "academic_supervisor",
+                "internship_admin",
+            ]:
+                return Response(
+                    {"error": "You are not allowed to verify weekly logs."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    @action(detail=False, methods=["get"], url_path="progress")
+    def progress(self, request):
+        qs = self.filter_queryset(self.get_queryset())
+        total = qs.count()
+        verified = qs.filter(is_verified=True).count()
+        pending = qs.filter(is_verified=False).count()
+        weeks = list(qs.values_list("week_number", flat=True))
+        return Response(
+            {
+                "total_logs": total,
+                "verified_logs": verified,
+                "pending_logs": pending,
+                "weeks_submitted": sorted(set(weeks)),
+            }
+        )
+
+
 class SafetyReportViewSet(viewsets.ModelViewSet):
-    queryset = SafetyReport.objects.all()
     serializer_class = SafetyReportSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['is_resolved', 'student']  
+    filterset_fields = ['is_resolved', 'student']
+
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return SafetyReport.objects.none()
+        if user.user_type == 'student':
+            return SafetyReport.objects.filter(student=user)
+        if user.user_type == 'workplace_supervisor':
+            return SafetyReport.objects.filter(student__placements__workplace_supervisor=user).distinct()
+        if user.user_type == 'academic_supervisor':
+            return SafetyReport.objects.filter(student__placements__academic_supervisor=user).distinct()
+        if user.user_type == 'internship_admin':
+            return SafetyReport.objects.all()
+        return SafetyReport.objects.none()
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        if user.user_type != 'student':
+            raise permissions.PermissionDenied("Only students can submit safety reports.")
+        serializer.save(student=user)
+
 
 class CourseCompletionViewSet(viewsets.ModelViewSet):
-    queryset = CourseCompletion.objects.all()
     serializer_class = CourseCompletionSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_completed', 'student']
+
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return CourseCompletion.objects.none()
+        if user.user_type == 'student':
+            return CourseCompletion.objects.filter(student=user)
+        if user.user_type == 'workplace_supervisor':
+            return CourseCompletion.objects.filter(student__placements__workplace_supervisor=user).distinct()
+        if user.user_type == 'academic_supervisor':
+            return CourseCompletion.objects.filter(student__placements__academic_supervisor=user).distinct()
+        if user.user_type == 'internship_admin':
+            return CourseCompletion.objects.all()
+        return CourseCompletion.objects.none()
 
 
 class NotificationViewSet(viewsets.ModelViewSet):
@@ -62,7 +173,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
         notification.save()
         return JsonResponse({'message': 'Notification updated'})
 # =========================
-# SIMPLE DASHBOARDS 
+# SIMPLE DASHBOARDS
 # =========================
 @login_required
 def redirect_user(request):

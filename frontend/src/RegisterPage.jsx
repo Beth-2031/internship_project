@@ -3,11 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import './STYLES/loginPage.css';
 import { register as apiRegister } from './api/client'
 
-const roles =[
+const roles = [
     {label: 'Student Intern', value: 'student' },
-    {label: 'Workplace Supervisor', value: 'workplace_supervisor' },
-    {label: 'Academic Supervisor', value: 'academic_supervisor' },
-    {label: 'Internship Adimistrator', value: 'internship_admin' },
+    {label: 'Internship Administrator', value: 'internship_admin' },
 ];
 
 export default function RegisterPage() {
@@ -32,7 +30,7 @@ export default function RegisterPage() {
             department,
           })
           alert('Registration successful! Please login')
-          navigate('/')
+          navigate('/login')
         } catch (error) {
             const msg =
               error?.response?.data?.error ||
@@ -79,14 +77,18 @@ export default function RegisterPage() {
                   required
                   />
 
-                <label>Course</label>
-                <input
-                  type="text"
-                  placeholder="e.g. BSc Computer Science"
-                  value={course}
-                  onChange={(e) => setCourse(e.target.value)}
-                  required
-                  />
+                {selectedRole === 'student' && (
+                  <>
+                    <label>Course</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. BSc Computer Science"
+                      value={course}
+                      onChange={(e) => setCourse(e.target.value)}
+                      required
+                    />
+                  </>
+                )}
 
                 <label>Department</label>
                 <input

@@ -395,6 +395,7 @@ def edit_placement(request, placement_id):
     
     return render(request, 'edit_placement.html', {'placement': placement})
 
+@login_required
 def submit_weekly_log(request):
     dashboard_map = {
         'student': 'student_dashboard',

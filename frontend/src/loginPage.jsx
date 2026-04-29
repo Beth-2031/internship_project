@@ -6,7 +6,7 @@ const roles =[
     {label:'Student Intern',value: 'student'},
     {label:'Workplace Supervisor',value: 'workplace_supervisor'},
     {label:'Academic Supervisor',value: 'academic_supervisor'},
-    {label:'Internship Adiministator',value: 'internship_admin'},
+    {label:'Internship Administrator',value: 'internship_admin'},
 ];
 export default function LoginPage(){
     const { login } = useAuth();

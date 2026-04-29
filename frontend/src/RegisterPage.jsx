@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './STYLES/loginPage.css';
 import { register as apiRegister } from './api/client'
+import { useNotification } from './components/layout/Notification'
 
 const roles = [
     {label: 'Student Intern', value: 'student' },

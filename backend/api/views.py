@@ -94,6 +94,10 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if not _is_admin_user(request.user):
             return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+        if not request.data.get('email', '').strip():
+            return Response({'error': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not request.data.get('password', ''):
+            return Response({'error': 'Password is required.'}, status=status.HTTP_400_BAD_REQUEST)
         return super().create(request, *args, **kwargs)
 
 
@@ -131,12 +135,15 @@ def login_view(request):
 @permission_classes([AllowAny])
 @authentication_classes([])
 def register_view(request):
-    email = request.data.get('email')
-    password = request.data.get('password')
+    email = request.data.get('email', '').strip()
+    password = request.data.get('password', '')
     role = request.data.get('role', 'student')
     full_name = request.data.get('full_name', '')
     course = request.data.get('course', '')
     department = request.data.get('department', '')
+
+    if not email or not password:
+        return Response({'error': 'Email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
     role_map = {
         'student': 'student',

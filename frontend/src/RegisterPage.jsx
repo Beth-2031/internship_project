@@ -17,6 +17,10 @@ export default function RegisterPage() {
     const [department, setDepartment] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate()
+    const {addNotification} = useNotification();
+    const testUpload = async () => {
+      addNotification('Testing upload...', 'success',4000);
+    };
 
     const handleRegister = async (e) => {
         e.preventDefault();

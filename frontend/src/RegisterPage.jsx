@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './STYLES/loginPage.css';
 import { register as apiRegister } from './api/client'
+import { useNotification } from './components/layout/Notification'
 
 const roles = [
     {label: 'Student Intern', value: 'student' },
@@ -17,6 +18,10 @@ export default function RegisterPage() {
     const [department, setDepartment] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate()
+    const {addNotification} = useNotification();
+    const testUpload = async () => {
+      addNotification('Testing upload...', 'success',4000);
+    };
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -116,7 +121,7 @@ export default function RegisterPage() {
                     </span>
                   </div>
 
-                  <button type="submit" className="login-button">Register</button>
+                  <button type="submit" onClick = {testUpload} className="login-button">Register</button>
 
                   <a href="/login" className="forgot-link">Already have an account? Login</a>
                 </form>

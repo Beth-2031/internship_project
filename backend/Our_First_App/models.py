@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 
 class Notification(models.Model):
     user = models.ForeignKey('Our_First_App.CustomUser', on_delete=models.CASCADE, related_name='notifications')
@@ -62,6 +63,11 @@ class InternshipPlacement(models.Model):
 
 
 class WeeklyLog(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('submitted', 'Submitted'),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
     student = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
@@ -81,14 +87,86 @@ class WeeklyLog(models.Model):
     date_submitted = models.DateField(auto_now_add=True)
     is_verified = models.BooleanField(default=False, null=False)
 
+    submission_deadline = models.DateField(null=True, blank=True)
+    
     class Meta:
         unique_together = ['student', 'placement', 'week_number']
         ordering = ['week_number']
 
+    def is_locked(self):
+        """Lock editing onc verified/approved."""
+        return self.is_verified
+
     def __str__(self):
         return f"Week {self.week_number} - {self.student}"
+    
+class SupervisorReview(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]    
+    log = models.OneToOneField(
+        WeeklyLog,
+        on_delete=models.CASCADE,
+        related_name='review'
+    )
+    supervisor = models.ForeignKey(
+    CustomUser,
+    on_delete=models.SET_NULL,
+    null=True,
+    related_name='reviews_given'
+    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    comments =models.TextField(blank=True, null=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    previous_status = models.CharField(max_length=10, blank=True, null=True)
 
+    def approve(self, supervisor):
+        """Approve the log and lock it."""
+        self.previous_status = self.status
+        self.status = 'approved'
+        self.supervisor = supervisor
+        self.reviewed_at = timezone.now()
+        self.log.is_verified = True
+        self.log.save()
+        self.save()
 
+    def reject(self, supervisor, comments=''):
+        """Reject the log with comments."""
+        self.previous_status = self.status
+        self.status = 'rejected'
+        self.supervisor = supervisor
+        self.comments = comments
+        self.reviewed_at = timezone.now()
+        self.save()
+
+    def __str__(self):
+        return f"Review for {self.log} - {self.status}"
+    
+class Evaluation(models.Model):
+    placement = models.OneToOneField(
+        InternshipPlacement,
+        on_delete=models.CASCADE,
+        related_name='evaluation'
+    )
+    supervisor_score = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    logbook_score = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    academic_score = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    total_score = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    is_submitted = models.BooleanField(default=False)
+    submitted_at = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.total_score = (
+            (self.supervisor_score * 40 / 100) +
+            (self.logbook_score * 30 / 100) +
+            (self.academic_score * 30 / 100)+
+        )
+        if self.is_submitted and not self.submitted_at:
+            self.submitted_at = timezone.now()
+        super().save(*args, **kwargs)
+    
 class SafetyReport(models.Model):
     student = models.ForeignKey(
         CustomUser,

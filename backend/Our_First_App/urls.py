@@ -6,6 +6,7 @@ from .views import (
     WeeklyLogViewSet,
     SafetyReportViewSet,
     CourseCompletionViewSet,
+    NotificationViewSet,
 )
 from api.views import UserViewSet
 
@@ -15,6 +16,7 @@ router.register(r'placements', InternshipPlacementViewSet, basename='placements'
 router.register(r'weekly-logs', WeeklyLogViewSet, basename='weekly-logs')
 router.register(r'safety-reports', SafetyReportViewSet, basename='safety-reports')
 router.register(r'course-completions', CourseCompletionViewSet, basename='course-completions')
+router.register(r'notifications', NotificationViewSet, basename='notifications')
 router.register(r'users', UserViewSet, basename='users')
 
 urlpatterns = [

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import InternshipPlacement, CustomUser, WeeklyLog, SafetyReport, CourseCompletion
+from .models import InternshipPlacement, CustomUser, WeeklyLog, SafetyReport, CourseCompletion, Notification
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -93,6 +93,13 @@ class SafetyReportSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['date_reported']
 
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ['id', 'user', 'message', 'is_read', 'created_at']
+        read_only_fields = ['created_at']
 
 
 class CourseCompletionSerializer(serializers.ModelSerializer):

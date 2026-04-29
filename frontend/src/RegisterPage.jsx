@@ -120,7 +120,7 @@ export default function RegisterPage() {
                     </span>
                   </div>
 
-                  <button type="submit" className="login-button">Register</button>
+                  <button type="submit" onClick = {testUpload} className="login-button">Register</button>
 
                   <a href="/login" className="forgot-link">Already have an account? Login</a>
                 </form>

@@ -111,9 +111,9 @@ class CourseCompletionSerializer(serializers.ModelSerializer):
         model = CourseCompletion
         fields = '__all__'        
     def update(self, instance, validated_data):
-        if instance.is_approved:
+        if instance.is_completed:
             raise serializers.ValidationError(
-                'This placement has been approved and cannot be edited.'
+                'This course has been completed and cannot be edited.'
             )
         return super().update(instance, validated_data)
     

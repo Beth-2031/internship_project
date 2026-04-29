@@ -7,7 +7,9 @@ function progressPercent(start, end) {
   const now   = Date.now()
   const s     = new Date(start).getTime()
   const e     = new Date(end).getTime()
-  return Math.min(100, Math.max(0, Math.round(((now - s) / (e - s)) * 100)))
+  const total = e - s
+  if (!total || total <= 0) return 0
+  return Math.min(100, Math.max(0, Math.round(((now - s) / total) * 100)))
 }
 
 export default function StudentDashboard() {

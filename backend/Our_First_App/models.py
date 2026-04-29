@@ -161,7 +161,7 @@ class Evaluation(models.Model):
         self.total_score = (
             (self.supervisor_score * 40 / 100) +
             (self.logbook_score * 30 / 100) +
-            (self.academic_score * 30 / 100)+
+            (self.academic_score * 30 / 100)
         )
         if self.is_submitted and not self.submitted_at:
             self.submitted_at = timezone.now()

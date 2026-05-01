@@ -26,6 +26,12 @@ class InternshipPlacementViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_approved', 'student', 'company_name']
 
+    def perform_create(self, serializer):
+        user = self.request.user
+        if user.user_type != 'student':
+            raise permissions.PermissionDenied("Only students can request placements.")
+        serializer.save(student=user)
+
     def get_queryset(self):
         user = self.request.user
         if not user.is_authenticated:

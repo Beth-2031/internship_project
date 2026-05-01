@@ -65,3 +65,11 @@ export const getUsers                = (type = '') => api.get(`/users/${type ? `
 export const createUser              = data => api.post('/users/', data)
 export const getAdminStats           = () => api.get('/admin/stats/')
 export const exportData              = type => api.get(`/export/?type=${type}`, { responseType: 'blob' })
+
+// ── Notifications ──
+export const getNotifications        = () => api.get('/notifications/')
+export const markNotificationRead     = id  => api.patch(`/notifications/${id}/`, { is_read: true })
+export const markAllNotificationsRead = ()  => api.get('/notifications/').then(res => {
+  const unread = (res.data || []).filter(n => !n.is_read)
+  return Promise.all(unread.map(n => api.patch(`/notifications/${n.id}/`, { is_read: true })))
+})

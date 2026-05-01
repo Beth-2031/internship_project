@@ -13,7 +13,9 @@ from .models import (
     InternshipPlacement,
     WeeklyLog,
     SafetyReport,
-    CourseCompletion
+    CourseCompletion, 
+    SupervisorReview,
+    Evaluation
 )
 from .serializers import InternshipPlacementSerializer, WeeklyLogSerializer, SafetyReportSerializer, CourseCompletionSerializer
 

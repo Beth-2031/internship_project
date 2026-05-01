@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -30,13 +31,15 @@ def _is_admin_user(user):
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
     username = serializers.CharField(required=False)
+    assigned_students = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'username', 'first_name', 'last_name', 'user_type', 'skills', 'course', 'department', 'password']
+        fields = ['id', 'email', 'username', 'first_name', 'last_name', 'user_type', 'skills', 'course', 'department', 'password', 'assigned_students']
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
+        assigned_students = validated_data.pop('assigned_students', [])
         role = validated_data.get('user_type', '')
         role_map = {
             'student': 'student',
@@ -55,6 +58,30 @@ class UserSerializer(serializers.ModelSerializer):
         if password:
             user.set_password(password)
         user.save()
+
+        # Link assigned students to this new supervisor
+        if assigned_students and user.user_type in ('workplace_supervisor', 'academic_supervisor'):
+            supervisor_field = 'workplace_supervisor' if user.user_type == 'workplace_supervisor' else 'academic_supervisor'
+            for student_id in assigned_students:
+                try:
+                    student = CustomUser.objects.get(id=student_id, user_type='student')
+                    placement = InternshipPlacement.objects.filter(student=student).order_by('-id').first()
+                    if placement:
+                        setattr(placement, supervisor_field, user)
+                        placement.save()
+                    else:
+                        InternshipPlacement.objects.create(
+                            student=student,
+                            **{supervisor_field: user},
+                            company_name='TBD',
+                            location='TBD',
+                            department='TBD',
+                            start_date=date.today(),
+                            end_date=date.today() + timedelta(days=180)
+                        )
+                except CustomUser.DoesNotExist:
+                    continue
+
         return user
 
     def update(self, instance, validated_data):

@@ -78,6 +78,20 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
                 "placement": "The selected student is not assigned to this placement."
             })
         return data
+    
+class SupervisorReviewSerializer(serializers.ModelSerializer):
+    supervisor = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(
+            user_type__in=['workplace_supervisor', 'academic_supervisor']
+        ),
+        required=False,
+        allow_null=True
+    )
+
+    class Meta:
+        model = SupervisorReview
+        fields = '__all__'
+        read_only_fields = ['reviewed_at']
 
 
 class SafetyReportSerializer(serializers.ModelSerializer):

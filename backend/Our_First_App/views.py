@@ -73,6 +73,38 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
             raise permissions.PermissionDenied("Only students can submit weekly logs.")
         serializer.save(student=user)
 
+class EvaluationViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.user_type == 'student':
+            return Evaluation.objects.filter(placement__student=user)
+        if user.user_type == 'workplace_supervisor':
+            return Evaluation.objects.filter(
+                placement__workplace_supervisor=user
+            )
+        if user.user_type == 'academic_supervisor':
+            return Evaluation.object.filter(
+                placement__academic_supervisor=user
+            )
+        if user.user_type == 'internship_admin':
+            return Evaluation.object.all() 
+        return Evaluation.objects.none()
+    
+    def perform_create(self, serializer):
+        if self.request.user.user_type not in [
+            'workplace_supervisor',
+            'academic_supervisor',
+            'internship_admin'
+        ]:
+            raise permissions.PermissionDenied(
+                "Only supervisors can create evaluations." 
+            )
+        serializer.save()
+
+    
+
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
 

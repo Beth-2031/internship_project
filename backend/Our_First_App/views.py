@@ -110,7 +110,7 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
             }
         )
     
-class SupervisorReviewViewSet(viewsets.ModelviewSet):
+class SupervisorReviewViewSet(viewsets.ModelViewSet):
     permission_classses =[permissions.IsAuthenticated]
 
     def get_queryset(self):

@@ -95,7 +95,7 @@ class SupervisorReviewSerializer(serializers.ModelSerializer):
 
 class EvaluationSerializer(serializers.ModelSerializer):
     placement = serializers.PrimaryKeyRelatedField(
-        queryset=InternshipPlacement.object.all()
+        queryset=InternshipPlacement.objects.all()
     )
     class Meta:
         model = Evaluation

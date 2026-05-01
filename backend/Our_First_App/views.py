@@ -330,6 +330,18 @@ def verify_log(request, log_id):
 
     return redirect('dashboard')
 
+@login_required
+def submit_log(request, log_id):
+    log = get_object_or_404(WeeklyLog, id=log_id)
+
+    if log.student != request.user:
+        return JsonResponse(
+            {'error': 'This log is locked and cannot be submitted.'},
+            status=403
+        )
+    log.status = 'submitted'
+    log.save()
+    return redirect('dashboard')
 
 # =========================
 # SAFETY MODULE

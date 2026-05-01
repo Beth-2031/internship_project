@@ -1,5 +1,3 @@
-from urllib import request
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -15,16 +13,14 @@ from .models import (
     SafetyReport,
     CourseCompletion, 
     SupervisorReview,
-    Evaluation
+    Evaluation,
+    Notification
 )
-from .serializers import InternshipPlacementSerializer, WeeklyLogSerializer, SafetyReportSerializer, CourseCompletionSerializer
+from .serializers import InternshipPlacementSerializer, WeeklyLogSerializer, SafetyReportSerializer, CourseCompletionSerializer, NotificationSerializer
 
 
 from django_filters.rest_framework import DjangoFilterBackend
-from django.core.mail import send_mail
-from django.conf import settings
-from .models import Notification
-from .signals import send_notification_email
+from .signals import create_notification
 
 class InternshipPlacementViewSet(viewsets.ModelViewSet):
     serializer_class = InternshipPlacementSerializer
@@ -193,8 +189,25 @@ class CourseCompletionViewSet(viewsets.ModelViewSet):
         if user.user_type == 'internship_admin':
             return CourseCompletion.objects.all()
         return CourseCompletion.objects.none()
+
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Notification.objects.filter(user=self.request.user).order_by('-created_at')
+
+    def partial_update(self, request, *args, **kwargs):
+        """Allow marking a notification as read via PATCH."""
+        notification = self.get_object()
+        if notification.user != request.user:
+            return JsonResponse({'error': 'Unauthorized'}, status=403)
+        notification.is_read = request.data.get('is_read', True)
+        notification.save()
+        return JsonResponse({'message': 'Notification updated'})
 # =========================
-# SIMPLE DASHBOARDS 
+# SIMPLE DASHBOARDS
 # =========================
 @login_required
 def redirect_user(request):
@@ -273,6 +286,10 @@ def approve_placement(request, placement_id):
     if request.user.user_type == 'internship_admin':
         placement.is_approved = True
         placement.save()
+        create_notification(
+            placement.student,
+            f"Your placement at {placement.company_name} has been approved."
+        )
 
     return redirect('dashboard')
 
@@ -306,6 +323,10 @@ def verify_log(request, log_id):
     if request.user.user_type in ['workplace_supervisor', 'academic_supervisor']:
         log.is_verified = True
         log.save()
+        create_notification(
+            log.student,
+            f"Your Week {log.week_number} log has been verified."
+        )
 
     return redirect('dashboard')
 
@@ -316,10 +337,15 @@ def verify_log(request, log_id):
 @login_required
 def report_safety_issue(request):
     if request.method == 'POST':
-        SafetyReport.objects.create(
+        report = SafetyReport.objects.create(
             student=request.user,
             description=request.POST.get('description')
         )
+        for admin in CustomUser.objects.filter(user_type='internship_admin'):
+            create_notification(
+                admin,
+                f"New safety report from {request.user.username}: {report.description[:50]}..."
+            )
         return redirect('dashboard')
 
     return render(request, 'report_safety.html')
@@ -332,6 +358,10 @@ def resolve_safety_issue(request, report_id):
     if request.user.user_type == 'internship_admin':
         report.is_resolved = True
         report.save()
+        create_notification(
+            report.student,
+            "Your safety report has been resolved."
+        )
 
     return redirect('dashboard')
 
@@ -399,23 +429,7 @@ def edit_placement(request, placement_id):
     
     return render(request, 'edit_placement.html', {'placement': placement})
 
-def notification_view(request):
-    # Example of creating a notification
-    if request.user.is_authenticated:
-        notification = Notification.objects.create(
-            user=request.user,
-            message="This is a test notification."
-        )
-        send_notification_email(sender=Notification, instance=notification, created=True)
-    if request.user.email:
-        send_mail(
-            subject="New Notification",
-            message="You have a new alert in your app.",
-            from_email="thomasmigadde@gmail.com",
-            recipient_list= [request.user.email],
-        )
-    return render(request, 'success.html')    
-
+@login_required
 def submit_weekly_log(request):
     dashboard_map = {
         'student': 'student_dashboard',

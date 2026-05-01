@@ -11,6 +11,7 @@ function progressPercent(startDate, endDate) {
   const start = new Date(startDate)
   const end = new Date(endDate)
   const total = end - start
+  if (!total || total <= 0) return 0
   const elapsed = Math.max(0, now - start)
   return Math.min(100, (elapsed / total) * 100)
 }

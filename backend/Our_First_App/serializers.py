@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import InternshipPlacement, CustomUser, WeeklyLog, SafetyReport, CourseCompletion
+from .models import InternshipPlacement, CustomUser, WeeklyLog, SafetyReport, CourseCompletion, Notification
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -95,6 +95,13 @@ class SafetyReportSerializer(serializers.ModelSerializer):
 
 
 
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ['id', 'user', 'message', 'is_read', 'created_at']
+        read_only_fields = ['created_at']
+
+
 class CourseCompletionSerializer(serializers.ModelSerializer):
     student = serializers.PrimaryKeyRelatedField(
         queryset=CustomUser.objects.filter(user_type='student')
@@ -104,9 +111,9 @@ class CourseCompletionSerializer(serializers.ModelSerializer):
         model = CourseCompletion
         fields = '__all__'        
     def update(self, instance, validated_data):
-        if instance.is_approved:
+        if instance.is_completed:
             raise serializers.ValidationError(
-                'This placement has been approved and cannot be edited.'
+                'This course has been completed and cannot be edited.'
             )
         return super().update(instance, validated_data)
     

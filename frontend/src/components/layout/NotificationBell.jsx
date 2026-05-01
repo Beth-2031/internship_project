@@ -2,7 +2,9 @@ import { useState, useRef, useEffect } from 'react'
 import { useNotifications } from '../../context/NotificationContext'
 
 function timeAgo(dateStr) {
-  const diff = Date.now() - new Date(dateStr).getTime()
+  const ts = new Date(dateStr).getTime()
+  if (!ts || isNaN(ts)) return 'unknown time'
+  const diff = Date.now() - ts
   const mins = Math.floor(diff / 60_000)
   if (mins < 1) return 'just now'
   if (mins < 60) return `${mins}m ago`

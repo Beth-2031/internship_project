@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import InternshipPlacement, CustomUser, WeeklyLog, SafetyReport, CourseCompletion, Notification
+from .models import InternshipPlacement, CustomUser, WeeklyLog, SafetyReport, CourseCompletion, Notification, SupervisorReview, Evaluation
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:

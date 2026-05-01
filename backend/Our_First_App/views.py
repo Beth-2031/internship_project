@@ -26,6 +26,12 @@ class InternshipPlacementViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_approved', 'student', 'company_name']
 
+    def perform_create(self, serializer):
+        if 'student' not in serializer.validated_data:
+            serializer.save(student=self.request.user)
+        else:
+            serializer.save()
+
     def get_queryset(self):
         user = self.request.user
         if not user.is_authenticated:

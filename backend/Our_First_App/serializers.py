@@ -93,6 +93,21 @@ class SupervisorReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['reviewed_at']
 
+class EvaluationSerializer(serializers.ModelSerializer):
+    placement = serializers.PrimaryKeyRelatedField(
+        queryset=InternshipPlacement.object.all()
+    )
+    class Meta:
+        model = Evaluation
+        fields = '__all__'
+        read_only_fields = ['total_score', 'submitted_at']
+
+    def validate(self, data):
+        if self.instane and self.instance.is_submitted:
+            raise serializers.ValidationError(
+                'This evaluation has alreadybbeen submitted and cannot be edited.'
+            )
+        return data
 
 class SafetyReportSerializer(serializers.ModelSerializer):
     student = serializers.PrimaryKeyRelatedField(

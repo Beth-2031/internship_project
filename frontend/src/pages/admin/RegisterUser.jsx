@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createUser } from '../../api/client'
+import { createUser, getUsers } from '../../api/client'
 import { Card, Alert } from '../../components/ui'
 
 const USER_TYPES = [
@@ -14,10 +14,22 @@ export default function RegisterUser() {
   const [form, setForm] = useState({
     first_name: '', last_name: '',
     email: '', password: '', user_type: 'student', skills: '',
+    assigned_students: [],
   })
   const [error,   setError]   = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [students, setStudents] = useState([])
+  const [studentsLoading, setStudentsLoading] = useState(true)
+
+  useEffect(() => {
+    getUsers('student')
+      .then(res => setStudents(res.data || []))
+      .catch(() => setStudents([]))
+      .finally(() => setStudentsLoading(false))
+  }, [])
+
+  const isSupervisor = form.user_type === 'workplace_supervisor' || form.user_type === 'academic_supervisor'
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -82,6 +94,35 @@ export default function RegisterUser() {
               value={form.skills} onChange={e => set('skills', e.target.value)}
             />
           </div>
+
+          {isSupervisor && (
+            <div className="form-group">
+              <label className="form-label">Assign Students</label>
+              {studentsLoading ? (
+                <p>Loading students…</p>
+              ) : students.length === 0 ? (
+                <p>No students found.</p>
+              ) : (
+                <select
+                  className="form-control"
+                  multiple
+                  size={Math.min(6, students.length)}
+                  value={form.assigned_students}
+                  onChange={e => {
+                    const opts = Array.from(e.target.selectedOptions).map(o => parseInt(o.value))
+                    set('assigned_students', opts)
+                  }}
+                >
+                  {students.map(s => (
+                    <option key={s.id} value={s.id}>
+                      {s.first_name} {s.last_name} ({s.email})
+                    </option>
+                  ))}
+                </select>
+              )}
+              <small className="form-hint">Hold Ctrl (or Cmd) to select multiple students.</small>
+            </div>
+          )}
           <div className="form-actions">
             <button type="button" className="btn" onClick={() => navigate('/admin/users')}>Cancel</button>
             <button type="submit" className="btn btn-primary" disabled={loading}>

@@ -9,6 +9,8 @@ from .views import (
     NotificationViewSet,
     SupervisorReviewViewSet,
     EvaluationViewSet,
+    verify_log,
+    submit_log,
 )
 from api.views import UserViewSet
 
@@ -37,5 +39,6 @@ urlpatterns = [
     # ===========================
     path('api/', include(router.urls)),
     path('log/<int:log_id>/edit/', views.edit_weekly_log, name='edit_weekly_log'),
+    path('log/<int:log_id>/submit/', views.submit_log, name='submit_log'),
     path('placement/<int:placement_id>/edit/', views.edit_placement, name='edit_placement'),
 ]

@@ -103,9 +103,9 @@ class EvaluationSerializer(serializers.ModelSerializer):
         read_only_fields = ['total_score', 'submitted_at']
 
     def validate(self, data):
-        if self.instane and self.instance.is_submitted:
+        if self.instance and self.instance.is_submitted:
             raise serializers.ValidationError(
-                'This evaluation has alreadybbeen submitted and cannot be edited.'
+                'This evaluation has already been submitted and cannot be edited.'
             )
         return data
 

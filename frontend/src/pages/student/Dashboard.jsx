@@ -2,6 +2,7 @@ import { useFetch } from '../../hooks/useFetch'
 import { getMyPlacement, getWeeklyLogs, getSafetyReports, getCourseCompletion } from '../../api/client'
 import { StatCard, Badge, Card, Progress, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'
+import { BarChart, Bar, XAsis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 function progressPercent(start, end) {
   const now   = Date.now()
@@ -26,6 +27,7 @@ export default function StudentDashboard() {
   const currentWeek  = placement ? Math.min(26, Math.floor(pct / 100 * 26) + 1) : '—'
   const safetyOpen   = safety?.filter(r => !r.is_resolved).length ?? 0
   const recentLogs   = Array.isArray(logs) ? [...logs].sort((a,b) => b.week_number - a.week_number).slice(0, 5) : []
+  
 
   return (
     <div className="fade-up dash">
@@ -94,7 +96,17 @@ export default function StudentDashboard() {
             title="Weekly Logs"
             subtitle="Recent submissions"
             action={<Link to="/student/logs/new" className="btn btn-primary btn-sm">+ New log</Link>}
-          >
+            >
+            <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#4f46e5" />
+                </BarChart>
+            </ResponsiveContainer>
+          
             {recentLogs.length > 0 ? recentLogs.map(log => (
               <div className="item-row" key={log.id}>
                 <div className="week-pill">W{log.week_number}</div>

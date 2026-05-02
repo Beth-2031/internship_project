@@ -3,7 +3,7 @@ import { getAllPlacements, adminApprovePlacement, adminDenyPlacement, getAllSafe
 import { useFetch } from '../../hooks/useFetch'
 import { StatCard, Card, Badge, Alert, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'
-import { BarChart, Bar, XAsis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Pie } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 
 export default function AdminDashboard() {
   const { data: placements, loading: lp, refetch: refPl } = useFetch(getAllPlacements)
@@ -46,8 +46,8 @@ export default function AdminDashboard() {
     }
   }
    const chartData = [
-    { name: 'Pending', value:pendingLogs?.filter(l => !l.is_verified).length || 0},
-    { name: 'Verified', value:pendingLogs?.filter(l => l.is_verified).length || 0},
+    { name: 'Pending', value: placements?.filter(p => !p.is_approved).length || 0 },
+    { name: 'Approved', value: placements?.filter(p => p.is_approved).length || 0 },
   ]
   const COLORS = ['#16a34a', '#f59e0b']
 

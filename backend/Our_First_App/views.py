@@ -232,22 +232,81 @@ def redirect_user(request):
 
 @login_required
 def student_dashboard(request):
-    return JsonResponse({'message': 'student dashboard'})
+    user = request.user
+    logs = WeeklyLog.objects.filter(student =user)
+    placements = InternshipPlacement.objects.filter(student=user)
+    return JsonResponse({
+        'total_placements': placements.count(),
+        'total_logs': logs.count(),
+        'verified_logs': logs.filter(is_verified=True).count(),
+        'pending_logs': logs.filter(is_verified=False).count(),
+        'submitted_logs': logs.filter(status='submitted').count(),
+        'draft_logs': logs.filter(status='draft').count()
+        })
 
 
 @login_required
 def workplace_dashboard(request):
-    return JsonResponse({'message': 'workplace dashboard'})
+    user = request.user
+    placements = InternshipPlacement.objects.filter(workplace_supervisor=user)
+    pending_reviews =SupervisorReview.objects.filter(
+        supervisor=user
+        status='pending'
+    )
+    approved_reviews = SupervisorReview.objects.filter(
+        supervisor=user,
+        status='approved'
+    )
+    return JsonResponse({
+        'total_placements': placements.count(),
+        'pending_reviews': pending_reviews.count(),
+        'approved_reviews': approved_reviews.count(),
+        'total_reviews': pending_reviews.count() + approved_reviews.count(),
+        })
 
 
 @login_required
 def academic_dashboard(request):
-    return JsonResponse({'message': 'academic dashboard'})
+    user = request.user
+    placements = InternshipPlacement.objects.filter(academic_supervisor=user)
+    logs = WeeklyLog.objects.filter(
+        placement__academic_supervisor=user
+    )
+    return JsonResponse({
+        'total_placements': placements.count(),
+        'total_logs': logs.count(),
+        'verified_logs': logs.filter(is_verified=True).count(),
+        'pending_logs': logs.filter(is_verified=False)count(),
+    })
 
 
 @login_required
 def admin_dashboard(request):
-    return JsonResponse({'message': 'admin dashboard'})
+    from django.db.models import Count
+    return JsonResponse({
+        'total_students': CustomUser.objects.filter(
+            user_type='student'
+        ).count(),
+        'total_placements': InternshipPlacement.objects.count(),
+        'approved_placements': InternshipPlacement.objects.filter(
+            is_approved_placements=True
+        ).count(),
+        'pending_placements': InternshipPlacement.objects.filter(
+            is_approved=True
+        ).count(),
+        'total_logs': WeeklyLog.objects.count(),
+        'verified_logs': WeeklyLog.objects.filter(
+            is_verified=True
+        ).count(),
+        'pending_review': SupervisorReview.objects.filter(
+            status='pending'
+        ).count(),
+        'total_safety_reports': SafetyReport.objects.count(),
+        'unresolved_reports': SafetyReport.objects.filter(
+            is_resolved=False
+        ).count(),
+    })
+   
 
 
 # =========================

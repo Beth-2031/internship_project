@@ -250,7 +250,7 @@ def workplace_dashboard(request):
     user = request.user
     placements = InternshipPlacement.objects.filter(workplace_supervisor=user)
     pending_reviews =SupervisorReview.objects.filter(
-        supervisor=user
+        supervisor=user,
         status='pending'
     )
     approved_reviews = SupervisorReview.objects.filter(
@@ -276,7 +276,7 @@ def academic_dashboard(request):
         'total_placements': placements.count(),
         'total_logs': logs.count(),
         'verified_logs': logs.filter(is_verified=True).count(),
-        'pending_logs': logs.filter(is_verified=False)count(),
+        'pending_logs': logs.filter(is_verified=False).count(),
     })
 
 

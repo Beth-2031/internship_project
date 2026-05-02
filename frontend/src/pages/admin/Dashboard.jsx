@@ -3,6 +3,7 @@ import { getAllPlacements, adminApprovePlacement, adminDenyPlacement, getAllSafe
 import { useFetch } from '../../hooks/useFetch'
 import { StatCard, Card, Badge, Alert, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'
+import { BarChart, Bar, XAsis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Pie } from 'recharts'
 
 export default function AdminDashboard() {
   const { data: placements, loading: lp, refetch: refPl } = useFetch(getAllPlacements)
@@ -44,6 +45,11 @@ export default function AdminDashboard() {
       setExporting(false)
     }
   }
+   const chartData = [
+    { name: 'Pending', value:pendingLogs?.filter(l => !l.is_verified).length || 0},
+    { name: 'Verified', value:pendingLogs?.filter(l => l.is_verified).length || 0},
+  ]
+  const COLORS = ['#16a34a', '#f59e0b']
 
   return (
     <div className="fade-up">
@@ -63,6 +69,26 @@ export default function AdminDashboard() {
         <StatCard label="Awaiting Approval" value={pending.length}  color={pending.length > 0 ? 'c-amber' : ''} sub="Need action" />
         <StatCard label="Safety Reports"    value={openSafety.length} color={openSafety.length > 0 ? 'c-red' : ''}  sub="Unresolved" />
         <StatCard label="Completions"       value={stats?.completed ?? 0} color="c-green" sub="Students finished" />
+        <Card title="placement Approval Stats" style={{ marginTop: 16 }}>
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                  data={chartData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label
+              >
+                  {chartData.map((entry, index) => (
+                      <Cell key={index} fill={COLORS[index]} />
+                  ))}
+                  </Pie>
+                  <Tooltip />
+              </PieChart>
+          </ResponsiveContainer> 
+        </Card>
       </div>
 
       {openSafety.map(r => (

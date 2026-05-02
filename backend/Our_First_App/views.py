@@ -16,7 +16,15 @@ from .models import (
     Evaluation,
     Notification
 )
-from .serializers import InternshipPlacementSerializer, WeeklyLogSerializer, SafetyReportSerializer, CourseCompletionSerializer, NotificationSerializer
+from .serializers import (
+    InternshipPlacementSerializer,
+    WeeklyLogSerializer,
+    SafetyReportSerializer,
+    CourseCompletionSerializer,
+    NotificationSerializer,
+    SupervisorReviewSerializer,
+    EvaluationSerializer,
+)
 
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -98,7 +106,7 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
         return super().update(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+        return super().partial_update(request, *args, **kwargs)
 
     @action(detail=False, methods=["get"], url_path="progress")
     def progress(self, request):
@@ -117,7 +125,8 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
         )
     
 class SupervisorReviewViewSet(viewsets.ModelViewSet):
-    permission_classes =[permissions.IsAuthenticated]
+    serializer_class = SupervisorReviewSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -135,6 +144,7 @@ class SupervisorReviewViewSet(viewsets.ModelViewSet):
         serializer.save(supervisor=self.request.user)
 
 class EvaluationViewSet(viewsets.ModelViewSet):
+    serializer_class = EvaluationSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
@@ -146,11 +156,11 @@ class EvaluationViewSet(viewsets.ModelViewSet):
                 placement__workplace_supervisor=user
             )
         if user.user_type == 'academic_supervisor':
-            return Evaluation.object.filter(
+            return Evaluation.objects.filter(
                 placement__academic_supervisor=user
             )
         if user.user_type == 'internship_admin':
-            return Evaluation.object.all() 
+            return Evaluation.objects.all()
         return Evaluation.objects.none()
     
     def perform_create(self, serializer):
@@ -295,7 +305,7 @@ def admin_dashboard(request):
         ).count(),
         'total_placements': InternshipPlacement.objects.count(),
         'approved_placements': InternshipPlacement.objects.filter(
-            is_approved_placements=True
+            is_approved=True
         ).count(),
         'pending_placements': InternshipPlacement.objects.filter(
             is_approved=True

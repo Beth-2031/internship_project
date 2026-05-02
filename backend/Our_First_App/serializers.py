@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import InternshipPlacement, CustomUser, WeeklyLog, SafetyReport, CourseCompletion, Notification
+from .models import InternshipPlacement, CustomUser, WeeklyLog, SafetyReport, CourseCompletion, Notification, SupervisorReview, Evaluation
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -78,7 +78,36 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
                 "placement": "The selected student is not assigned to this placement."
             })
         return data
+    
+class SupervisorReviewSerializer(serializers.ModelSerializer):
+    supervisor = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(
+            user_type__in=['workplace_supervisor', 'academic_supervisor']
+        ),
+        required=False,
+        allow_null=True
+    )
 
+    class Meta:
+        model = SupervisorReview
+        fields = '__all__'
+        read_only_fields = ['reviewed_at']
+
+class EvaluationSerializer(serializers.ModelSerializer):
+    placement = serializers.PrimaryKeyRelatedField(
+        queryset=InternshipPlacement.objects.all()
+    )
+    class Meta:
+        model = Evaluation
+        fields = '__all__'
+        read_only_fields = ['total_score', 'submitted_at']
+
+    def validate(self, data):
+        if self.instane and self.instance.is_submitted:
+            raise serializers.ValidationError(
+                'This evaluation has alreadybbeen submitted and cannot be edited.'
+            )
+        return data
 
 class SafetyReportSerializer(serializers.ModelSerializer):
     student = serializers.PrimaryKeyRelatedField(

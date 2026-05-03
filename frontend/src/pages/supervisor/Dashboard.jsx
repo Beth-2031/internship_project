@@ -4,7 +4,7 @@ import { useFetch } from '../../hooks/useFetch'
 import { StatCard, Card, Badge, Alert, Empty, LoadingScreen } from '../../components/ui'
 import { Progress } from '../../components/ui'
 import { Link } from 'react-router-dom'
-import { BarChart, Bar, XAsis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 export default function SupervisorDashboard() {
   const { data: students, loading: ls }      = useFetch(getSupervisorStudents)
@@ -40,7 +40,7 @@ export default function SupervisorDashboard() {
           <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAis dataKey="name" />
+                  <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip />
                   <Bar dataKey="value" fill="#7c3aed" />

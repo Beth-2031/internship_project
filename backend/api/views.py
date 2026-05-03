@@ -125,7 +125,14 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
         if not request.data.get('password', ''):
             return Response({'error': 'Password is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        return super().create(request, *args, **kwargs)
+        try:
+            return super().create(request, *args, **kwargs)
+        except Exception:
+            return Response(
+                {'error': 'Username or email already exists'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+             
 
 
 @csrf_exempt
@@ -268,8 +275,15 @@ def users_view(request):
     serializer = UserSerializer(data=payload)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    user = serializer.save()
-    return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+    try:
+        user = serializer.save()
+        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response(
+            {'error': 'Username or email already exists.'},
+            status=status.HTTP_400_BAD_REQUEST
+            )
+        
 
 
 @api_view(['GET'])

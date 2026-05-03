@@ -2,7 +2,7 @@ import { useFetch } from '../../hooks/useFetch'
 import { getMyPlacement, getWeeklyLogs, getSafetyReports, getCourseCompletion } from '../../api/client'
 import { StatCard, Badge, Card, Progress, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAsis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 function progressPercent(start, end) {
   const now   = Date.now()
@@ -27,8 +27,12 @@ export default function StudentDashboard() {
   const currentWeek  = placement ? Math.min(26, Math.floor(pct / 100 * 26) + 1) : '—'
   const safetyOpen   = safety?.filter(r => !r.is_resolved).length ?? 0
   const recentLogs   = Array.isArray(logs) ? [...logs].sort((a,b) => b.week_number - a.week_number).slice(0, 5) : []
-  const chartData    = recentLogs.map(log => ({ name: `W${log.week_number}`, value: parseFloat(log.hours_worked) || 0 }))
-  
+  const chartData = [
+    { name: 'Verified', value: verified || 0},
+    { name: 'Pending', value: Array.isArray(logs) ? logs.filter(l => !l.is_verified).length: 0},
+    { name: 'Submitted', value: Array.isArray(logs) ? logs.filter(l => l.status === 'submitted').length: 0},
+    { name: 'Draft', value: Array.isArray(logs) ? logs.filter(l => l.status === 'draft').length: 0},
+  ]
 
   return (
     <div className="fade-up dash">

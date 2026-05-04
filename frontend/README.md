@@ -34,5 +34,13 @@ cd Frontend
 npm install
 npm run start
 
+## Running Tests
 
+### Frontend Tests
+cd frontend
+npm test
+
+### Backend Tests
+cd backend
+python manage.py test
 

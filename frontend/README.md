@@ -21,6 +21,12 @@ A full-stack web Pplication for managing internships.
 - Safety report management
 - Notification system
 
+## User Roles
+- Student - submits weekly logs and safety
+- Workplace Supervisor - reviews and approves logs
+- Academic Supervisor - monitors student progress
+- Internship Admin - manage all users placements
+
 ## Setup Instructions
 
 ### Backend Setup

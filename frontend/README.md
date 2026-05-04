@@ -1,16 +1,74 @@
-# React + Vite
+# Internship Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack web Pplication for managing internships.
 
-Currently, two official plugins are available:
+## Team Members
+- Munanura Jill 25/U/05824/EVE
+- Nabachwa Elizabeth 25/U/03489/EVE
+- Atuhaire Bonitah 25/U/03343/EVE
+- Migadde Thomas 25/U/03451/EVE
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech Stack
+- Backend: Django, Django REST Framework
+- Frontend: React, Vite, Recharts
+- Database: SQLite
 
-## React Compiler
+## Features
+- Student weekly log submission
+- Supervisor review and approval workflow
+- Evaluation and score computation(40% + 30% + 30%)
+- Role-based dashboards for students, supervisors and admin
+- Safety report management
+- Notification system
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## User Roles
+- Student - submits weekly logs and safety
+- Workplace Supervisor - reviews and approves logs
+- Academic Supervisor - monitors student progress
+- Internship Admin - manage all users placements
 
-## Expanding the ESLint configuration
+## Setup Instructions
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Backend Setup
+cd backend
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+
+### Frontend Setup
+cd Frontend
+npm install
+npm run start
+
+## Running Tests
+
+### Frontend Tests
+cd frontend
+npm test
+
+### Backend Tests
+cd backend
+python manage.py test
+
+## API Endpoints
+- /api/placements/ - Intenship placements
+- /api/weekly-log/ - Weekly logs
+- /api/supervisor-reviews/ - Supervisor reviews
+- /api/evaluations/ - Evaluations
+- /api/safety-reports/ - Safety reports
+- /api/notifications/ - Notifications
+
+## Project Strcucture
+internship_project/
+    backend/
+        Our_First_App/
+            models.py
+            views.py
+            serializers.py
+            urls.py
+    frontend/
+        src/
+            pages/
+            components/
+            api/
+            tests/

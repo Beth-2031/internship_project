@@ -50,3 +50,10 @@ npm test
 cd backend
 python manage.py test
 
+## API Endpoints
+- /api/placements/ - Intenship placements
+- /api/weekly-log/ - Weekly logs
+- /api/supervisor-reviews/ - Supervisor reviews
+- /api/evaluations/ - Evaluations
+- /api/safety-reports/ - Safety reports
+- /api/notifications/ - Notifications

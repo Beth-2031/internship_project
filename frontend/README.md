@@ -19,5 +19,13 @@ A full-stack web Pplication for managing internships.
 - Evaluation and score computation(40% + 30% + 30%)
 - Role-based dashboards for students, supervisors and admin
 - Safety report management
-- Notification sysstem
+- Notification system
+
+## Setup Instructions
+
+### Backend Setup
+cd backend
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
 

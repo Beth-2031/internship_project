@@ -12,3 +12,12 @@ A full-stack web Pplication for managing internships.
 - Backend: Django, Django REST Framework
 - Frontend: React, Vite, Recharts
 - Database: SQLite
+
+## Features
+- Student weekly log submission
+- Supervisor review and approval workflow
+- Evaluation and score computation(40% + 30% + 30%)
+- Role-based dashboards for students, supervisors and admin
+- Safety report management
+- Notification sysstem
+

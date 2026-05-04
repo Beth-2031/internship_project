@@ -1,5 +1,5 @@
 import { useFetch } from '../../hooks/useFetch'
-import { getMyPlacement, getWeeklyLogs, getSafetyReports, getCourseCompletion } from '../../api/client'
+import { getMyPlacement, getWeeklyLogs, getSafetyReports, getCourseCompletion, getEvaluation } from '../../api/client'
 import { StatCard, Badge, Card, Progress, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
@@ -18,6 +18,7 @@ export default function StudentDashboard() {
   const { data: logs,      loading: ll } = useFetch(getWeeklyLogs)
   const { data: safety,    loading: ls } = useFetch(getSafetyReports)
   const { data: course,    loading: lc } = useFetch(getCourseCompletion)
+  const { data: evaluation, loading: le } = useFetch(getEvaluation)
 
   if (lp || ll || ls || lc) return <LoadingScreen />
 
@@ -59,6 +60,7 @@ export default function StudentDashboard() {
         <StatCard label="Hours Logged"   value={Math.round(totalHours)}   color="c-green" sub={`${course?.minimum_hours_required ?? 0} required`} />
         <StatCard label="Logs Submitted" value={logs?.length ?? 0}        sub={`${verified} verified`} />
         <StatCard label="Safety Reports" value={safety?.length ?? 0}      color={safetyOpen > 0 ? 'c-red' : ''} sub={`${safetyOpen} open`} />
+        <StartCard label= "Total Score" value={evaluation?.[0]?.total_score ?? 'N/A'}
       </div>
 
       <div className="grid-3-1">

@@ -60,7 +60,7 @@ export default function StudentDashboard() {
         <StatCard label="Hours Logged"   value={Math.round(totalHours)}   color="c-green" sub={`${course?.minimum_hours_required ?? 0} required`} />
         <StatCard label="Logs Submitted" value={logs?.length ?? 0}        sub={`${verified} verified`} />
         <StatCard label="Safety Reports" value={safety?.length ?? 0}      color={safetyOpen > 0 ? 'c-red' : ''} sub={`${safetyOpen} open`} />
-        <StartCard label= "Total Score" value={evaluation?.[0]?.total_score ?? 'N/A'}
+        <StartCard label= "Total Score" value={evaluation?.[0]?.total_score ?? 'N/A'} />
       </div>
 
       <div className="grid-3-1">

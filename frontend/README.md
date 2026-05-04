@@ -57,3 +57,18 @@ python manage.py test
 - /api/evaluations/ - Evaluations
 - /api/safety-reports/ - Safety reports
 - /api/notifications/ - Notifications
+
+## Project Strcucture
+internship_project/
+    backend/
+        Our_First_App/
+            models.py
+            views.py
+            serializers.py
+            urls.py
+    frontend/
+        src/
+            pages/
+            components/
+            api/
+            tests/

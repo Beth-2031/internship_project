@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getAcademicPlacements, getPendingPlacements, approvePlacement, denyPlacement, getCourseCompletions, getAcademicSafetyReports, exportData, getEvaluation } from '../../api/client'
+import { getAcademicPlacements, getPendingPlacements, approvePlacement, denyPlacement, getCourseCompletions, getAcademicSafetyReports, getEvaluation } from '../../api/client'
 import { useFetch } from '../../hooks/useFetch'
 import { StatCard, Card, Badge, Alert, Progress, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'

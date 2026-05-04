@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getAllPlacements, adminApprovePlacement, adminDenyPlacement, getAllSafetyReports, resolveReport, getAdminStats, exportData } from '../../api/client'
+import { getAllPlacements, adminApprovePlacement, adminDenyPlacement, getAllSafetyReports, resolveReport, getAdminStats, exportData, getEvaluation  } from '../../api/client'
 import { useFetch } from '../../hooks/useFetch'
 import { StatCard, Card, Badge, Alert, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'
@@ -9,6 +9,7 @@ export default function AdminDashboard() {
   const { data: placements, loading: lp, refetch: refPl } = useFetch(getAllPlacements)
   const { data: safety,     loading: ls, refetch: refSf } = useFetch(getAllSafetyReports)
   const { data: stats,      loading: lst }                = useFetch(getAdminStats)
+  const { data: evaluations, loading:le }                     = useFetch(getEvaluation)
   const [acting, setActing]     = useState(null)
   const [exporting, setExporting] = useState(false)
 
@@ -69,6 +70,8 @@ export default function AdminDashboard() {
         <StatCard label="Awaiting Approval" value={pending.length}  color={pending.length > 0 ? 'c-amber' : ''} sub="Need action" />
         <StatCard label="Safety Reports"    value={openSafety.length} color={openSafety.length > 0 ? 'c-red' : ''}  sub="Unresolved" />
         <StatCard label="Completions"       value={stats?.completed ?? 0} color="c-green" sub="Students finished" />
+        <StatCard label="Average Score"        value={evaluation?.length > 0? (evaluations.reduce((sum, e) => sum + parseFloat(e.total_score), 0) / evaluations.length).toFixed(2) : 'N/A' }
+        />
         <Card title="placement Approval Stats" style={{ marginTop: 16 }}>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>

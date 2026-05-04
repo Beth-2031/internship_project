@@ -35,6 +35,7 @@ export const getMyPlacement = () =>
 export const createPlacement = data => api.post('/placements/', data)
 export const getWeeklyLogs  = () => api.get('/weekly-logs/')
 export const submitLog      = data => api.post('/weekly-logs/', data)
+export const getEvaluation = () => api.get('/evaluations/')
 export const getSafetyReports    = () => api.get('/safety-reports/')
 export const submitSafetyReport  = data => api.post('/safety-reports/', data)
 export const getCourseCompletion = () =>

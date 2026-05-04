@@ -2,7 +2,7 @@ import { useFetch } from '../../hooks/useFetch'
 import { getMyPlacement, getWeeklyLogs, getSafetyReports, getCourseCompletion } from '../../api/client'
 import { StatCard, Badge, Card, Progress, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAsis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 function progressPercent(start, end) {
   const now   = Date.now()

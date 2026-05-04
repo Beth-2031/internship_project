@@ -8,3 +8,7 @@ A full-stack web Pplication for managing internships.
 - Atuhaire Bonitah 25/U/03343/EVE
 - Migadde Thomas 25/U/03451/EVE
 
+## Tech Stack
+- Backend: Django, Django REST Framework
+- Frontend: React, Vite, Recharts
+- Database: SQLite

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getAcademicPlacements, getPendingPlacements, approvePlacement, denyPlacement, getCourseCompletions, getAcademicSafetyReports } from '../../api/client'
+import { getAcademicPlacements, getPendingPlacements, approvePlacement, denyPlacement, getCourseCompletions, getAcademicSafetyReports, getEvaluation } from '../../api/client'
 import { useFetch } from '../../hooks/useFetch'
 import { StatCard, Card, Badge, Alert, Progress, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'
@@ -9,6 +9,7 @@ export default function AcademicDashboard() {
   const { data: pending, loading: lpd, refetch: refPending }  = useFetch(getPendingPlacements)
   const { data: courses,  loading: lc }                       = useFetch(getCourseCompletions)
   const { data: safety,   loading: ls }                       = useFetch(getAcademicSafetyReports)
+  const { data: evaluations, loading:le }                     = useFetch(getEvaluation)
   const [acting, setActing] = useState(null)
 
   if (lp || lpd || lc || ls) return <LoadingScreen />
@@ -41,12 +42,15 @@ export default function AcademicDashboard() {
         <StatCard label="Pending Approval"   value={pending?.length ?? 0} color={pending?.length > 0 ? 'c-amber' : ''} sub="Need your sign-off" />
         <StatCard label="Safety Issues"      value={openSafety.length}   color={openSafety.length > 0 ? 'c-red' : ''} sub="Open reports" />
         <StatCard label="Completions"        value={completed}            color="c-green" sub="Courses finished" />
+        <StatCard label="Average Score"        value={evaluations?.length > 0 ? (evaluations.reduce((sum, e) => sum + parseFloat(e.total_score), 0) / evaluations.length).toFixed(2) : 'N/A' }
+        />
+
       </div>
 
       {openSafety.length > 0 && (
         <Alert variant="red">
           {openSafety.length} unresolved safety report{openSafety.length > 1 ? 's' : ''} from your students.{' '}
-          <Link to="/academic/safety" style={{ color: 'var(--red)', textDecoration: 'underline' }}>Review now</Link>
+          <Link to="/academic/placements" style={{ color: 'var(--red)', textDecoration: 'underline' }}>Review now</Link>
         </Alert>
       )}
 

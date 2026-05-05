@@ -100,3 +100,6 @@ export function ActionButton({ onClick, children, variant = '', small, loading: 
     </button>
   )
 }
+
+// ── Placements ───────
+export { default as Placements, PlacementRow } from './placements.jsx'

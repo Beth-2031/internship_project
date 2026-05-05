@@ -1,16 +1,38 @@
 import React from 'react'
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from './context/Authcontext'
 
 export default function ProtectedRoute({ children, allowedRoles }) {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const { user, loading } = useAuth();
+    const location = useLocation();
 
+
+    if (loading) return <div>Loading...</div>
     if (!user) {
-        return <Navigate to="/" />;
+      return (
+        <Navigate
+          to="/login"
+          replace
+          state={{
+            authMessage: 'Please log in to access that page.',
+            from: location.pathname,
+          }}
+        />
+      )
+    }
+    if (allowedRoles && !allowedRoles.includes(user.user_type)) {
+      return (
+        <Navigate
+          to="/login"
+          replace
+          state={{
+            authMessage: `Access denied for ${user.user_type.replaceAll('_', ' ')}.`,
+            from: location.pathname,
+          }}
+        />
+      )
     }
 
-    if (allowedRoles && !allowedRoles.includes(user.role)) {
-        return <Navigate to="/unauthorized" />;
-    }
-
-    return children;
+  return children
 }
+   

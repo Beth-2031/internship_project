@@ -1,13 +1,16 @@
 import { useFetch } from '../../hooks/useFetch'
-import { getMyPlacement, getWeeklyLogs, getSafetyReports, getCourseCompletion } from '../../api/client'
+import { getMyPlacement, getWeeklyLogs, getSafetyReports, getCourseCompletion, getEvaluation } from '../../api/client'
 import { StatCard, Badge, Card, Progress, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 function progressPercent(start, end) {
   const now   = Date.now()
   const s     = new Date(start).getTime()
   const e     = new Date(end).getTime()
-  return Math.min(100, Math.max(0, Math.round(((now - s) / (e - s)) * 100)))
+  const total = e - s
+  if (!total || total <= 0) return 0
+  return Math.min(100, Math.max(0, Math.round(((now - s) / total) * 100)))
 }
 
 export default function StudentDashboard() {
@@ -15,21 +18,40 @@ export default function StudentDashboard() {
   const { data: logs,      loading: ll } = useFetch(getWeeklyLogs)
   const { data: safety,    loading: ls } = useFetch(getSafetyReports)
   const { data: course,    loading: lc } = useFetch(getCourseCompletion)
+  const { data: evaluation, loading: le } = useFetch(getEvaluation)
 
   if (lp || ll || ls || lc) return <LoadingScreen />
 
-  const totalHours   = logs?.reduce((s, l) => s + parseFloat(l.hours_worked), 0) ?? 0
-  const verified     = logs?.filter(l => l.is_verified).length ?? 0
+  const totalHours   = Array.isArray(logs) ? logs.reduce((s, l) => s + parseFloat(l.hours_worked), 0) : 0
+  const verified     = Array.isArray(logs) ? logs.filter(l => l.is_verified).length : 0
   const pct          = placement ? progressPercent(placement.start_date, placement.end_date) : 0
   const currentWeek  = placement ? Math.min(26, Math.floor(pct / 100 * 26) + 1) : '—'
   const safetyOpen   = safety?.filter(r => !r.is_resolved).length ?? 0
-  const recentLogs   = [...(logs || [])].sort((a,b) => b.week_number - a.week_number).slice(0, 5)
+  const recentLogs   = Array.isArray(logs) ? [...logs].sort((a,b) => b.week_number - a.week_number).slice(0, 5) : []
+  const chartData = [
+    { name: 'Verified', value: verified || 0},
+    { name: 'Pending', value: Array.isArray(logs) ? logs.filter(l => !l.is_verified).length: 0},
+    { name: 'Submitted', value: Array.isArray(logs) ? logs.filter(l => l.status === 'submitted').length: 0},
+    { name: 'Draft', value: Array.isArray(logs) ? logs.filter(l => l.status === 'draft').length: 0},
+  ]
 
   return (
-    <div className="fade-up">
-      <div className="page-header">
-        <h1>My Internship</h1>
-        <p>{placement?.company_name ?? 'No active placement'}</p>
+    <div className="fade-up dash">
+      <div className="page-header page-header--split">
+        <div>
+          <h1>Student Dashboard</h1>
+          <p className="muted">
+            {placement?.company_name ? (
+              <>Placement at <strong>{placement.company_name}</strong></>
+            ) : (
+              'No active placement assigned yet'
+            )}
+          </p>
+        </div>
+        <div className="header-actions">
+          <Link to="/student/logs/new" className="btn btn-primary btn-sm">Submit weekly log</Link>
+          <Link to="/student/safety" className="btn btn-danger btn-sm">Report safety issue</Link>
+        </div>
       </div>
 
       {/* Stats */}
@@ -38,22 +60,22 @@ export default function StudentDashboard() {
         <StatCard label="Hours Logged"   value={Math.round(totalHours)}   color="c-green" sub={`${course?.minimum_hours_required ?? 0} required`} />
         <StatCard label="Logs Submitted" value={logs?.length ?? 0}        sub={`${verified} verified`} />
         <StatCard label="Safety Reports" value={safety?.length ?? 0}      color={safetyOpen > 0 ? 'c-red' : ''} sub={`${safetyOpen} open`} />
+        <StatCard label= "Total Score" value={evaluation?.[0]?.total_score ?? 'N/A'} />
       </div>
 
       <div className="grid-3-1">
         <div>
           {/* Placement card */}
           {placement ? (
-            <div className="card fade-up" style={{ marginBottom: 18 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+            <div className="card card--soft" style={{ marginBottom: 18 }}>
+              <div className="row-between" style={{ marginBottom: 12 }}>
                 <div>
-                  <div style={{ fontFamily: 'var(--font-head)', fontSize: 16, fontWeight: 700, letterSpacing: '-.02em' }}>
-                    {placement.company_name}
-                  </div>
-                  <div style={{ color: 'var(--text3)', fontSize: 12, marginTop: 3 }}>
+                  <div className="card-kicker">Placement</div>
+                  <div className="card-title" style={{ marginTop: 6 }}>{placement.company_name}</div>
+                  <div className="card-sub" style={{ marginTop: 4 }}>
                     {placement.department} · {placement.location}
                   </div>
-                  <div style={{ color: 'var(--text3)', fontSize: 12, marginTop: 2 }}>
+                  <div className="card-sub" style={{ marginTop: 2 }}>
                     {placement.start_date} → {placement.end_date}
                   </div>
                 </div>
@@ -61,21 +83,18 @@ export default function StudentDashboard() {
                   {placement.is_approved ? 'Approved' : 'Pending'}
                 </Badge>
               </div>
-              <div style={{ display: 'flex', gap: 20, fontSize: 12, color: 'var(--text3)', marginBottom: 10 }}>
-                <span>Workplace: <strong style={{ color: 'var(--text)' }}>{placement.workplace_supervisor_name ?? '—'}</strong></span>
-                <span>Academic: <strong style={{ color: 'var(--text)' }}>{placement.academic_supervisor_name ?? '—'}</strong></span>
+              <div className="meta-row" style={{ marginBottom: 10 }}>
+                <span>Workplace Supervisor: <strong>{placement.workplace_supervisor_name ?? '—'}</strong></span>
+                <span>Academic Supervisor: <strong>{placement.academic_supervisor_name ?? '—'}</strong></span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text3)', marginBottom: 5 }}>
-                <span>Placement progress</span><span>{pct}%</span>
+              <div className="row-between meta-small" style={{ marginBottom: 6 }}>
+                <span>Progress</span><span><strong>{pct}%</strong></span>
               </div>
               <Progress value={pct} color="fill-blue" />
             </div>
           ) : (
             <div className="alert alert-amber" style={{ marginBottom: 18 }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
-                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-              </svg>
-              <span>No active placement. Contact your academic supervisor.</span>
+              No active placement. Contact your academic supervisor to get assigned.
             </div>
           )}
 
@@ -83,8 +102,18 @@ export default function StudentDashboard() {
           <Card
             title="Weekly Logs"
             subtitle="Recent submissions"
-            action={<Link to="/student/logs/new" className="btn btn-primary btn-sm">+ Submit Log</Link>}
-          >
+            action={<Link to="/student/logs/new" className="btn btn-primary btn-sm">+ New log</Link>}
+            >
+            <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#4f46e5" />
+                </BarChart>
+            </ResponsiveContainer>
+          
             {recentLogs.length > 0 ? recentLogs.map(log => (
               <div className="item-row" key={log.id}>
                 <div className="week-pill">W{log.week_number}</div>
@@ -109,8 +138,8 @@ export default function StudentDashboard() {
         <div>
           {course && (
             <Card title="Course Completion" subtitle={course.course_name} style={{ marginBottom: 16 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 8 }}>
-                <span style={{ color: 'var(--text3)' }}>Approved hours</span>
+              <div className="row-between" style={{ fontSize: 13, marginBottom: 8 }}>
+                <span className="muted">Approved hours</span>
                 <strong>{course.approved_hours} / {course.minimum_hours_required}</strong>
               </div>
               <Progress

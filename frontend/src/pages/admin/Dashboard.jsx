@@ -1,13 +1,15 @@
 import { useState } from 'react'
-import { getAllPlacements, adminApprovePlacement, adminDenyPlacement, getAllSafetyReports, resolveReport, getAdminStats, exportData } from '../../api/client'
+import { getAllPlacements, adminApprovePlacement, adminDenyPlacement, getAllSafetyReports, resolveReport, getAdminStats, exportData, getEvaluation  } from '../../api/client'
 import { useFetch } from '../../hooks/useFetch'
 import { StatCard, Card, Badge, Alert, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 
 export default function AdminDashboard() {
   const { data: placements, loading: lp, refetch: refPl } = useFetch(getAllPlacements)
   const { data: safety,     loading: ls, refetch: refSf } = useFetch(getAllSafetyReports)
   const { data: stats,      loading: lst }                = useFetch(getAdminStats)
+  const { data: evaluations, loading:le }                     = useFetch(getEvaluation)
   const [acting, setActing]     = useState(null)
   const [exporting, setExporting] = useState(false)
 
@@ -44,6 +46,11 @@ export default function AdminDashboard() {
       setExporting(false)
     }
   }
+   const chartData = [
+    { name: 'Pending', value: placements?.filter(p => !p.is_approved).length || 0 },
+    { name: 'Approved', value: placements?.filter(p => p.is_approved).length || 0 },
+  ]
+  const COLORS = ['#16a34a', '#f59e0b']
 
   return (
     <div className="fade-up">
@@ -52,7 +59,7 @@ export default function AdminDashboard() {
           <h1>Admin Panel</h1>
           <p>System-wide overview and management</p>
         </div>
-        <Link to="/admin/users/new" className="btn btn-primary">
+        <Link to="/admin/placements" className="btn btn-primary">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Add User
         </Link>
@@ -63,6 +70,28 @@ export default function AdminDashboard() {
         <StatCard label="Awaiting Approval" value={pending.length}  color={pending.length > 0 ? 'c-amber' : ''} sub="Need action" />
         <StatCard label="Safety Reports"    value={openSafety.length} color={openSafety.length > 0 ? 'c-red' : ''}  sub="Unresolved" />
         <StatCard label="Completions"       value={stats?.completed ?? 0} color="c-green" sub="Students finished" />
+        <StatCard label="Average Score"        value={evaluations?.length > 0 ? (evaluations.reduce((sum, e) => sum + parseFloat(e.total_score), 0) / evaluations.length).toFixed(2) : 'N/A' }
+        />
+        <Card title="placement Approval Stats" style={{ marginTop: 16 }}>
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                  data={chartData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label
+              >
+                  {chartData.map((entry, index) => (
+                      <Cell key={index} fill={COLORS[index]} />
+                  ))}
+                  </Pie>
+                  <Tooltip />
+              </PieChart>
+          </ResponsiveContainer> 
+        </Card>
       </div>
 
       {openSafety.map(r => (
@@ -142,7 +171,7 @@ export default function AdminDashboard() {
                 <div className="item-name">{stats?.students ?? '—'} students</div>
                 <div className="item-meta">Registered in system</div>
               </div>
-              <Link to="/admin/users?type=student" className="btn btn-sm">Manage</Link>
+              <Link to="/admin/placements" className="btn btn-sm">Manage</Link>
             </div>
             <div className="item-row">
               <div className="item-icon icon-green">
@@ -151,7 +180,7 @@ export default function AdminDashboard() {
               <div className="item-body">
                 <div className="item-name">{stats?.supervisors ?? '—'} workplace supervisors</div>
               </div>
-              <Link to="/admin/users?type=workplace_supervisor" className="btn btn-sm">Manage</Link>
+              <Link to="/admin/placements" className="btn btn-sm">Manage</Link>
             </div>
             <div className="divider" />
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>

@@ -1,14 +1,16 @@
 import { useState } from 'react'
-import { getSupervisorStudents, getPendingLogs, verifyLog, getSupervisorSafetyReports } from '../../api/client'
+import { getSupervisorStudents, getPendingLogs, verifyLog, getSupervisorSafetyReports, getEvaluation } from '../../api/client'
 import { useFetch } from '../../hooks/useFetch'
 import { StatCard, Card, Badge, Alert, Empty, LoadingScreen } from '../../components/ui'
 import { Progress } from '../../components/ui'
 import { Link } from 'react-router-dom'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 export default function SupervisorDashboard() {
   const { data: students, loading: ls }      = useFetch(getSupervisorStudents)
   const { data: pendingLogs, loading: lp, refetch } = useFetch(getPendingLogs)
   const { data: safety, loading: lsf }       = useFetch(getSupervisorSafetyReports)
+  const { data: evaluations, loading: le }       = useFetch(getEvaluation)
   const [verifying, setVerifying] = useState(null)
 
   if (ls || lp || lsf) return <LoadingScreen />
@@ -20,6 +22,10 @@ export default function SupervisorDashboard() {
     try { await verifyLog(id); refetch() }
     finally { setVerifying(null) }
   }
+  const chartData = [
+    { name: 'Pending', value:pendingLogs?.filter(l => !l.is_verified).length || 0},
+    { name: 'Verified', value:pendingLogs?.filter(l => l.is_verified).length || 0},
+  ]
 
   return (
     <div className="fade-up">
@@ -31,6 +37,19 @@ export default function SupervisorDashboard() {
       <div className="stats-grid stats-3">
         <StatCard label="Students Supervised" value={students?.length ?? 0} color="c-blue"  sub="Active placements" />
         <StatCard label="Logs to Verify"       value={pendingLogs?.length ?? 0} color={pendingLogs?.length > 0 ? 'c-amber' : ''} sub="Awaiting review" />
+        <StatCard label="average Student Score"      value={evaluations?.length > 0 ? (evaluations.reduce((sum, e) => sum + parseFloat(e.total_score), 0) / evaluations.length).toFixed(2) : 'N/A'}
+        />
+        <Card title="Pending Reviews Overview">
+          <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#7c3aed" />
+                </BarChart>
+            </ResponsiveContainer>
+        </Card>
         <StatCard label="Safety Reports"       value={openSafety.length} color={openSafety.length > 0 ? 'c-red' : ''} sub="Unresolved" />
       </div>
 

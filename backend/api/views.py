@@ -1,5 +1,10 @@
 from datetime import date, timedelta
+import os
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -212,6 +217,85 @@ def register_view(request):
         department=department or None,
     )
     return Response({'message': 'Registration successful', 'user_type': user_type})
+
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@authentication_classes([])
+def password_reset_request_view(request):
+    """
+    Request a password reset link.
+    Always returns 200 to avoid leaking whether an email exists.
+    """
+    email = (request.data.get('email') or '').strip()
+    # Default response (do not reveal whether the user exists).
+    ok_response = Response({'message': 'If an account exists for this email, a reset link has been sent.'})
+
+    if not email:
+        return Response({'error': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = CustomUser.objects.filter(email__iexact=email).order_by('-id').first()
+    if not user:
+        return ok_response
+
+    uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+
+    frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:5173').rstrip('/')
+    reset_link = f"{frontend_url}/reset-password?uid={uidb64}&token={token}"
+
+    subject = "Password reset - Internship Management System"
+    body = (
+        "You requested to reset your password.\n\n"
+        f"Reset your password using this link:\n{reset_link}\n\n"
+        "If you did not request a password reset, you can ignore this email."
+    )
+
+    from_email = os.environ.get('DEFAULT_FROM_EMAIL') or os.environ.get('EMAIL_HOST_USER') or None
+
+    try:
+        send_mail(subject, body, from_email, [user.email], fail_silently=False)
+    except Exception:
+        # Don't crash the API if email delivery is not configured.
+        return ok_response
+
+    return ok_response
+
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@authentication_classes([])
+def password_reset_confirm_view(request):
+    """
+    Confirm password reset using uid+token and set new password.
+    """
+    uidb64 = (request.data.get('uid') or '').strip()
+    token = (request.data.get('token') or '').strip()
+    new_password = request.data.get('new_password') or ''
+
+    if not uidb64 or not token or not new_password:
+        return Response(
+            {'error': 'uid, token and new_password are required.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    if len(new_password) < 6:
+        return Response({'error': 'Password must be at least 6 characters.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except Exception:
+        return Response({'error': 'Invalid reset link.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if not default_token_generator.check_token(user, token):
+        return Response({'error': 'Invalid or expired reset token.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user.set_password(new_password)
+    user.save()
+    return Response({'message': 'Password has been reset successfully.'})
 
 
 @api_view(['GET'])

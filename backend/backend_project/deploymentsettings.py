@@ -9,20 +9,19 @@ from pathlib import Path
 from decouple import config, Csv
 import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # ─── SECURITY ─────────────────────────────────────────────────────────────────
 
-SECRET_KEY = config('SECRET_KEY')  # Never hardcode this - set it in your .env file
+SECRET_KEY = config('SECRET_KEY')  
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())  # e.g. ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())  
 
 
-# ─── APPLICATION DEFINITION ───────────────────────────────────────────────────
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -33,7 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Our_First_App',
     'rest_framework',
-    'corsheaders',  # Add django-cors-headers for React frontend
+    'corsheaders',  
 ]
 
 MIDDLEWARE = [
@@ -69,11 +68,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend_project.wsgi.application'
 
 
-# ─── DATABASE ─────────────────────────────────────────────────────────────────
-# Uses DATABASE_URL env var. Examples:
-#   SQLite  (dev):    sqlite:///db.sqlite3
-#   PostgreSQL (prod): postgres://user:password@host:5432/dbname
-
 DATABASES = {
     'default': dj_database_url.config(
         default=config('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
@@ -82,8 +76,6 @@ DATABASES = {
     )
 }
 
-
-# ─── AUTH ─────────────────────────────────────────────────────────────────────
 
 AUTH_USER_MODEL = 'Our_First_App.CustomUser'
 LOGIN_REDIRECT_URL = 'redirect_user'
@@ -98,15 +90,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# ─── INTERNATIONALIZATION ─────────────────────────────────────────────────────
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Africa/Kampala'
 USE_I18N = True
 USE_TZ = True
 
-
-# ─── STATIC & MEDIA FILES ─────────────────────────────────────────────────────
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'

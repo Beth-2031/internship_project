@@ -39,6 +39,8 @@ import ManageUsers from './pages/admin/ManageUsers';
 import RegisterUser from './pages/admin/RegisterUser';
 import AdminSafety from './pages/admin/Safety';
 import ExportData from './pages/admin/ExportData';
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 
 function App() {
   return (
@@ -46,6 +48,8 @@ function App() {
       <Routes>
         <Route path="/" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Student routes */}
         <Route element={<ProtectedRoute allowedRoles={['student']}><StudentLayout /></ProtectedRoute>}>

@@ -102,7 +102,14 @@ export default function LoginPage(){
                </span>    
             </div>
 
-            <a href="#" className="forgot-link">Forgot password?</a>
+            <button
+              type="button"
+              className="forgot-link"
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+              onClick={() => navigate('/forgot-password')}
+            >
+              Forgot password?
+            </button>
 
              <button type="submit" className="Login-button" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
            </form>

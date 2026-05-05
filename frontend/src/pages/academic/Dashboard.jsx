@@ -42,7 +42,7 @@ export default function AcademicDashboard() {
         <StatCard label="Pending Approval"   value={pending?.length ?? 0} color={pending?.length > 0 ? 'c-amber' : ''} sub="Need your sign-off" />
         <StatCard label="Safety Issues"      value={openSafety.length}   color={openSafety.length > 0 ? 'c-red' : ''} sub="Open reports" />
         <StatCard label="Completions"        value={completed}            color="c-green" sub="Courses finished" />
-        <StatCard label="Average Score"        value={evaluation?.length > 0? (evaluations.reduce((sum, e) => sum + parseFloat(e.total_score), 0) / evaluations.length).toFixed(2) : 'N/A' }
+        <StatCard label="Average Score"        value={evaluations?.length > 0 ? (evaluations.reduce((sum, e) => sum + parseFloat(e.total_score), 0) / evaluations.length).toFixed(2) : 'N/A' }
         />
 
       </div>

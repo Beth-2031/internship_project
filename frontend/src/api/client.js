@@ -29,6 +29,13 @@ export const register = (data) =>
 
 export const logout = () => api.post('/logout/')
 
+// ── Password reset ──
+export const requestPasswordReset = (email) =>
+  api.post('/password-reset/request/', { email })
+
+export const confirmPasswordReset = ({ uid, token, new_password }) =>
+  api.post('/password-reset/confirm/', { uid, token, new_password })
+
 // ── Student endpoints ──
 export const getMyPlacement = () =>
   api.get('/placements/').then(res => ({ ...res, data: Array.isArray(res.data) ? (res.data[0] ?? null) : res.data }))

@@ -37,7 +37,7 @@ export default function SupervisorDashboard() {
       <div className="stats-grid stats-3">
         <StatCard label="Students Supervised" value={students?.length ?? 0} color="c-blue"  sub="Active placements" />
         <StatCard label="Logs to Verify"       value={pendingLogs?.length ?? 0} color={pendingLogs?.length > 0 ? 'c-amber' : ''} sub="Awaiting review" />
-        <StatCard label="average Student Score"      value={evaluation?.length > 0 ? (evaluations?.reduce((sum, e) => sum + parseFloat(e.total_score), 0) / evaluations.length).toFixed(2) : 'N/A'}
+        <StatCard label="average Student Score"      value={evaluations?.length > 0 ? (evaluations.reduce((sum, e) => sum + parseFloat(e.total_score), 0) / evaluations.length).toFixed(2) : 'N/A'}
         />
         <Card title="Pending Reviews Overview">
           <ResponsiveContainer width="100%" height={200}>

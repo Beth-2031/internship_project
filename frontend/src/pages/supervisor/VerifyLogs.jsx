@@ -7,13 +7,21 @@ import { Link } from 'react-router-dom'
 export default function VerifyLogs() {
   const { data: logs, loading, refetch } = useFetch(getPendingLogs)
   const [verifying, setVerifying] = useState(null)
+  const [feedback, setFeedback] = useState({})
 
   if (loading) return <LoadingScreen />
 
   const handleVerify = async id => {
     setVerifying(id)
-    try { await verifyLog(id); refetch() }
+    try { 
+      await verifyLog(id, feedback[id] || ''); 
+      refetch() 
+    }
     finally { setVerifying(null) }
+  }
+
+  const updateFeedback = (id, val) => {
+    setFeedback(prev => ({ ...prev, [id]: val }))
   }
 
   return (
@@ -48,6 +56,18 @@ export default function VerifyLogs() {
               </div>
             </div>
           ))}
+
+          <div style={{ marginTop: 16, marginBottom: 16 }}>
+            <label className="form-label" style={{ fontSize: 11 }}>Add Feedback (Optional)</label>
+            <textarea 
+              className="form-control" 
+              placeholder="e.g. Great work, but focus more on security next week."
+              rows={2}
+              style={{ fontSize: 13 }}
+              value={feedback[log.id] || ''}
+              onChange={e => updateFeedback(log.id, e.target.value)}
+            />
+          </div>
 
           <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', paddingTop: 4 }}>
             <Link

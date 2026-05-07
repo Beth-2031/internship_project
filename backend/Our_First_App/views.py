@@ -385,15 +385,22 @@ def dashboard(request):
 @login_required
 def create_placement(request):
     if request.method == 'POST':
-        InternshipPlacement.objects.create(
-            student=request.user,
-            company_name=request.POST.get('company_name'),
-            location=request.POST.get('location'),
-            department=request.POST.get('department'),
-            start_date=request.POST.get('start_date'),
-            end_date=request.POST.get('end_date')
-        )
-        return redirect('dashboard')
+        # Use serializer to ensure data integrity and validation (e.g. overlaps)
+        serializer = InternshipPlacementSerializer(data={
+            'student': request.user.id,
+            'company_name': request.POST.get('company_name'),
+            'location': request.POST.get('location'),
+            'department': request.POST.get('department'),
+            'start_date': request.POST.get('start_date'),
+            'end_date': request.POST.get('end_date')
+        })
+        if serializer.is_valid():
+            serializer.save()
+            return redirect('dashboard')
+        else:
+            # For simple feedback in legacy view
+            errors = serializer.errors
+            return render(request, 'create_placement.html', {'errors': errors})
 
     return render(request, 'create_placement.html')
 
@@ -417,16 +424,25 @@ def create_weekly_log(request, placement_id):
     placement = get_object_or_404(InternshipPlacement, id=placement_id)
 
     if request.method == 'POST':
-        WeeklyLog.objects.create(
-            student=request.user,
-            placement=placement,
-            week_number=request.POST.get('week_number'),
-            tasks_done=request.POST.get('tasks_done'),
-            hours_worked=request.POST.get('hours_worked'),
-            challenges_faced=request.POST.get('challenges_faced'),
-            next_week_plans=request.POST.get('next_week_plans')
-        )
-        return redirect('dashboard')
+        # Use serializer to ensure deadline enforcement and placement mapping
+        serializer = WeeklyLogSerializer(data={
+            'student': request.user.id,
+            'placement': placement.id,
+            'week_number': request.POST.get('week_number'),
+            'tasks_done': request.POST.get('tasks_done'),
+            'hours_worked': request.POST.get('hours_worked'),
+            'challenges_faced': request.POST.get('challenges_faced'),
+            'next_week_plans': request.POST.get('next_week_plans'),
+            'status': 'submitted' # Legacy views usually submit immediately
+        })
+        if serializer.is_valid():
+            serializer.save()
+            return redirect('dashboard')
+        else:
+            return render(request, 'create_weekly_log.html', {
+                'placement': placement,
+                'errors': serializer.errors
+            })
 
     return render(request, 'create_weekly_log.html', {'placement': placement})
 

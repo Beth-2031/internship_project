@@ -55,11 +55,32 @@ class InternshipPlacementSerializer(serializers.ModelSerializer):
         return None
 
     def validate(self, data):
-        if data.get('start_date') and data.get('end_date'):
-            if data['start_date'] >= data['end_date']:
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        student = data.get('student') or (self.instance.student if self.instance else None)
+
+        if start_date and end_date:
+            if start_date >= end_date:
                 raise serializers.ValidationError({
                     "end_date": "End date must be after start date."
                 })
+            
+            # Check for overlapping placements for the same student
+            if student:
+                overlapping = InternshipPlacement.objects.filter(
+                    student=student,
+                    start_date__lt=end_date,
+                    end_date__gt=start_date
+                )
+                
+                # Exclude current instance if updating
+                if self.instance:
+                    overlapping = overlapping.exclude(pk=self.instance.pk)
+                
+                if overlapping.exists():
+                    raise serializers.ValidationError({
+                        "non_field_errors": "This student already has an overlapping placement for the selected dates."
+                    })
         return data   
     
 
@@ -91,11 +112,29 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
     def validate(self, data):
         student = data.get('student', getattr(self.instance, 'student', None))
         placement = data.get('placement', getattr(self.instance, 'placement', None))
+        status_val = data.get('status', getattr(self.instance, 'status', None))
         
+        # 1. Check student assignment
         if student and placement and placement.student != student:
             raise serializers.ValidationError({
                 "placement": "The selected student is not assigned to this placement."
             })
+
+        # 2. Prevent editing verified logs
+        if self.instance and self.instance.is_verified:
+            # If trying to change anything other than maybe is_verified (which supervisors do)
+            # but usually students use this serializer.
+            if any(key in data for key in ['tasks_done', 'hours_worked', 'challenges_faced', 'next_week_plans', 'week_number']):
+                raise serializers.ValidationError("Cannot edit a log that has already been verified.")
+
+        # 3. Deadline Enforcement for submission
+        if status_val == 'submitted':
+            deadline = getattr(self.instance, 'submission_deadline', None)
+            if deadline and timezone.now().date() > deadline:
+                raise serializers.ValidationError({
+                    "non_field_errors": "Submission failed. The deadline for this weekly log has passed."
+                })
+                
         return data
     
 class SupervisorReviewSerializer(serializers.ModelSerializer):

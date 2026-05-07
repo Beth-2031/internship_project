@@ -134,6 +134,16 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     "non_field_errors": "Submission failed. The deadline for this weekly log has passed."
                 })
+            
+            # 4. Prevent submitting logs for future weeks
+            if placement and data.get('week_number'):
+                days_since_start = (timezone.now().date() - placement.start_date).days
+                current_week = (days_since_start // 7) + 1
+                
+                if data['week_number'] > current_week:
+                    raise serializers.ValidationError({
+                        "week_number": f"You cannot submit a log for Week {data['week_number']} yet. You are currently in Week {current_week} of your internship."
+                    })
                 
         return data
     

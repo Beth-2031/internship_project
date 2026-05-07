@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, filters
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -33,8 +33,10 @@ from .signals import create_notification
 class InternshipPlacementViewSet(viewsets.ModelViewSet):
     serializer_class = InternshipPlacementSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['is_approved', 'student', 'company_name']
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    filterset_fields = ['is_approved', 'student', 'workplace_supervisor', 'academic_supervisor']
+    ordering_fields = ['start_date', 'end_date', 'company_name']
+    search_fields = ['company_name', 'location', 'department']
 
     def perform_create(self, serializer):
         if 'student' not in serializer.validated_data:
@@ -60,8 +62,9 @@ class InternshipPlacementViewSet(viewsets.ModelViewSet):
 class WeeklyLogViewSet(viewsets.ModelViewSet):
     serializer_class = WeeklyLogSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['is_verified', 'week_number', 'student']
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['status', 'is_verified', 'week_number', 'student']
+    ordering_fields = ['week_number', 'date_submitted']
 
     def get_queryset(self):
         user = self.request.user
@@ -326,7 +329,9 @@ def academic_dashboard(request):
 
 @login_required
 def admin_dashboard(request):
-    from django.db.models import Count
+    from django.db.models import Count, Avg
+    eval_stats = Evaluation.objects.filter(is_submitted=True).aggregate(avg_score=Avg('total_score'))
+    
     return JsonResponse({
         'total_students': CustomUser.objects.filter(
             user_type='student'
@@ -349,6 +354,7 @@ def admin_dashboard(request):
         'unresolved_reports': SafetyReport.objects.filter(
             is_resolved=False
         ).count(),
+        'average_score': round(eval_stats['avg_score'] or 0, 2),
     })
    
 

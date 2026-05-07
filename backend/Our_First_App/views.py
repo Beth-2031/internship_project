@@ -286,16 +286,17 @@ def workplace_dashboard(request):
     user = request.user
     placements = InternshipPlacement.objects.filter(workplace_supervisor=user)
     
-    # Updated to count reviews for their assigned students even if supervisor field is null
+    # Optimized with select_related
     pending_reviews = SupervisorReview.objects.filter(
         log__placement__workplace_supervisor=user,
         status='pending'
-    ).distinct()
+    ).select_related('log', 'log__student').distinct()
     
     approved_reviews = SupervisorReview.objects.filter(
         supervisor=user,
         status='approved'
-    )
+    ).select_related('log', 'log__student')
+    
     return JsonResponse({
         'total_placements': placements.count(),
         'pending_reviews': pending_reviews.count(),
@@ -309,15 +310,16 @@ def academic_dashboard(request):
     user = request.user
     placements = InternshipPlacement.objects.filter(academic_supervisor=user)
     
-    # Updated to count reviews for their assigned students even if supervisor field is null
+    # Optimized with select_related
     pending_reviews = SupervisorReview.objects.filter(
         log__placement__academic_supervisor=user,
         status='pending'
-    ).distinct()
+    ).select_related('log', 'log__student').distinct()
     
     logs = WeeklyLog.objects.filter(
         placement__academic_supervisor=user
-    )
+    ).select_related('student', 'placement')
+    
     return JsonResponse({
         'total_placements': placements.count(),
         'total_logs': logs.count(),
@@ -496,11 +498,16 @@ def submit_log(request, log_id):
 @login_required
 def report_safety_issue(request):
     if request.method == 'POST':
-        SafetyReport.objects.create(
-            student=request.user,
-            description=request.POST.get('description')
-        )
-        return redirect('dashboard')
+        # Use serializer for validation and integrity
+        serializer = SafetyReportSerializer(data={
+            'student': request.user.id,
+            'description': request.POST.get('description')
+        })
+        if serializer.is_valid():
+            serializer.save()
+            return redirect('dashboard')
+        else:
+            return render(request, 'report_safety.html', {'errors': serializer.errors})
 
     return render(request, 'report_safety.html')
 
@@ -522,18 +529,18 @@ def resolve_safety_issue(request, report_id):
 @login_required
 def add_course(request):
     if request.method == 'POST':
-        min_hours = int(request.POST.get('minimum_hours_required'))
-        approved_hours = int(request.POST.get('approved_hours'))
-
-        CourseCompletion.objects.create(
-            student=request.user,
-            course_name=request.POST.get('course_name'),
-            minimum_hours_required=min_hours,
-            approved_hours=approved_hours,
-            is_completed=approved_hours >= min_hours
-        )
-
-        return redirect('dashboard')
+        # Use serializer for validation and integrity
+        serializer = CourseCompletionSerializer(data={
+            'student': request.user.id,
+            'course_name': request.POST.get('course_name'),
+            'minimum_hours_required': request.POST.get('minimum_hours_required'),
+            'approved_hours': request.POST.get('approved_hours'),
+        })
+        if serializer.is_valid():
+            serializer.save()
+            return redirect('dashboard')
+        else:
+            return render(request, 'add_course.html', {'errors': serializer.errors})
 
     return render(request, 'add_course.html')
 

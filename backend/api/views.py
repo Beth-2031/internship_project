@@ -1,5 +1,9 @@
+from django.conf import settings
 from datetime import date, timedelta
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -130,6 +134,8 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
         if not request.data.get('password', ''):
             return Response({'error': 'Password is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if len(request.data.get('password', '')) < 8:
+            return Response({'error': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
         try:
             return super().create(request, *args, **kwargs)
         except Exception:
@@ -137,6 +143,16 @@ class UserViewSet(viewsets.ModelViewSet):
                 {'error': 'Username or email already exists'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+    def destroy(self, request, *args, **kwargs):
+        if not _is_admin_user(request.user):
+            return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+        
+        user_to_delete = self.get_object()
+        if user_to_delete == request.user:
+            return Response({'error': 'You cannot delete your own account.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        return super().destroy(request, *args, **kwargs)
              
 
 
@@ -183,6 +199,9 @@ def register_view(request):
 
     if not email or not password:
         return Response({'error': 'Email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if len(password) < 8:
+        return Response({'error': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
 
     role_map = {
         'student': 'student',
@@ -242,7 +261,8 @@ def password_reset_request_view(request):
     uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
 
-    frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:5173').rstrip('/')
+    # Use settings for frontend URL if available, otherwise fallback
+    frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173').rstrip('/')
     reset_link = f"{frontend_url}/reset-password?uid={uidb64}&token={token}"
 
     subject = "Password reset - Internship Management System"
@@ -252,12 +272,15 @@ def password_reset_request_view(request):
         "If you did not request a password reset, you can ignore this email."
     )
 
-    from_email = os.environ.get('DEFAULT_FROM_EMAIL') or os.environ.get('EMAIL_HOST_USER') or None
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', None) or getattr(settings, 'EMAIL_HOST_USER', None)
 
     try:
         send_mail(subject, body, from_email, [user.email], fail_silently=False)
-    except Exception:
-        # Don't crash the API if email delivery is not configured.
+    except Exception as e:
+        logger.error(f"Email delivery failed: {str(e)}")
+        # In development, it's helpful to see the error in the response if it's explicitly requested
+        if settings.DEBUG:
+            return Response({'error': f'Email delivery failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return ok_response
 
     return ok_response
@@ -281,8 +304,8 @@ def password_reset_confirm_view(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    if len(new_password) < 6:
-        return Response({'error': 'Password must be at least 6 characters.'}, status=status.HTTP_400_BAD_REQUEST)
+    if len(new_password) < 8:
+        return Response({'error': 'Password must be at least 8 characters.'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))

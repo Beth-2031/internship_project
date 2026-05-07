@@ -50,6 +50,13 @@ export default function VerifyLogs() {
           ))}
 
           <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', paddingTop: 4 }}>
+            <Link
+              to={`/supervisor/logs/${log.id}`}
+              className="btn"
+              style={{ fontSize: 13 }}
+            >
+              View Full Detail
+            </Link>
             <button
               className="btn btn-primary"
               onClick={() => handleVerify(log.id)}

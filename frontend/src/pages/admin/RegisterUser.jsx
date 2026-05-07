@@ -77,8 +77,8 @@ export default function RegisterUser() {
           </div>
           <div className="form-row">
             <div className="form-group">
-              <label className="form-label">Password</label>
-              <input className="form-control" type="password" required value={form.password} onChange={e => set('password', e.target.value)} />
+              <label className="form-label">Password (at least 8 characters)</label>
+              <input className="form-control" type="password" required minLength="8" value={form.password} onChange={e => set('password', e.target.value)} />
             </div>
             <div className="form-group">
               <label className="form-label">Role</label>

@@ -19,14 +19,14 @@ def notify_on_placement_change(sender, instance, created, **kwargs):
                 f"New placement request from {instance.student.username} at {instance.company_name}."
             )
     else:
-        # Check if is_approved just became True
-        # Note: In a real production app, we'd use a tracker or compare with __original_is_approved
-        # For this logic, we assume if it's approved and the user just saved, we notify.
+        # We need to detect if is_approved just changed from False to True
+        # Django signals don't natively provide 'old' values, so we check if it's currently True
+        # but the notification hasn't been sent yet (or just rely on the save event for this simple logic)
         if instance.is_approved:
-            create_notification(
-                instance.student,
-                f"Your placement at {instance.company_name} has been approved."
-            )
+            msg = f"Your placement at {instance.company_name} has been approved."
+            # Check if this notification already exists to avoid duplicates on every save
+            if not Notification.objects.filter(user=instance.student, message=msg).exists():
+                create_notification(instance.student, msg)
 
 
 @receiver(post_save, sender=WeeklyLog)
@@ -52,12 +52,22 @@ def handle_log_submission_and_verification(sender, instance, created, **kwargs):
                     f"New log submitted by {instance.student.username} for Week {instance.week_number}."
                 )
 
-    # 2. Verification Logic
-    if instance.is_verified:
-        create_notification(
-            instance.student,
-            f"Your Week {instance.week_number} log has been verified."
-        )
+    # 2. Verification Logic - Handled by SupervisorReview signal to ensure comments are captured
+    pass
+
+
+@receiver(post_save, sender=SupervisorReview)
+def notify_student_on_review(sender, instance, created, **kwargs):
+    """Notify student when their log is verified (approved) with feedback."""
+    if instance.status == 'approved':
+        comments = instance.comments or ""
+        msg = f"Your Week {instance.log.week_number} log has been verified."
+        if comments:
+            msg += f" Feedback: {comments[:50]}..."
+        
+        # Avoid duplicate notifications if the review is saved multiple times
+        if not Notification.objects.filter(user=instance.log.student, message=msg).exists():
+            create_notification(instance.log.student, msg)
 
 
 @receiver(post_save, sender=SafetyReport)

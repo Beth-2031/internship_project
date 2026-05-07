@@ -73,11 +73,20 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
     placement = serializers.PrimaryKeyRelatedField(
         queryset=InternshipPlacement.objects.all()
     )
+    
+    # Add feedback field
+    feedback = serializers.SerializerMethodField()
 
     class Meta:
         model = WeeklyLog
         fields = '__all__'
         read_only_fields = ['date_submitted']
+
+    def get_feedback(self, obj):
+        try:
+            return obj.review.comments
+        except:
+            return None
 
     def validate(self, data):
         student = data.get('student', getattr(self.instance, 'student', None))

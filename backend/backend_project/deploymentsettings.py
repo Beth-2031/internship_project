@@ -1,24 +1,18 @@
-"""
-Django settings for backend_project project - Production Ready.
-
-Uses python-decouple for environment variable management.
-Install: pip install python-decouple dj-database-url
-"""
-
 from pathlib import Path
-from decouple import config, Csv
-import dj_database_url
+import os
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
 
 
 # ─── SECURITY ─────────────────────────────────────────────────────────────────
 
-SECRET_KEY = config('SECRET_KEY')  
+SECRET_KEY = os.environ.get('SECRET_KEY')  
 
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 'yes')
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default='')  
+ALLOWED_HOSTS = [host.strip() for host in os.environ.get('ALLOWED_HOSTS', '').split(',') if host.strip()]
 
 
 
@@ -32,8 +26,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Our_First_App',
     'rest_framework',
-    'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',  
 ]
 
@@ -70,12 +62,20 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend_project.wsgi.application'
 
 
+# For production, we use PostgreSQL
+import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(
         conn_max_age=600,
-        ssl_require=config('DB_SSL_REQUIRE', default=True, cast=bool),
+        ssl_require=True
     )
 }
+
+# CSRF Trusted Origins (required for production)
+CSRF_TRUSTED_ORIGINS = [host.strip() for host in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if host.strip()]
+if not CSRF_TRUSTED_ORIGINS:
+    # Default to whatever is in CORS_ALLOWED_ORIGINS as a fallback
+    CSRF_TRUSTED_ORIGINS = [host.strip() for host in os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173,http://localhost:3000').split(',') if host.strip()]
 
 
 AUTH_USER_MODEL = 'Our_First_App.CustomUser'
@@ -120,36 +120,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    ) if not DEBUG else (
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
-    ),
-}
-
-
-# ─── JWT SETTINGS ─────────────────────────────────────────────────────────────
-
-from datetime import timedelta
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=config('JWT_ACCESS_MINUTES', default=60, cast=int)),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=config('JWT_REFRESH_DAYS', default=7, cast=int)),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 
 # ─── CORS (for React frontend) ────────────────────────────────────────────────
 
-CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', cast=Csv(), default='http://localhost:5173,http://localhost:3000')
+CORS_ALLOWED_ORIGINS = [host.strip() for host in os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173,http://localhost:3000').split(',') if host.strip()]
 CORS_ALLOW_CREDENTIALS = True
 
 
@@ -161,7 +143,7 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000          # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-    SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
+    SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'True').lower() in ('true', '1', 'yes')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     X_FRAME_OPTIONS = 'DENY'
@@ -191,15 +173,16 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': config('DJANGO_LOG_LEVEL', default='WARNING'),
+            'level': os.environ.get('DJANGO_LOG_LEVEL', 'WARNING'),
             'propagate': False,
         },
     },
 }
-EMAIL_BACKEND = config('EMAIL_BACKEND', default="django.core.mail.backends.smtp.EmailBackend")
-EMAIL_HOST = config('EMAIL_HOST', default="smtp.gmail.com")
-EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', "django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = os.environ.get('EMAIL_HOST', "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in ('true', '1', 'yes')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+

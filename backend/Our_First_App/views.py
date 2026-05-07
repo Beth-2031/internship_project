@@ -93,13 +93,14 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
             )
 
         if "is_verified" in request.data:
-            if request.user.user_type not in [
-                "workplace_supervisor",
-                "academic_supervisor",
-                "internship_admin",
-            ]:
+            is_assigned = (
+                request.user == instance.placement.workplace_supervisor or
+                request.user == instance.placement.academic_supervisor or
+                request.user.user_type == 'internship_admin'
+            )
+            if not is_assigned:
                 return Response(
-                    {"error": "You are not allowed to verify weekly logs."},
+                    {"error": "You are not the assigned supervisor for this log."},
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
@@ -131,9 +132,17 @@ class SupervisorReviewViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.user_type == 'workplace_supervisor':
-            return SupervisorReview.objects.filter(supervisor=user)
+            # Show reviews where they are the assigned supervisor on the placement
+            return SupervisorReview.objects.filter(
+                models.Q(supervisor=user) | 
+                models.Q(log__placement__workplace_supervisor=user)
+            ).distinct()
         if user.user_type == 'academic_supervisor':
-            return SupervisorReview.objects.filter(supervisor=user)
+            # Show reviews where they are the assigned supervisor on the placement
+            return SupervisorReview.objects.filter(
+                models.Q(supervisor=user) | 
+                models.Q(log__placement__academic_supervisor=user)
+            ).distinct()
         if user.user_type == 'internship_admin':
             return SupervisorReview.objects.all()
         if user.user_type == 'student':
@@ -265,10 +274,13 @@ def student_dashboard(request):
 def workplace_dashboard(request):
     user = request.user
     placements = InternshipPlacement.objects.filter(workplace_supervisor=user)
-    pending_reviews =SupervisorReview.objects.filter(
-        supervisor=user,
+    
+    # Updated to count reviews for their assigned students even if supervisor field is null
+    pending_reviews = SupervisorReview.objects.filter(
+        log__placement__workplace_supervisor=user,
         status='pending'
-    )
+    ).distinct()
+    
     approved_reviews = SupervisorReview.objects.filter(
         supervisor=user,
         status='approved'
@@ -285,6 +297,13 @@ def workplace_dashboard(request):
 def academic_dashboard(request):
     user = request.user
     placements = InternshipPlacement.objects.filter(academic_supervisor=user)
+    
+    # Updated to count reviews for their assigned students even if supervisor field is null
+    pending_reviews = SupervisorReview.objects.filter(
+        log__placement__academic_supervisor=user,
+        status='pending'
+    ).distinct()
+    
     logs = WeeklyLog.objects.filter(
         placement__academic_supervisor=user
     )
@@ -293,6 +312,7 @@ def academic_dashboard(request):
         'total_logs': logs.count(),
         'verified_logs': logs.filter(is_verified=True).count(),
         'pending_logs': logs.filter(is_verified=False).count(),
+        'pending_reviews': pending_reviews.count(),
     })
 
 
@@ -308,7 +328,7 @@ def admin_dashboard(request):
             is_approved=True
         ).count(),
         'pending_placements': InternshipPlacement.objects.filter(
-            is_approved=True
+            is_approved=False
         ).count(),
         'total_logs': WeeklyLog.objects.count(),
         'verified_logs': WeeklyLog.objects.filter(
@@ -377,10 +397,6 @@ def approve_placement(request, placement_id):
     if request.user.user_type == 'internship_admin':
         placement.is_approved = True
         placement.save()
-        create_notification(
-            placement.student,
-            f"Your placement at {placement.company_name} has been approved."
-        )
 
     return redirect('dashboard')
 
@@ -410,14 +426,20 @@ def create_weekly_log(request, placement_id):
 @login_required
 def verify_log(request, log_id):
     log = get_object_or_404(WeeklyLog, id=log_id)
+    user = request.user
 
-    if request.user.user_type in ['workplace_supervisor', 'academic_supervisor']:
+    # Only the assigned workplace or academic supervisor (or admin) can verify
+    is_assigned_supervisor = (
+        user == log.placement.workplace_supervisor or 
+        user == log.placement.academic_supervisor or
+        user.user_type == 'internship_admin'
+    )
+
+    if is_assigned_supervisor:
         log.is_verified = True
         log.save()
-        create_notification(
-            log.student,
-            f"Your Week {log.week_number} log has been verified."
-        )
+    else:
+        return JsonResponse({'error': 'You are not the assigned supervisor for this student.'}, status=403)
 
     return redirect('dashboard')
 
@@ -456,10 +478,6 @@ def resolve_safety_issue(request, report_id):
     if request.user.user_type == 'internship_admin':
         report.is_resolved = True
         report.save()
-        create_notification(
-            report.student,
-            "Your safety report has been resolved."
-        )
 
     return redirect('dashboard')
 

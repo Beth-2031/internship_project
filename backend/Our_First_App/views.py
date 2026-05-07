@@ -103,6 +103,14 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
                     {"error": "You are not the assigned supervisor for this log."},
                     status=status.HTTP_403_FORBIDDEN,
                 )
+            
+            # Handle verification with feedback
+            if request.data.get('is_verified') is True:
+                comments = request.data.get('comments', '')
+                review, created = SupervisorReview.objects.get_or_create(log=instance)
+                review.approve(supervisor=request.user, comments=comments)
+                # Note: review.approve() calls instance.save() via log.save()
+                return Response({"message": "Log verified with feedback.", "feedback": comments})
 
         return super().update(request, *args, **kwargs)
 
@@ -436,8 +444,12 @@ def verify_log(request, log_id):
     )
 
     if is_assigned_supervisor:
-        log.is_verified = True
-        log.save()
+        comments = request.POST.get('comments', '') or request.GET.get('comments', '')
+        
+        # Update the associated SupervisorReview
+        review, created = SupervisorReview.objects.get_or_create(log=log)
+        review.approve(supervisor=user, comments=comments)
+        # Note: The notification is now handled by the SupervisorReview signal
     else:
         return JsonResponse({'error': 'You are not the assigned supervisor for this student.'}, status=403)
 

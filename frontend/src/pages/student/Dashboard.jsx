@@ -115,15 +115,22 @@ export default function StudentDashboard() {
             </ResponsiveContainer>
           
             {recentLogs.length > 0 ? recentLogs.map(log => (
-              <div className="item-row" key={log.id}>
-                <div className="week-pill">W{log.week_number}</div>
-                <div className="item-body">
-                  <div className="item-name">Week {log.week_number} — {log.hours_worked} hrs</div>
-                  <div className="item-meta">{log.date_submitted}</div>
+              <div className="item-row-container" key={log.id}>
+                <div className="item-row">
+                  <div className="week-pill">W{log.week_number}</div>
+                  <div className="item-body">
+                    <div className="item-name">Week {log.week_number} — {log.hours_worked} hrs</div>
+                    <div className="item-meta">{log.date_submitted}</div>
+                  </div>
+                  <Badge variant={log.is_verified ? 'green' : 'amber'}>
+                    {log.is_verified ? 'Verified' : 'Pending'}
+                  </Badge>
                 </div>
-                <Badge variant={log.is_verified ? 'green' : 'amber'}>
-                  {log.is_verified ? 'Verified' : 'Pending'}
-                </Badge>
+                {log.feedback && (
+                  <div style={{ padding: '4px 0 12px 52px', fontSize: '0.85rem', color: 'var(--primary)', fontStyle: 'italic', borderLeft: '3px solid var(--primary)', marginLeft: '12px', marginTop: '4px' }}>
+                    <strong>Feedback:</strong> {log.feedback}
+                  </div>
+                )}
               </div>
             )) : <Empty text="No logs submitted yet" />}
             {logs?.length > 5 && (

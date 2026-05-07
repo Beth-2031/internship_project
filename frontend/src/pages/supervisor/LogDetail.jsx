@@ -34,6 +34,14 @@ export default function LogDetail() {
             </div>
           </div>
         ))}
+        {log.feedback && (
+          <div style={{ marginBottom: 16 }}>
+            <div className="form-label">Supervisor Feedback</div>
+            <div style={{ fontSize: 14, lineHeight: 1.7, color: 'var(--primary)', background: 'var(--primary-light)', borderRadius: 'var(--radius)', padding: '12px 14px', border: '1px solid var(--primary-border)' }}>
+              {log.feedback}
+            </div>
+          </div>
+        )}
         <div style={{ borderTop: '1px solid var(--border)', paddingTop: 14, display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
           <Link to="/supervisor/logs" className="btn">← Back to logs</Link>
         </div>

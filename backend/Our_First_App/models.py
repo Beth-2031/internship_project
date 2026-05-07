@@ -122,11 +122,12 @@ class SupervisorReview(models.Model):
     reviewed_at = models.DateTimeField(null=True, blank=True)
     previous_status = models.CharField(max_length=10, blank=True, null=True)
 
-    def approve(self, supervisor):
-        """Approve the log and lock it."""
+    def approve(self, supervisor, comments=''):
+        """Approve the log and lock it with optional feedback."""
         self.previous_status = self.status
         self.status = 'approved'
         self.supervisor = supervisor
+        self.comments = comments
         self.reviewed_at = timezone.now()
         self.log.is_verified = True
         self.log.save()

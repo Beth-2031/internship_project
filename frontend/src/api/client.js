@@ -53,7 +53,7 @@ export const getCourseCompletion = () =>
 // ── Workplace supervisor endpoints ──
 export const getSupervisorStudents   = () => api.get('/placements/')
 export const getPendingLogs          = () => api.get('/weekly-logs/?is_verified=false')
-export const verifyLog               = id  => api.patch(`/weekly-logs/${id}/`, { is_verified: true })
+export const verifyLog               = (id, comments = '') => api.patch(`/weekly-logs/${id}/`, { is_verified: true, comments })
 export const getSupervisorSafetyReports = () => api.get('/safety-reports/')
 
 // ── Academic supervisor endpoints ──

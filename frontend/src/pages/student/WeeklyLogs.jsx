@@ -49,6 +49,11 @@ export default function WeeklyLogs() {
                     <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {log.tasks_done}
                     </div>
+                    {log.feedback && (
+                      <div style={{ fontSize: 11, color: 'var(--primary)', marginTop: 4, fontStyle: 'italic' }}>
+                        Feedback: {log.feedback}
+                      </div>
+                    )}
                   </td>
                   <td className="td-muted">{log.date_submitted}</td>
                   <td>

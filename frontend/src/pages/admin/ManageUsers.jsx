@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import { getUsers } from '../../api/client'
+import { getUsers, deleteUser } from '../../api/client'
 import { useFetch } from '../../hooks/useFetch'
 import { Card, Badge, Empty, LoadingScreen } from '../../components/ui'
 
@@ -20,8 +20,18 @@ const TYPE_COLORS = {
 export default function ManageUsers() {
   const [searchParams] = useSearchParams()
   const typeFilter = searchParams.get('type') || ''
-  const { data: users, loading } = useFetch(() => getUsers(typeFilter), [typeFilter])
+  const { data: users, loading, refetch } = useFetch(() => getUsers(typeFilter), [typeFilter])
   const [search, setSearch] = useState('')
+
+  const handleDelete = async (user) => {
+    if (!window.confirm(`Are you sure you want to delete ${user.first_name} ${user.last_name}?`)) return
+    try {
+      await deleteUser(user.id)
+      refetch()
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to delete user')
+    }
+  }
 
   if (loading) return <LoadingScreen />
 
@@ -71,6 +81,7 @@ export default function ManageUsers() {
                 <th>Username</th>
                 <th>Email</th>
                 <th>Role</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -87,6 +98,15 @@ export default function ManageUsers() {
                   <td style={{ color: 'var(--text3)', fontFamily: 'monospace', fontSize: 12 }}>{u.username}</td>
                   <td style={{ color: 'var(--text3)', fontSize: 12 }}>{u.email || '—'}</td>
                   <td><Badge variant={TYPE_COLORS[u.user_type] || 'gray'}>{TYPE_LABELS[u.user_type] || u.user_type}</Badge></td>
+                  <td style={{ textAlign: 'right' }}>
+                    <button 
+                      className="btn btn-sm" 
+                      onClick={() => handleDelete(u)}
+                      style={{ color: '#ef4444', borderColor: '#ef4444', padding: '2px 8px', fontSize: 11 }}
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -28,8 +28,8 @@ export default function ResetPassword() {
       setError('Invalid reset link. Please request a new one.')
       return
     }
-    if (p1.length < 6) {
-      setError('Password must be at least 6 characters.')
+    if (p1.length < 8) {
+      setError('Password must be at least 8 characters.')
       return
     }
     if (p1 !== p2) {
@@ -68,7 +68,8 @@ export default function ResetPassword() {
             value={p1}
             onChange={(e) => setP1(e.target.value)}
             required
-            placeholder="Min. 6 characters"
+            placeholder="Min. 8 characters"
+            minLength="8"
             style={{ width: '100%', padding: 10, borderRadius: 8, marginBottom: 12 }}
           />
 

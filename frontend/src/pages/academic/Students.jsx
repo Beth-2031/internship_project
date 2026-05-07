@@ -1,6 +1,7 @@
 import { getAcademicPlacements } from '../../api/client'
 import { useFetch } from '../../hooks/useFetch'
 import { Card, Badge, Progress, Empty, LoadingScreen } from '../../components/ui'
+import { Link } from 'react-router-dom'
 
 export default function AcademicStudents() {
   const { data: placements, loading } = useFetch(getAcademicPlacements)
@@ -27,6 +28,11 @@ export default function AcademicStudents() {
             </div>
             <div style={{ paddingLeft: 48 }}>
               <Progress value={p.progress_percent ?? 0} color="fill-blue" />
+            </div>
+            <div style={{ paddingLeft: 48, marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
+              <Link to={`/academic/evaluate/${p.id}`} className="btn btn-sm btn-primary">
+                Evaluate Student
+              </Link>
             </div>
           </div>
         )) : <Empty text="No students assigned" />}

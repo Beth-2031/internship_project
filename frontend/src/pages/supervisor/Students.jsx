@@ -1,6 +1,7 @@
 import { getSupervisorStudents } from '../../api/client'
 import { useFetch } from '../../hooks/useFetch'
 import { Card, Badge, Progress, Empty, LoadingScreen } from '../../components/ui'
+import { Link } from 'react-router-dom'
 
 export default function SupervisorStudents() {
   const { data: students, loading } = useFetch(getSupervisorStudents)
@@ -35,6 +36,11 @@ export default function SupervisorStudents() {
                 <span>Progress</span><span>{p.progress_percent ?? 0}%</span>
               </div>
               <Progress value={p.progress_percent ?? 0} color="fill-blue" />
+            </div>
+            <div style={{ paddingLeft: 48, marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
+              <Link to={`/supervisor/evaluate/${p.id}`} className="btn btn-sm btn-primary">
+                Evaluate Student
+              </Link>
             </div>
           </div>
         )) : <Empty text="No students assigned yet" />}

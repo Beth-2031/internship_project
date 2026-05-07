@@ -104,13 +104,14 @@ export default function RegisterPage() {
                   required
                   />
 
-                <label>Password</label>
+                <label>Password (at least 8 characters)</label>
                 <div className="password-field">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  minLength="8"
                   required
                   />
                   <span

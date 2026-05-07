@@ -440,15 +440,10 @@ def submit_log(request, log_id):
 @login_required
 def report_safety_issue(request):
     if request.method == 'POST':
-        report = SafetyReport.objects.create(
+        SafetyReport.objects.create(
             student=request.user,
             description=request.POST.get('description')
         )
-        for admin in CustomUser.objects.filter(user_type='internship_admin'):
-            create_notification(
-                admin,
-                f"New safety report from {request.user.username}: {report.description[:50]}..."
-            )
         return redirect('dashboard')
 
     return render(request, 'report_safety.html')

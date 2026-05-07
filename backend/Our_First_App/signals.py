@@ -3,9 +3,33 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Notification
+from .models import Notification, InternshipPlacement, CustomUser, SafetyReport
 
 logger = logging.getLogger(__name__)
+
+
+@receiver(post_save, sender=InternshipPlacement)
+def notify_admin_on_placement_request(sender, instance, created, **kwargs):
+    """Notify all admins when a new placement is requested."""
+    if created:
+        admins = CustomUser.objects.filter(user_type='internship_admin')
+        for admin in admins:
+            create_notification(
+                admin,
+                f"New placement request from {instance.student.username} at {instance.company_name}."
+            )
+
+
+@receiver(post_save, sender=SafetyReport)
+def notify_admin_on_safety_report(sender, instance, created, **kwargs):
+    """Notify all admins when a new safety report is submitted."""
+    if created:
+        admins = CustomUser.objects.filter(user_type='internship_admin')
+        for admin in admins:
+            create_notification(
+                admin,
+                f"New safety report from {instance.student.username}: {instance.description[:50]}..."
+            )
 
 
 @receiver(post_save, sender=Notification)

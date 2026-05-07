@@ -70,9 +70,9 @@ export default function AdminDashboard() {
         <StatCard label="Awaiting Approval" value={pending.length}  color={pending.length > 0 ? 'c-amber' : ''} sub="Need action" />
         <StatCard label="Safety Reports"    value={openSafety.length} color={openSafety.length > 0 ? 'c-red' : ''}  sub="Unresolved" />
         <StatCard label="Completions"       value={stats?.completed ?? 0} color="c-green" sub="Students finished" />
-        <StatCard label="Average Score"        value={evaluations?.length > 0 ? (evaluations.reduce((sum, e) => sum + parseFloat(e.total_score), 0) / evaluations.length).toFixed(2) : 'N/A' }
-        />
-        <Card title="placement Approval Stats" style={{ marginTop: 16 }}>
+        <StatCard label="Average Score"     value={stats?.average_score ?? 'N/A'} color="c-blue" sub="System average" />
+        
+        <Card title="Placement Approval Stats" style={{ marginTop: 16 }}>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie

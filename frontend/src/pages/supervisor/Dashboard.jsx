@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 export default function SupervisorDashboard() {
+  const [filter, setFilter] = useState('')
   const { data: students, loading: ls }      = useFetch(getSupervisorStudents)
   const { data: pendingLogs, loading: lp, refetch } = useFetch(getPendingLogs)
   const { data: safety, loading: lsf }       = useFetch(getSupervisorSafetyReports)
@@ -16,6 +17,13 @@ export default function SupervisorDashboard() {
   if (ls || lp || lsf) return <LoadingScreen />
 
   const openSafety = safety?.filter(r => !r.is_resolved) ?? []
+  
+  // Filter students based on search
+  const filteredStudents = students?.filter(p => 
+    p.student_name?.toLowerCase().includes(filter.toLowerCase()) ||
+    p.company_name?.toLowerCase().includes(filter.toLowerCase()) ||
+    p.department?.toLowerCase().includes(filter.toLowerCase())
+  ) ?? []
 
   const handleVerify = async id => {
     setVerifying(id)
@@ -62,9 +70,21 @@ export default function SupervisorDashboard() {
       <div className="grid-2">
         {/* Students */}
         <Card title="My Students" subtitle="Assigned to you for supervision"
-          action={<Link to="/supervisor/students" className="btn btn-sm">View all</Link>}
+          action={
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <input 
+                type="text" 
+                placeholder="Filter students..." 
+                className="form-control form-control-sm"
+                style={{ width: 140, height: 28, fontSize: 11 }}
+                value={filter}
+                onChange={e => setFilter(e.target.value)}
+              />
+              <Link to="/supervisor/students" className="btn btn-sm">View all</Link>
+            </div>
+          }
         >
-          {students?.length > 0 ? students.map(p => (
+          {filteredStudents.length > 0 ? filteredStudents.slice(0, 5).map(p => (
             <div className="item-row" key={p.id}>
               <div className="item-icon icon-blue">
                 {(p.student_name || 'S').slice(0,2).toUpperCase()}
@@ -80,7 +100,7 @@ export default function SupervisorDashboard() {
                 {p.is_approved ? 'Active' : 'Pending'}
               </Badge>
             </div>
-          )) : <Empty text="No students assigned yet" />}
+          )) : <Empty text={filter ? "No students match your filter" : "No students assigned yet"} />}
         </Card>
 
         {/* Pending logs */}

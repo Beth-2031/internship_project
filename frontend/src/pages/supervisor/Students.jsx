@@ -1,20 +1,40 @@
+import { useState } from 'react'
 import { getSupervisorStudents } from '../../api/client'
 import { useFetch } from '../../hooks/useFetch'
 import { Card, Badge, Progress, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'
 
 export default function SupervisorStudents() {
+  const [filter, setFilter] = useState('')
   const { data: students, loading } = useFetch(getSupervisorStudents)
+  
   if (loading) return <LoadingScreen />
+
+  const filtered = students?.filter(p => 
+    p.student_name?.toLowerCase().includes(filter.toLowerCase()) ||
+    p.company_name?.toLowerCase().includes(filter.toLowerCase()) ||
+    p.department?.toLowerCase().includes(filter.toLowerCase()) ||
+    p.location?.toLowerCase().includes(filter.toLowerCase())
+  ) ?? []
 
   return (
     <div className="fade-up">
-      <div className="page-header">
-        <h1>My Students</h1>
-        <p>{students?.length ?? 0} students assigned to you</p>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1>My Students</h1>
+          <p>{students?.length ?? 0} students assigned to you</p>
+        </div>
+        <input 
+          type="text" 
+          placeholder="Search students..." 
+          className="form-control"
+          style={{ width: 240 }}
+          value={filter}
+          onChange={e => setFilter(e.target.value)}
+        />
       </div>
       <Card>
-        {students?.length > 0 ? students.map(p => (
+        {filtered.length > 0 ? filtered.map(p => (
           <div key={p.id} style={{ padding: '14px 0', borderBottom: '1px solid var(--border)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
               <div className="item-icon icon-blue">{(p.student_name || 'S').slice(0,2).toUpperCase()}</div>
@@ -43,7 +63,7 @@ export default function SupervisorStudents() {
               </Link>
             </div>
           </div>
-        )) : <Empty text="No students assigned yet" />}
+        )) : <Empty text={filter ? "No students match your search" : "No students assigned yet"} />}
       </Card>
     </div>
   )

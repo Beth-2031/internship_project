@@ -49,17 +49,18 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         password = validated_data.pop('password', None)
         assigned_students = validated_data.pop('assigned_students', [])
+        
+        # Consistent role mapping
         role = validated_data.get('user_type', '')
         role_map = {
             'student': 'student',
-            'workplace': 'workplace_supervisor',
-            'academic': 'academic_supervisor',
-            'admin': 'internship_admin',
             'workplace_supervisor': 'workplace_supervisor',
             'academic_supervisor': 'academic_supervisor',
             'internship_admin': 'internship_admin',
         }
+        # Default to whatever was sent if not in map, but prefer long names
         validated_data['user_type'] = role_map.get(role, role)
+        
         email = validated_data.get('email', '')
         if not validated_data.get('username'):
             validated_data['username'] = email

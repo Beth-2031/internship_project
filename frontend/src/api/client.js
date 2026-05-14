@@ -72,6 +72,7 @@ export const updatePlacement         = (id, data) => api.patch(`/placements/${id
 export const getAllSafetyReports     = () => api.get('/safety-reports/')
 export const resolveReport           = id  => api.patch(`/safety-reports/${id}/`, { is_resolved: true })
 export const getUsers                = (type = '') => api.get(`/users/${type ? `?type=${type}` : ''}`)
+export const getUser                 = id => api.get(`/users/${id}/`)
 export const createUser              = data => api.post('/users/', data)
 export const deleteUser              = id => api.delete(`/users/${id}/`)
 export const getAdminStats           = () => api.get('/admin/stats/')

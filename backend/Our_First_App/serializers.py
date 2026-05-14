@@ -65,7 +65,7 @@ class InternshipPlacementSerializer(serializers.ModelSerializer):
                     "end_date": "End date must be after start date."
                 })
             
-            # Check for overlapping placements for the same student
+
             if student:
                 overlapping = InternshipPlacement.objects.filter(
                     student=student,
@@ -73,7 +73,7 @@ class InternshipPlacementSerializer(serializers.ModelSerializer):
                     end_date__gt=start_date
                 )
                 
-                # Exclude current instance if updating
+                
                 if self.instance:
                     overlapping = overlapping.exclude(pk=self.instance.pk)
                 
@@ -95,7 +95,7 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
         queryset=InternshipPlacement.objects.all()
     )
     
-    # Add feedback field
+    
     feedback = serializers.SerializerMethodField()
 
     class Meta:
@@ -114,20 +114,19 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
         placement = data.get('placement', getattr(self.instance, 'placement', None))
         status_val = data.get('status', getattr(self.instance, 'status', None))
         
-        # 1. Check student assignment
+        
         if student and placement and placement.student != student:
             raise serializers.ValidationError({
                 "placement": "The selected student is not assigned to this placement."
             })
 
-        # 2. Prevent editing verified logs
+
         if self.instance and self.instance.is_verified:
-            # If trying to change anything other than maybe is_verified (which supervisors do)
-            # but usually students use this serializer.
+            
             if any(key in data for key in ['tasks_done', 'hours_worked', 'challenges_faced', 'next_week_plans', 'week_number']):
                 raise serializers.ValidationError("Cannot edit a log that has already been verified.")
 
-        # 3. Deadline Enforcement for submission
+        
         if status_val == 'submitted':
             deadline = getattr(self.instance, 'submission_deadline', None)
             if deadline and timezone.now().date() > deadline:
@@ -135,7 +134,7 @@ class WeeklyLogSerializer(serializers.ModelSerializer):
                     "non_field_errors": "Submission failed. The deadline for this weekly log has passed."
                 })
             
-            # 4. Prevent submitting logs for future weeks
+            
             if placement and data.get('week_number'):
                 days_since_start = (timezone.now().date() - placement.start_date).days
                 current_week = (days_since_start // 7) + 1

@@ -262,7 +262,7 @@ def password_reset_request_view(request):
     uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
 
-    # Use settings for frontend URL if available, otherwise fallback
+    
     frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173').rstrip('/')
     reset_link = f"{frontend_url}/reset-password?uid={uidb64}&token={token}"
 
@@ -279,7 +279,7 @@ def password_reset_request_view(request):
         send_mail(subject, body, from_email, [user.email], fail_silently=False)
     except Exception as e:
         logger.error(f"Email delivery failed: {str(e)}")
-        # In development, it's helpful to see the error in the response if it's explicitly requested
+        
         if settings.DEBUG:
             return Response({'error': f'Email delivery failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return ok_response

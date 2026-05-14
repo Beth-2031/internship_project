@@ -99,13 +99,22 @@ export default function ManageUsers() {
                   <td style={{ color: 'var(--text3)', fontSize: 12 }}>{u.email || '—'}</td>
                   <td><Badge variant={TYPE_COLORS[u.user_type] || 'gray'}>{TYPE_LABELS[u.user_type] || u.user_type}</Badge></td>
                   <td style={{ textAlign: 'right' }}>
-                    <button 
-                      className="btn btn-sm" 
-                      onClick={() => handleDelete(u)}
-                      style={{ color: '#ef4444', borderColor: '#ef4444', padding: '2px 8px', fontSize: 11 }}
-                    >
-                      Delete
-                    </button>
+                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+                      <Link 
+                        to={`/admin/users/${u.id}`}
+                        className="btn btn-sm"
+                        style={{ padding: '2px 8px', fontSize: 11 }}
+                      >
+                        View
+                      </Link>
+                      <button 
+                        className="btn btn-sm" 
+                        onClick={() => handleDelete(u)}
+                        style={{ color: '#ef4444', borderColor: '#ef4444', padding: '2px 8px', fontSize: 11 }}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -40,6 +40,7 @@ import ManageUsers from './pages/admin/ManageUsers';
 import RegisterUser from './pages/admin/RegisterUser';
 import AdminSafety from './pages/admin/Safety';
 import ExportData from './pages/admin/ExportData';
+import UserDetail from './pages/admin/UserDetail';
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 
@@ -97,6 +98,7 @@ function App() {
           <Route path="/admin/placements/pending" element={<AdminPlacements pendingOnly />} />
           <Route path="/admin/users" element={<ManageUsers />} />
           <Route path="/admin/users/new" element={<RegisterUser />} />
+          <Route path="/admin/users/:id" element={<UserDetail />} />
           <Route path="/admin/safety" element={<AdminSafety />} />
           <Route path="/admin/export" element={<ExportData />} />
         </Route>

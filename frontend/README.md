@@ -11,7 +11,7 @@ A full-stack web Pplication for managing internships.
 ## Tech Stack
 - Backend: Django, Django REST Framework
 - Frontend: React, Vite, Recharts
-- Database: SQLite
+- Database: PostgreSQL
 
 ## Features
 - Student weekly log submission

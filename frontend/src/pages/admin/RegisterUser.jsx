@@ -7,6 +7,7 @@ const USER_TYPES = [
   { value: 'student',              label: 'Student' },
   { value: 'workplace_supervisor', label: 'Workplace Supervisor' },
   { value: 'academic_supervisor',  label: 'Academic Supervisor' },
+  { value: 'internship_admin',     label: 'Internship Administrator' },
 ]
 
 export default function RegisterUser() {
@@ -41,7 +42,8 @@ export default function RegisterUser() {
       setSuccess(true)
       setTimeout(() => navigate('/admin/users'), 1000)
     } catch (err) {
-      setError(err?.response?.data ? JSON.stringify(err.response.data) : 'Failed to create user')
+      const msg = err.response?.data?.error || err.response?.data || 'Failed to create user'
+      setError(typeof msg === 'object' ? JSON.stringify(msg) : msg)
     } finally {
       setLoading(false)
     }

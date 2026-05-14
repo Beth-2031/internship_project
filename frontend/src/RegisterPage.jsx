@@ -81,6 +81,12 @@ export default function RegisterPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   />
+                <input
+                     type="text"
+                     placeholder="Student Number"
+                     value={form.student_number}
+                     onChange={e => setForm({...form, student_number: e.target.value})}
+                />
 
                 {selectedRole === 'student' && (
                   <>

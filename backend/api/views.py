@@ -46,6 +46,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['id', 'email', 'username', 'first_name', 'last_name', 'user_type', 'skills', 'course', 'department', 'password', 'assigned_students']
 
+    def validate_email(self, value):
+        if CustomUser.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+        return value
+
     def create(self, validated_data):
         password = validated_data.pop('password', None)
         assigned_students = validated_data.pop('assigned_students', [])
@@ -64,6 +69,11 @@ class UserSerializer(serializers.ModelSerializer):
         email = validated_data.get('email', '')
         if not validated_data.get('username'):
             validated_data['username'] = email
+            
+        # Ensure username is unique even if email is not
+        if CustomUser.objects.filter(username=validated_data['username']).exists():
+            raise serializers.ValidationError({"username": "A user with this username/email already exists."})
+
         user = CustomUser(**validated_data)
         if password:
             user.set_password(password)
@@ -131,17 +141,26 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if not _is_admin_user(request.user):
             return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
-        if not request.data.get('email', '').strip():
+        
+        email = request.data.get('email', '').strip()
+        password = request.data.get('password', '')
+        
+        if not email:
             return Response({'error': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        if not request.data.get('password', ''):
+        if not password:
             return Response({'error': 'Password is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        if len(request.data.get('password', '')) < 8:
+        if len(password) < 8:
             return Response({'error': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
+        
         try:
-            return super().create(request, *args, **kwargs)
-        except Exception:
+            # We must use super().create here to trigger the serializer's validation and creation logic
+            response = super().create(request, *args, **kwargs)
+            return response
+        except Exception as e:
+            # Catch specific serializer errors or general exceptions
+            error_data = getattr(e, 'detail', str(e))
             return Response(
-                {'error': 'Username or email already exists'},
+                {'error': error_data},
                 status=status.HTTP_400_BAD_REQUEST
             )
 

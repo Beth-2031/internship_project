@@ -4,6 +4,8 @@ const api = axios.create({
   baseURL: '/api',
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
+  xsrfCookieName: 'csrftoken',
+  xsrfHeaderName: 'X-CSRFToken',
 })
 api.interceptors.response.use(
   res => res,

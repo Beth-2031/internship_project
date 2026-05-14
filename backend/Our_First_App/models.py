@@ -94,7 +94,7 @@ class WeeklyLog(models.Model):
         ordering = ['week_number']
 
     def is_locked(self):
-        """Lock editing onc verified/approved."""
+        """Lock editing once verified/approved."""
         return self.is_verified
 
     def __str__(self):
@@ -160,8 +160,8 @@ class Evaluation(models.Model):
 
     def save(self, *args, **kwargs):
         self.total_score = (
-            (self.supervisor_score * 40 / 100) +
-            (self.logbook_score * 30 / 100) +
+            (self.supervisor_score * 30 / 100) +
+            (self.logbook_score * 40 / 100) +
             (self.academic_score * 30 / 100)
         )
         if self.is_submitted and not self.submitted_at:

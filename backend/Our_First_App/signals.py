@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Notification, InternshipPlacement, CustomUser, SafetyReport, WeeklyLog, SupervisorReview
+from .models import Notification, InternshipPlacement, CustomUser, SafetyReport, WeeklyLog, SupervisorReview, CourseCompletion
 
 logger = logging.getLogger(__name__)
 
@@ -96,6 +96,69 @@ def notify_on_safety_report_change(sender, instance, created, **kwargs):
                 instance.student,
                 "Your safety report has been resolved."
             )
+
+
+@receiver(post_save, sender=SupervisorReview)
+def update_course_completion_on_approval(sender, instance, **kwargs):
+    """Update CourseCompletion approved hours when a log is approved."""
+    if instance.status == 'approved':
+        student = instance.log.student
+        # Get all verified logs for this student
+        verified_logs = WeeklyLog.objects.filter(student=student, is_verified=True)
+        total_approved_hours = verified_logs.aggregate(total=models.Sum('hours_worked'))['total'] or 0
+        
+        # Update or create CourseCompletion record
+        completion, created = CourseCompletion.objects.get_or_create(
+            student=student,
+            defaults={
+                'course_name': student.course or 'Internship Program',
+                'minimum_hours_required': 400, # Default if not set
+                'approved_hours': 0,
+                'is_completed': False
+            }
+        )
+        
+        completion.approved_hours = int(total_approved_hours)
+        if completion.approved_hours >= completion.minimum_hours_required:
+            if not completion.is_completed:
+                completion.is_completed = True
+        completion.save()
+
+
+@receiver(post_save, sender=CourseCompletion)
+def notify_on_course_completion(sender, instance, created, **kwargs):
+    """Send a congratulatory email when a student completes their placement requirements."""
+    # We want to detect when is_completed becomes True
+    # If it's already True, we should check if we already notified
+    if instance.is_completed:
+        subject = "Congratulations on Completing Your Internship Placement!"
+        message = (
+            f"Dear {instance.student.first_name or instance.student.username},\n\n"
+            f"Congratulations! You have successfully completed the requirements for your internship placement: {instance.course_name}.\n\n"
+            f"You have reached {instance.approved_hours} approved hours, meeting the minimum requirement of {instance.minimum_hours_required} hours.\n\n"
+            "This is a significant milestone in your professional development. Well done!\n\n"
+            "Best regards,\n"
+            "Internship Management Team"
+        )
+        
+        # Use our notification system
+        msg_text = f"Congratulations! You have completed your internship requirements for {instance.course_name}."
+        
+        # Avoid duplicate notifications
+        if not Notification.objects.filter(user=instance.student, message=msg_text).exists():
+            # Create notification (this will trigger the email via the other signal)
+            # However, the user specifically asked for a congratulatory email.
+            # The existing send_notification_email signal uses 'New Notification' as subject.
+            # We might want to send a more special email here.
+            
+            recipient_list = [instance.student.email]
+            if recipient_list[0]:
+                try:
+                    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list, fail_silently=False)
+                    # Also create a notification so they see it in the app
+                    create_notification(instance.student, msg_text)
+                except Exception as e:
+                    logger.error(f"Failed to send congratulatory email to {instance.student.email}: {e}")
 
 
 @receiver(post_save, sender=Notification)

@@ -44,7 +44,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'username', 'first_name', 'last_name', 'user_type', 'skills', 'course', 'department', 'password', 'assigned_students']
+        fields = ['id', 'email', 'username', 'first_name', 'last_name', 'user_type', 'skills', 'course', 'department', 'student_number', 'password', 'assigned_students']
 
     def validate_email(self, value):
         if CustomUser.objects.filter(email__iexact=value).exists():
@@ -356,6 +356,8 @@ def me_view(request):
         'user_type': _normalize_user_type(user.user_type),
         'course': user.course,
         'department': user.department,
+        'student_number': user.student_number,
+        'skills': user.skills,
     })
 
 

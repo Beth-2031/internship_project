@@ -83,6 +83,8 @@ export default function RegisterPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   />
+
+                <label>Student Number</label>
                 <input
                      type="text"
                      placeholder="Student Number"

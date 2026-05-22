@@ -92,14 +92,7 @@ export default function RegisterPage() {
 
                 {selectedRole === 'student' && (
                   <>
-                    <label>Student Number</label>
-                    <input
-                         type="text"
-                         placeholder="Enter your student number"
-                         value={student_number}
-                         onChange={e => setstudent_number(e.target.value)}
-                         required
-                    />
+              
 
                     <label>Course</label>
                     <input

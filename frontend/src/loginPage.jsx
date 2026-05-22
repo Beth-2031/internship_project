@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from './context/Authcontext';
 import './STYLES/loginPage.css';
 const roles =[
@@ -112,6 +112,7 @@ export default function LoginPage(){
             </button>
 
              <button type="submit" className="Login-button" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
+             <Link to="/" className="forgot-link" style={{ display: 'block', marginTop: '10px' }}>Don't have an account? Register</Link>
            </form>
          </div>
         );

@@ -216,6 +216,7 @@ def register_view(request):
     full_name = request.data.get('full_name', '')
     course = request.data.get('course', '')
     department = request.data.get('department', '')
+    student_number = request.data.get('student_number', '')
 
     if not email or not password:
         return Response({'error': 'Email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -254,6 +255,7 @@ def register_view(request):
         last_name=last_name,
         course=course or None,
         department=department or None,
+        student_number=student_number or None,
     )
     return Response({'message': 'Registration successful', 'user_type': user_type})
 

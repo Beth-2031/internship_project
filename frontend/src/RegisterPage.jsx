@@ -15,7 +15,6 @@ export default function RegisterPage() {
     const [studentnumber, setStudentNumber] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [student_number, setstudent_number] = useState('');
     const [course, setCourse] = useState('');
     const [department, setDepartment] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -87,7 +86,7 @@ export default function RegisterPage() {
                 <input
                      type="text"
                      placeholder="Student Number"
-                     value={form.student_number}
+                     value={studentNumber}
                      onChange={(e) => setStudentNumber(e.target.value)}
                 />
 

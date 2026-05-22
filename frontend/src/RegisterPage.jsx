@@ -12,9 +12,9 @@ const roles = [
 export default function RegisterPage() {
     const [selectedRole, setSelectedRole] = useState('student');
     const [fullName, setFullName] = useState('');
+    const [studentNumber, setStudentNumber] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [student_number, setstudent_number] = useState('');
     const [course, setCourse] = useState('');
     const [department, setDepartment] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +32,7 @@ export default function RegisterPage() {
             password,
             role: selectedRole,
             full_name: fullName,
-            student_number,
+            student_number: studentnumber,
             course,
             department,
           })
@@ -83,6 +83,12 @@ export default function RegisterPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   />
+                <input
+                     type="text"
+                     placeholder="Student Number"
+                     value={studentNumber}
+                     onChange={(e) => setStudentNumber(e.target.value)}
+                />
 
                 {selectedRole === 'student' && (
                   <>

@@ -12,7 +12,7 @@ const roles = [
 export default function RegisterPage() {
     const [selectedRole, setSelectedRole] = useState('student');
     const [fullName, setFullName] = useState('');
-    const [studentnumber, setStudentNumber] = useState('');
+    const [studentNumber, setStudentNumber] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [course, setCourse] = useState('');

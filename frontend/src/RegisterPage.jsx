@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './STYLES/loginPage.css';
 import { register as apiRegister } from './api/client'
 import { useNotification } from './components/layout/Notification'
@@ -21,7 +21,7 @@ export default function RegisterPage() {
     const navigate = useNavigate()
     const {addNotification} = useNotification();
     const testUpload = async () => {
-      addNotification('Testing upload...', 'success',4000);
+      addNotification('Testing upload...', 'success');
     };
 
     const handleRegister = async (e) => {
@@ -32,6 +32,7 @@ export default function RegisterPage() {
             password,
             role: selectedRole,
             full_name: fullName,
+            student_number,
             course,
             department,
           })
@@ -82,15 +83,18 @@ export default function RegisterPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   />
-                <input
-                     type="text"
-                     placeholder="Student Number"
-                     value={form.student_number}
-                     onChange={e => setForm({...form, student_number: e.target.value})}
-                />
 
                 {selectedRole === 'student' && (
                   <>
+                    <label>Student Number</label>
+                    <input
+                         type="text"
+                         placeholder="Enter your student number"
+                         value={student_number}
+                         onChange={e => setstudent_number(e.target.value)}
+                         required
+                    />
+
                     <label>Course</label>
                     <input
                       type="text"
@@ -129,9 +133,9 @@ export default function RegisterPage() {
                     </span>
                   </div>
 
-                  <button type="submit" onClick = {testUpload} className="login-button">Register</button>
+                  <button type="submit" className="login-button">Register</button>
 
-                  <a href="/login" className="forgot-link">Already have an account? Login</a>
+                  <Link to="/login" className="forgot-link">Already have an account? Login</Link>
                 </form>
              </div>
       );

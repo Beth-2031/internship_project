@@ -7,7 +7,6 @@ import './STYLES/index.css'
 import App from './App'
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
     <AuthProvider>
       <ToastProvider>
         <NotificationProvider>
@@ -15,5 +14,4 @@ createRoot(document.getElementById("root")).render(
         </NotificationProvider>
       </ToastProvider>
     </AuthProvider>
-  </StrictMode>,
 )

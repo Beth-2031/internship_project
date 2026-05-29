@@ -21,3 +21,17 @@
 -SafetyReport - student safety incident reports
 -CourseCompletion - tracks course hours completion
 -Notification - system notifications for users
+
+## API Endpoints
+-/api/placements/ - manage internship placements
+-/api/weekly-logs/ - submit and review weekly logs
+-/api/supervisor-reviews/ - supervisor review workflow
+-/api/evaluations/ - score computation and storage
+-/api/safety-reports/ - safety incident management
+-/api/notifications/ - user notifications
+-/api/users/ - user management
+
+## Score Computation
+Total score = (Supervisor Score x 40%) + (Logbook Score  x 30%) + (Academic Score x 30%)
+
+

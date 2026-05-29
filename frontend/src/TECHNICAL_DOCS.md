@@ -34,4 +34,7 @@
 ## Score Computation
 Total score = (Supervisor Score x 40%) + (Logbook Score  x 30%) + (Academic Score x 30%)
 
-
+## Authentication 
+-Session based authentication using Django
+-Login required for all endpoints
+-Role based access control on all views

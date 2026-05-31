@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom'
 import { getUsers, deleteUser } from '../../api/client'
 import { useFetch } from '../../hooks/useFetch'
 import { Card, Badge, Empty, LoadingScreen } from '../../components/ui'
+import { useAuth } from '../../context/Authcontext'
 
 const TYPE_LABELS = {
   student:               'Student',
@@ -18,12 +19,17 @@ const TYPE_COLORS = {
 }
 
 export default function ManageUsers() {
+  const { user: currentUser } = useAuth()
   const [searchParams] = useSearchParams()
   const typeFilter = searchParams.get('type') || ''
   const { data: users, loading, refetch } = useFetch(() => getUsers(typeFilter), [typeFilter])
   const [search, setSearch] = useState('')
 
   const handleDelete = async (user) => {
+    if (user.id === currentUser?.id) {
+      alert("You cannot delete your own account.")
+      return
+    }
     if (!window.confirm(`Are you sure you want to delete ${user.first_name} ${user.last_name}?`)) return
     try {
       await deleteUser(user.id)
@@ -110,7 +116,14 @@ export default function ManageUsers() {
                       <button 
                         className="btn btn-sm" 
                         onClick={() => handleDelete(u)}
-                        style={{ color: '#ef4444', borderColor: '#ef4444', padding: '2px 8px', fontSize: 11 }}
+                        disabled={u.id === currentUser?.id}
+                        style={{ 
+                          color: u.id === currentUser?.id ? '#9ca3af' : '#ef4444', 
+                          borderColor: u.id === currentUser?.id ? '#e5e7eb' : '#ef4444', 
+                          padding: '2px 8px', 
+                          fontSize: 11,
+                          cursor: u.id === currentUser?.id ? 'not-allowed' : 'pointer'
+                        }}
                       >
                         Delete
                       </button>

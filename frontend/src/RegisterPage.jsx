@@ -32,7 +32,7 @@ export default function RegisterPage() {
             password,
             role: selectedRole,
             full_name: fullName,
-            student_number: studentnumber,
+            student_number: studentNumber,
             course,
             department,
           })
@@ -84,17 +84,15 @@ export default function RegisterPage() {
                   required
                   />
 
-                <label>Student Number</label>
-                <input
-                     type="text"
-                     placeholder="Student Number"
-                     value={studentNumber}
-                     onChange={(e) => setStudentNumber(e.target.value)}
-                />
-
                 {selectedRole === 'student' && (
                   <>
-              
+                    <label>Student Number</label>
+                    <input
+                         type="text"
+                         placeholder="Student Number"
+                         value={studentNumber}
+                         onChange={(e) => setStudentNumber(e.target.value)}
+                    />
 
                     <label>Course</label>
                     <input

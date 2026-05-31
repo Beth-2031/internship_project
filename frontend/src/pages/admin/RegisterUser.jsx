@@ -15,6 +15,7 @@ export default function RegisterUser() {
   const [form, setForm] = useState({
     first_name: '', last_name: '',
     email: '', password: '', user_type: 'student', skills: '',
+    course: '', department: '', student_number: '',
     assigned_students: [],
   })
   const [error,   setError]   = useState('')
@@ -89,6 +90,22 @@ export default function RegisterUser() {
               </select>
             </div>
           </div>
+          {form.user_type === 'student' && (
+            <>
+              <div className="form-group">
+                <label className="form-label">Student Number</label>
+                <input className="form-control" value={form.student_number} onChange={e => set('student_number', e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Course</label>
+                <input className="form-control" placeholder="e.g. BSc Computer Science" value={form.course} onChange={e => set('course', e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Department</label>
+                <input className="form-control" placeholder="e.g. Faculty of Computing" value={form.department} onChange={e => set('department', e.target.value)} />
+              </div>
+            </>
+          )}
           <div className="form-group">
             <label className="form-label">Skills (optional)</label>
             <textarea className="form-control" rows={3}

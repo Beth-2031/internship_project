@@ -48,7 +48,7 @@ const Home = () => {
         <h2>Choose Your Role</h2>
         <div className="roles-grid">
           <div className="role-box">
-            <h3>👨‍🎓 Student / Intern</h3>
+            <h3>👨‍🎓 Student | Intern</h3>
             <p>Find and apply for internship opportunities</p>
             <button className="role-button">Login as Student</button>
           </div>
@@ -59,14 +59,14 @@ const Home = () => {
           </div>
           <div className="role-box">
             <h3>🔐 Administrator</h3>
-            <p>Oversee the entire platform and manage all users</p>
+            <p>Oversee the whole platform and manage all users</p>
             <button className="role-button">Login as Admin</button>
           </div>
         </div>
       </section>
 
       <footer className="home-footer">
-        <p>&copy; 2026 InternTrack. All rights reserved.</p>
+        <p>&copy; InternTrack. All rights reserved.</p>
       </footer>
     </div>
   );

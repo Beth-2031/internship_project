@@ -59,7 +59,7 @@ const Home = () => {
           </div>
           <div className="role-box">
             <h3>🔐 Administrator</h3>
-            <p>Oversee the whole platform and manage all users</p>
+            <p>Oversee the  platform and manage all users</p>
             <button className="role-button">Login as Admin</button>
           </div>
         </div>

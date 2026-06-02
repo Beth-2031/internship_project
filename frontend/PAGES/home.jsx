@@ -34,7 +34,7 @@ const Home = () => {
             <p>Browse and apply to opportunities from leading companies.</p>
           </div>
           <div className="feature-card">
-            <h3>👥 Mentor Connection</h3>
+            <h3>👥 Mentor Connections</h3>
             <p>Connect with supervisors and mentors for guidance throughout your internship.</p>
           </div>
           <div className="feature-card">

@@ -32,3 +32,8 @@
 2. Click on a pending log
 3. Add comments and click Approve or Reject
 
+## Academic Supervisor Guide 
+### Monitor Student
+1. Go to your dashboard
+2. View all students under your supervision
+3. chack their progress and scores

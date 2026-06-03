@@ -25,3 +25,10 @@
 1. Go to Safety Reports
 2. Click Report an Issue
 3. Describe the issue and submit
+
+## Workplace Supervisor Guide
+### Review Weekly Logs
+1. Go to your dashboard
+2. Click on a pending log
+3. Add comments and click Approve or Reject
+

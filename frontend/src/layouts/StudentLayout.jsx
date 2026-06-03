@@ -2,7 +2,7 @@
 import AppLayout from '../components/layout/AppLayout'
 import { useFetch } from '../hooks/useFetch'
 import { getSafetyReports, getWeeklyLogs } from '../api/client'
-import ToastContainer from '../components/layout/ToastContainer'
+import ToastContainer from '../components/layout/toastContainer'
 
 export function StudentLayout() {
   const { data: logs }   = useFetch(getWeeklyLogs)

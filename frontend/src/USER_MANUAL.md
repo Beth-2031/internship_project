@@ -11,3 +11,17 @@
 1. Click Register on the login page
 2. Fill in your full name, email, student number, course, department and password
 3. click Register
+
+### Submit Weekly Log
+1. Go to Weekly Logs from your dashboard 
+2. click New log
+3. Fill in tasks done, hours worked, challeges and next week plans
+4. Click Submit 
+
+### View Your Score
+- Your total weighted score is visible on your dashboard
+
+### Report Safety Issues
+1. Go to Safety Reports
+2. Click Report an Issue
+3. Describe the issue and submit

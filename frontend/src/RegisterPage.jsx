@@ -39,12 +39,17 @@ export default function RegisterPage() {
           alert('Registration successful! Please login')
           navigate('/login')
         } catch (error) {
-            const msg =
-              error?.response?.data?.error ||
-              error?.message ||
-              'Server error. Is Django running?'
-            alert(msg);
-        }
+    console.log('Full error:', error)
+    console.log('Response data:', error?.response?.data)
+    console.log('Message:', error?.message)
+    const msg =
+      error?.response?.data?.error ||
+      error?.response?.data?.detail ||
+      JSON.stringify(error?.response?.data) ||
+      error?.message ||
+      'Server error'
+    alert(msg);
+}
       };
 
       return (

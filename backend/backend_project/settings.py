@@ -90,6 +90,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5174',
     'http://localhost:3000',
     'https://internship-project-five-alpha.vercel.app'
+    'https://iles-django-7119b58af980.herokuapp.com'
 ]
 
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -172,6 +173,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://localhost:5174',
     'https://internship-project-five-alpha.vercel.app'
+    'https://iles-django-7119b58af980.herokuapp.com'
 ]
 
 

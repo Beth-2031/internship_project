@@ -16,12 +16,26 @@ from dotenv import load_dotenv
 import django_heroku
 import dj_database_url
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables from .env file
 load_dotenv(BASE_DIR / '.env')
 
+if os.environ.get('DATABASE_URL'):
+    # Heroku - use Postgres
+    DATABASES = {
+        'default': dj_database_url.config(conn_max_age=600)
+    }
+else:
+    # Local - use SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -75,6 +89,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
     'http://localhost:5174',
     'http://localhost:3000',
+     'https://internship-project-five-alpha.vercel.app'
 ]
 
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -104,17 +119,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend_project.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-DATABASES = {
-    
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation
@@ -167,6 +171,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:5173',
     'http://localhost:5174',
+    'https://internship-project-five-alpha.vercel.app'
 ]
 
 
@@ -182,4 +187,4 @@ FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIR =(os.path.join(BASE_DIR, 'static'), )
 
-django_heroku.settings(locals())
+django_heroku.settings(locals(), databases=False)

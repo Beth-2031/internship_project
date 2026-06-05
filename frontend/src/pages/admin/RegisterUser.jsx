@@ -52,7 +52,7 @@ export default function RegisterUser() {
     <div className="fade-up" style={{ maxWidth: 600 }}>
       <div className="page-header">
         <h1>Register New User</h1>
-        <p>Add a student, supervisor, or administrator to the system</p>
+        <p>Add a supervisor or administrator to the system</p>
       </div>
 
       {success && <Alert variant="green">User registered successfully! Redirecting…</Alert>}

@@ -78,8 +78,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -185,4 +183,4 @@ FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIR =(os.path.join(BASE_DIR, 'static'), )
 
-django_heroku.settings(locals(), databases=False)
+django_heroku.settings(locals(), databases=False, security=False)

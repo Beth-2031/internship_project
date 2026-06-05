@@ -10,7 +10,16 @@ import api from './api/client'
 function Root() {
   useEffect(() => {
     // Fetch CSRF token on app load
-    api.get('/csrf-token/').catch(() => {})
+    const fetchCsrfToken = async () => {
+      try {
+        console.log('Fetching CSRF token...')
+        await api.get('/csrf-token/')
+        console.log('CSRF token fetched successfully!')
+      } catch (err) {
+        console.error('Failed to fetch CSRF token:', err)
+      }
+    }
+    fetchCsrfToken()
   }, [])
 
   return (

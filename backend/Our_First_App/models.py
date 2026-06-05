@@ -25,7 +25,16 @@ class CustomUser(AbstractUser):
     skills = models.TextField(blank=True, null=True)
     course = models.CharField(max_length=100, blank=True, null=True)
     department = models.CharField(max_length=100, blank=True, null=True)
-    student_number = models.CharField(max_length=20, blank=True, null=True, unique=True)
+    student_number = models.CharField(max_length=20, blank=True, null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['student_number'],
+                name='unique_student_number',
+                condition=models.Q(student_number__isnull=False)
+            )
+        ]
 
     def __str__(self):
         return f"{self.username} ({self.user_type})"

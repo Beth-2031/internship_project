@@ -14,6 +14,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import viewsets, serializers, status
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login, logout
 import csv
 from Our_First_App.models import (
@@ -113,7 +114,7 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]

@@ -153,6 +153,10 @@ export default function StudentDashboard() {
                   <div style={{ fontWeight: 600 }}>{user.first_name} {user.last_name}</div>
                 </div>
                 <div className="detail-item" style={{ marginBottom: 12 }}>
+                  <div className="card-kicker">Username</div>
+                  <div style={{ fontWeight: 600 }}>{user.username || 'Not provided'}</div>
+                </div>
+                <div className="detail-item" style={{ marginBottom: 12 }}>
                   <div className="card-kicker">Student Number</div>
                   <div style={{ fontWeight: 600 }}>{user.student_number || 'Not provided'}</div>
                 </div>

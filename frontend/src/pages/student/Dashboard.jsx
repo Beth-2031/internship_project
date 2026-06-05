@@ -3,6 +3,7 @@ import { getMyPlacement, getWeeklyLogs, getSafetyReports, getCourseCompletion, g
 import { StatCard, Badge, Card, Progress, Empty, LoadingScreen } from '../../components/ui'
 import { Link } from 'react-router-dom'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { useAuth } from '../../context/Authcontext'
 
 function progressPercent(start, end) {
   const now   = Date.now()
@@ -14,6 +15,7 @@ function progressPercent(start, end) {
 }
 
 export default function StudentDashboard() {
+  const { user } = useAuth()
   const { data: placement, loading: lp } = useFetch(getMyPlacement)
   const { data: logs,      loading: ll } = useFetch(getWeeklyLogs)
   const { data: safety,    loading: ls } = useFetch(getSafetyReports)
@@ -143,6 +145,41 @@ export default function StudentDashboard() {
 
         {/* Right column */}
         <div>
+          {user && (
+            <Card title="Student Profile" subtitle="Your personal details" style={{ marginBottom: 16 }}>
+              <div className="profile-details">
+                <div className="detail-item" style={{ marginBottom: 12 }}>
+                  <div className="card-kicker">Full Name</div>
+                  <div style={{ fontWeight: 600 }}>{user.first_name} {user.last_name}</div>
+                </div>
+                <div className="detail-item" style={{ marginBottom: 12 }}>
+                  <div className="card-kicker">Student Number</div>
+                  <div style={{ fontWeight: 600 }}>{user.student_number || 'Not provided'}</div>
+                </div>
+                <div className="detail-item" style={{ marginBottom: 12 }}>
+                  <div className="card-kicker">Email</div>
+                  <div style={{ fontWeight: 600 }}>{user.email}</div>
+                </div>
+                <div className="detail-item" style={{ marginBottom: 12 }}>
+                  <div className="card-kicker">Course</div>
+                  <div style={{ fontWeight: 600 }}>{user.course || 'Not specified'}</div>
+                </div>
+                <div className="detail-item" style={{ marginBottom: 12 }}>
+                  <div className="card-kicker">Department</div>
+                  <div style={{ fontWeight: 600 }}>{user.department || 'Not specified'}</div>
+                </div>
+                {user.skills && (
+                  <div className="detail-item">
+                    <div className="card-kicker">Skills</div>
+                    <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: 4 }}>
+                      {user.skills}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Card>
+          )}
+
           {course && (
             <Card title="Course Completion" subtitle={course.course_name} style={{ marginBottom: 16 }}>
               <div className="row-between" style={{ fontSize: 13, marginBottom: 8 }}>

@@ -77,6 +77,15 @@ if not CSRF_TRUSTED_ORIGINS:
     # Default to whatever is in CORS_ALLOWED_ORIGINS as a fallback
     CSRF_TRUSTED_ORIGINS = [host.strip() for host in os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173,http://localhost:3000').split(',') if host.strip()]
 
+# Cookie settings for cross-origin requests
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_NAME = 'csrftoken'
+
 
 AUTH_USER_MODEL = 'Our_First_App.CustomUser'
 LOGIN_REDIRECT_URL = 'redirect_user'

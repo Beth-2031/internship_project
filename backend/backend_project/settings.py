@@ -168,7 +168,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIR =(os.path.join(BASE_DIR, 'static'), )
 
 django_heroku.settings(locals(), databases=False)
-django_heroku.settings(locals(), databases=False)
 
 # This must be AFTER django_heroku to prevent it being overridden
 REST_FRAMEWORK = {

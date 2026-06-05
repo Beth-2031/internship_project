@@ -356,6 +356,8 @@ def me_view(request):
         'user_type': _normalize_user_type(user.user_type),
         'course': user.course,
         'department': user.department,
+        'student_number': user.student_number,
+        'skills': user.skills,
     })
 
 

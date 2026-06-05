@@ -13,19 +13,21 @@ export function NotificationProvider({ children }) {
 
   const fetchNotifications = useCallback(async () => {
     if (!user) return
+    setLoading(true)
     try {
       const res = await getNotifications()
-      setNotifications(res.data || [])
+      setNotifications(Array.isArray(res.data) ? res.data : [])
     } catch {
       // Silently fail — notifications are non-critical
+    } finally {
+      setLoading(false)
     }
   }, [user])
 
   // Initial fetch + polling
   useEffect(() => {
-    if (!user) { setNotifications([]); return }
-    setLoading(true)
-    fetchNotifications().finally(() => setLoading(false))
+    if (!user) return
+    fetchNotifications()
 
     const interval = setInterval(fetchNotifications, POLL_INTERVAL)
     return () => clearInterval(interval)
@@ -47,15 +49,17 @@ export function NotificationProvider({ children }) {
     } catch { /* non-critical */ }
   }, [])
 
-  const unreadCount = notifications.filter(n => !n.is_read).length
+  const effectiveNotifications = Array.isArray(notifications) ? notifications : []
+  const unreadCount = effectiveNotifications.filter(n => !n.is_read).length
 
   return (
-    <NotificationContext.Provider value={{ notifications, unreadCount, loading, markRead, markAllRead, refetch: fetchNotifications }}>
+    <NotificationContext.Provider value={{ notifications: effectiveNotifications, unreadCount, loading, markRead, markAllRead, refetch: fetchNotifications }}>
       {children}
     </NotificationContext.Provider>
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useNotifications = () => {
   const ctx = useContext(NotificationContext)
   if (!ctx) throw new Error('useNotifications must be used within NotificationProvider')

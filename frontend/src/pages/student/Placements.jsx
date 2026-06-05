@@ -2,7 +2,6 @@ import { useFetch } from '../../hooks/useFetch'
 import { Card, Progress } from '../../components/ui'
 import { getMyPlacement } from '../../api/client'
 import Placements from '../../components/ui/placements'
-import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // Simple progress calculator (weeks over 26-week internship)
@@ -19,13 +18,7 @@ function progressPercent(startDate, endDate) {
 export default function StudentPlacements() {
   const navigate = useNavigate()
   const { data: placement, loading } = useFetch(getMyPlacement)
-  const [progress, setProgress] = useState(0)
-
-  useEffect(() => {
-    if (placement) {
-      setProgress(progressPercent(placement.start_date, placement.end_date))
-    }
-  }, [placement])
+  const progress = placement ? progressPercent(placement.start_date, placement.end_date) : 0
 
   if (!placement) {
     return (

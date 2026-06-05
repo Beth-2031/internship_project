@@ -6,7 +6,7 @@ import Placements from '../../components/ui/placements'
 export default function SupervisorPlacements() {
   const { data: students, loading } = useFetch(getSupervisorStudents)
 
-  const renderActions = (placement) => null // No actions for supervisor view
+  const renderActions = () => null // No actions for supervisor view
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto' }}>

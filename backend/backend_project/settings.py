@@ -86,11 +86,8 @@ MIDDLEWARE = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:3000',
-    'https://internship-project-five-alpha.vercel.app'
-    'https://iles-django-7119b58af980.herokuapp.com'
+    origin.strip() 
+    for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', 'http://localhost:5173').split(',')
 ]
 
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -169,11 +166,8 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'https://internship-project-five-alpha.vercel.app'
-    'https://iles-django-7119b58af980.herokuapp.com'
+    origin.strip() 
+    for origin in os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173').split(',')
 ]
 
 

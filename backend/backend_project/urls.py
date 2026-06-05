@@ -16,6 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.urls import path, include
 from api.views import (
     login_view,
     register_view,
@@ -26,6 +29,10 @@ from api.views import (
     password_reset_request_view,
     password_reset_confirm_view,
 )
+
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return JsonResponse({'detail': 'CSRF cookie set'})
 
 urlpatterns = [
     path('admin/', admin.site.urls),

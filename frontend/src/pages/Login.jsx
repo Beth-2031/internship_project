@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { register } from '../api/client'
+import api from '../api/client'
 
 const ROLE_ROUTES = {
   student:               '/student',
@@ -347,6 +348,10 @@ function RegisterForm({ onSwitch }) {
 // ─── Page shell ───────────────────────────────────────────────
 export default function Login({ defaultTab = 'login' }) {
   const [tab, setTab] = useState(defaultTab)
+
+  useEffect(() => {
+    api.get('/csrf/').catch(() => {})
+  }, [])
 
   return (
     <div style={{

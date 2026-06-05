@@ -24,6 +24,9 @@ from Our_First_App.models import (
     SafetyReport,
     CourseCompletion,
 )
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    def enforce_csrf(self, request):
+        return
 
 @api_view(['GET'])
 @permission_classes([AllowAny])

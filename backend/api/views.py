@@ -4,7 +4,7 @@ import os
 import logging
 
 logger = logging.getLogger(__name__)
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -24,6 +24,13 @@ from Our_First_App.models import (
     SafetyReport,
     CourseCompletion,
 )
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+@authentication_classes([])
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return Response({'detail': 'CSRF cookie set'})
 
 
 def _normalize_user_type(user_type):

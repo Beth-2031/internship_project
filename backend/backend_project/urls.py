@@ -36,6 +36,7 @@ def get_csrf_token(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/csrf-token/', get_csrf_token, name='csrf-token'),
     path('api/login/', login_view, name='login'),
     path('api/register/', register_view, name='register'),
     path('api/password-reset/request/', password_reset_request_view, name='password-reset-request'),

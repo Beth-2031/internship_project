@@ -4,7 +4,6 @@ import { createUser, getUsers } from '../../api/client'
 import { Card, Alert } from '../../components/ui'
 
 const USER_TYPES = [
-  { value: 'student',              label: 'Student' },
   { value: 'workplace_supervisor', label: 'Workplace Supervisor' },
   { value: 'academic_supervisor',  label: 'Academic Supervisor' },
   { value: 'internship_admin',     label: 'Internship Administrator' },
@@ -14,7 +13,7 @@ export default function RegisterUser() {
   const navigate = useNavigate()
   const [form, setForm] = useState({
     first_name: '', last_name: '',
-    email: '', password: '', user_type: 'student', skills: '',
+    email: '', password: '', user_type: 'workplace_supervisor', skills: '',
     assigned_students: [],
   })
   const [error,   setError]   = useState('')
@@ -89,6 +88,7 @@ export default function RegisterUser() {
               </select>
             </div>
           </div>
+
           <div className="form-group">
             <label className="form-label">Skills (optional)</label>
             <textarea className="form-control" rows={3}

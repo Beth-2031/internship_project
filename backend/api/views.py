@@ -211,10 +211,10 @@ def login_view(request):
                     'user_type': _normalize_user_type(user.user_type),
                 }
             })
-        else:
-            return Response({'error': 'Invalid credentials'}, status=400)
     except CustomUser.DoesNotExist:
-        return Response({'error': 'Invalid credential'}, status=400)
+        # Still run password check to avoid timing attacks
+        CustomUser().set_password(password)
+    return Response({'error': 'Invalid credentials'}, status=400)
 
 
 @csrf_exempt

@@ -13,8 +13,12 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-import django_heroku
 import dj_database_url
+
+try:
+    import django_heroku
+except ImportError:
+    django_heroku = None
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -165,14 +169,15 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIR =(os.path.join(BASE_DIR, 'static'), )
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-django_heroku.settings(locals(), databases=False)
+if django_heroku:
+    django_heroku.settings(locals(), databases=False)
 
 # This must be AFTER django_heroku to prevent it being overridden
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'api.views.CsrfExemptSessionAuthentication',
+        'api.authentication.CsrfExemptSessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [

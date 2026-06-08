@@ -25,10 +25,12 @@ from api.views import (
     export_view,
     password_reset_request_view,
     password_reset_confirm_view,
+    get_csrf_token,
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/csrf-token/', get_csrf_token, name='csrf-token'),
     path('api/login/', login_view, name='login'),
     path('api/register/', register_view, name='register'),
     path('api/password-reset/request/', password_reset_request_view, name='password-reset-request'),

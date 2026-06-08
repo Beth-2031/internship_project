@@ -4,7 +4,6 @@ import { createUser, getUsers } from '../../api/client'
 import { Card, Alert } from '../../components/ui'
 
 const USER_TYPES = [
-  { value: 'student',              label: 'Student' },
   { value: 'workplace_supervisor', label: 'Workplace Supervisor' },
   { value: 'academic_supervisor',  label: 'Academic Supervisor' },
   { value: 'internship_admin',     label: 'Internship Administrator' },
@@ -14,8 +13,7 @@ export default function RegisterUser() {
   const navigate = useNavigate()
   const [form, setForm] = useState({
     first_name: '', last_name: '',
-    email: '', password: '', user_type: 'student', skills: '',
-    course: '', department: '', student_number: '',
+    email: '', password: '', user_type: 'workplace_supervisor', skills: '',
     assigned_students: [],
   })
   const [error,   setError]   = useState('')
@@ -54,7 +52,7 @@ export default function RegisterUser() {
     <div className="fade-up" style={{ maxWidth: 600 }}>
       <div className="page-header">
         <h1>Register New User</h1>
-        <p>Add a student, supervisor, or administrator to the system</p>
+        <p>Add a supervisor or administrator to the system</p>
       </div>
 
       {success && <Alert variant="green">User registered successfully! Redirecting…</Alert>}

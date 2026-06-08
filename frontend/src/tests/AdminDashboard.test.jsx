@@ -12,6 +12,7 @@ vi.mock('../api/client', async (imprtOriginal) => ({
     adminApprovedPlacement: vi.fn(() => Promise.resolve({})),
     adminDenyPlacement: vi.fn(() => Promise.resolve({})),
     resolveReport: vi.fn(() => Promise.resolve({})),
+    getEvaluation: vi.fn(() => Promise.resolve([])),
 }))
 
 describe('AdminDashboard', () => {

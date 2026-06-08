@@ -4,16 +4,18 @@ import os
 import logging
 
 logger = logging.getLogger(__name__)
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 from rest_framework import viewsets, serializers, status
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login, logout
 import csv
 from Our_First_App.models import (
@@ -23,6 +25,16 @@ from Our_First_App.models import (
     SafetyReport,
     CourseCompletion,
 )
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    def enforce_csrf(self, request):
+        return
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+@authentication_classes([])
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return Response({'detail': 'CSRF cookie set'})
 
 
 def _normalize_user_type(user_type):
@@ -113,7 +125,7 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
@@ -203,10 +215,10 @@ def login_view(request):
                     'skills': user.skills,
                 }
             })
-        else:
-            return Response({'error': 'Invalid credentials'}, status=400)
     except CustomUser.DoesNotExist:
-        return Response({'error': 'Invalid credential'}, status=400)
+        # Still run password check to avoid timing attacks
+        CustomUser().set_password(password)
+    return Response({'error': 'Invalid credentials'}, status=400)
 
 
 @csrf_exempt

@@ -10,6 +10,11 @@ vi.mock('../api/client', () => ({
     getWeeklyLogs: vi.fn(() => Promise.resolve([])),
     getSafetyReports: vi.fn(() => Promise.resolve([])),
     getCourseCompletion: vi.fn(() => Promise.resolve(null)),
+    getEvaluation: vi.fn(() => Promise.resolve(null)),
+}))
+
+vi.mock('../context/Authcontext', () => ({
+    useAuth: () => ({ user: { username: 'teststudent', first_name: 'Test', last_name: 'Student' } }),
 }))
 
 describe('StudentDashboard', () => {

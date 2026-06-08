@@ -9,7 +9,7 @@ export default function AdminDashboard() {
   const { data: placements, loading: lp, refetch: refPl } = useFetch(getAllPlacements)
   const { data: safety,     loading: ls, refetch: refSf } = useFetch(getAllSafetyReports)
   const { data: stats,      loading: lst }                = useFetch(getAdminStats)
-  const { data: evaluations, loading:le }                     = useFetch(getEvaluation)
+  const { data: evaluations }                     = useFetch(getEvaluation)
   const [acting, setActing]     = useState(null)
   const [exporting, setExporting] = useState(false)
 

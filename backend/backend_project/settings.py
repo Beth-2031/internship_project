@@ -13,12 +13,14 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+
 import dj_database_url
 
 try:
     import django_heroku
 except ImportError:
     django_heroku = None
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -144,12 +146,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'Our_First_App.CustomUser'
 LOGIN_REDIRECT_URL = 'redirect_user'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
-STATIC_URL = '/static/'
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 
@@ -169,6 +170,7 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 if django_heroku:
@@ -195,3 +197,4 @@ SESSION_COOKIE_HTTPONLY = True
 
 CSRF_COOKIE_NAME = 'csrftoken'
 CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
+

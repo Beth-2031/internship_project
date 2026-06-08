@@ -9,7 +9,7 @@ export default function AcademicDashboard() {
   const { data: pending, loading: lpd, refetch: refPending }  = useFetch(getPendingPlacements)
   const { data: courses,  loading: lc }                       = useFetch(getCourseCompletions)
   const { data: safety,   loading: ls }                       = useFetch(getAcademicSafetyReports)
-  const { data: evaluations, loading:le }                     = useFetch(getEvaluation)
+  const { data: evaluations }                     = useFetch(getEvaluation)
   const [acting, setActing] = useState(null)
 
   if (lp || lpd || lc || ls) return <LoadingScreen />

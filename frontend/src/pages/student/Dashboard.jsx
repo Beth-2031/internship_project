@@ -20,7 +20,7 @@ export default function StudentDashboard() {
   const { data: logs,      loading: ll } = useFetch(getWeeklyLogs)
   const { data: safety,    loading: ls } = useFetch(getSafetyReports)
   const { data: course,    loading: lc } = useFetch(getCourseCompletion)
-  const { data: evaluation, loading: le } = useFetch(getEvaluation)
+  const { data: evaluation } = useFetch(getEvaluation)
 
   if (lp || ll || ls || lc) return <LoadingScreen />
 
@@ -151,6 +151,10 @@ export default function StudentDashboard() {
                 <div className="detail-item" style={{ marginBottom: 12 }}>
                   <div className="card-kicker">Full Name</div>
                   <div style={{ fontWeight: 600 }}>{user.first_name} {user.last_name}</div>
+                </div>
+                <div className="detail-item" style={{ marginBottom: 12 }}>
+                  <div className="card-kicker">Username</div>
+                  <div style={{ fontWeight: 600 }}>{user.username || 'Not provided'}</div>
                 </div>
                 <div className="detail-item" style={{ marginBottom: 12 }}>
                   <div className="card-kicker">Student Number</div>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useFetch } from '../../hooks/useFetch'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Card, Badge, ActionButton, Empty } from '../../components/ui'
 import { adminApprovePlacement, adminDenyPlacement, getAllPlacements } from '../../api/client'
 import Placements from '../../components/ui/placements'
@@ -8,10 +8,8 @@ import Placements from '../../components/ui/placements'
 export default function AdminPlacements() {
   const { data: placements, loading, refetch } = useFetch(getAllPlacements)
   const [acting, setActing] = useState(null)
-  const navigate = useNavigate()
 
   const pending = placements?.filter(p => !p.is_approved) ?? []
-  const approvedCount = placements?.length - pending.length ?? 0
 
   const handleApprove = async (id) => {
     setActing(id)

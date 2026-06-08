@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useFetch } from '../../hooks/useFetch'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Card, Badge, ActionButton } from '../../components/ui'
 import { getAcademicPlacements, getPendingPlacements, approvePlacement, denyPlacement } from '../../api/client'
 import Placements from '../../components/ui/placements'
@@ -46,7 +46,7 @@ export default function AcademicPlacements() {
     </div>
   )
 
-  const renderStudentActions = (placement) => (
+  const renderStudentActions = () => (
     <Badge variant="green">Active</Badge>
   )
 

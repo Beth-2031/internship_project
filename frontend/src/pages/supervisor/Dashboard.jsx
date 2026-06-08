@@ -11,7 +11,7 @@ export default function SupervisorDashboard() {
   const { data: students, loading: ls }      = useFetch(getSupervisorStudents)
   const { data: pendingLogs, loading: lp, refetch } = useFetch(getPendingLogs)
   const { data: safety, loading: lsf }       = useFetch(getSupervisorSafetyReports)
-  const { data: evaluations, loading: le }       = useFetch(getEvaluation)
+  const { data: evaluations }       = useFetch(getEvaluation)
   const [verifying, setVerifying] = useState(null)
 
   if (ls || lp || lsf) return <LoadingScreen />

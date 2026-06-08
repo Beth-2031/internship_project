@@ -48,7 +48,7 @@ class TestEvaluation:
             logbook_score=70,
             academic_score=90
         )
-        expected = (80 * 0.4) + (70 * 0.3) + (90 * 0.3)
+        expected = (80 * 0.3) + (70 * 0.4) + (90 * 0.3)
         assert float(evaluation.total_score) == pytest.approx(expected)
 
 

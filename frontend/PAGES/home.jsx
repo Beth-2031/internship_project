@@ -34,7 +34,7 @@ const Home = () => {
             <p>Browse and apply to opportunities from leading companies.</p>
           </div>
           <div className="feature-card">
-            <h3>👥 Mentor Connection</h3>
+            <h3>👥 Mentor Connections</h3>
             <p>Connect with supervisors and mentors for guidance throughout your internship.</p>
           </div>
           <div className="feature-card">
@@ -53,13 +53,13 @@ const Home = () => {
             <button className="role-button">Login as Student</button>
           </div>
           <div className="role-box">
-            <h3>👨‍💼 Supervisor</h3>
-            <p>Manage internship programs and supervise students</p>
+            <h3>👨‍💼 Supervisor </h3>
+            <p>Manage internship programs and supervise interns</p>
             <button className="role-button">Login as Supervisor</button>
           </div>
           <div className="role-box">
             <h3>🔐 Administrator</h3>
-            <p>Oversee the whole platform and manage all users</p>
+            <p>Oversee the whole platform and manage users</p>
             <button className="role-button">Login as Admin</button>
           </div>
         </div>

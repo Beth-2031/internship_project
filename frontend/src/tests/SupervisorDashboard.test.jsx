@@ -10,6 +10,7 @@ vi.mock('../api/client', async (imprtOriginal) => ({
     getPendingLogs: vi.fn(() => Promise.resolve([])),
     getSupervisorSafetyReports: vi.fn(() => Promise.resolve([])),
     verifyLog: vi.fn(() => Promise.resolve({})),
+    getEvaluation: vi.fn(() => Promise.resolve([])),
 }))
 
 describe('SupervisorDahboard', () => {

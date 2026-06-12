@@ -209,6 +209,10 @@ def login_view(request):
                     'first_name': user.first_name,
                     'last_name': user.last_name,
                     'user_type': _normalize_user_type(user.user_type),
+                    'course': user.course,
+                    'department': user.department,
+                    'student_number': user.student_number,
+                    'skills': user.skills,
                 }
             })
     except CustomUser.DoesNotExist:

@@ -31,8 +31,8 @@ from api.views import (
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/csrf-token/', get_csrf_token, name='csrf-token'),
+    path('api/csrf-token/', get_csrf_token, name='csrf-token'),
     path('api/login/', login_view, name='login'),
-    path('api/register/', register_view, name='register'),
     path('api/password-reset/request/', password_reset_request_view, name='password-reset-request'),
     path('api/password-reset/confirm/', password_reset_confirm_view, name='password-reset-confirm'),
     path('api/me/', me_view, name='me'),

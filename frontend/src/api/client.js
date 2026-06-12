@@ -1,7 +1,12 @@
 import axios from 'axios'
 
+const isProduction = import.meta.env.PROD
+const apiBase = isProduction 
+  ? (import.meta.env.VITE_API_URL_PRODUCTION || 'https://iles-django-7119b58af980.herokuapp.com/') + 'api'
+  : '/api'
+
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+  baseURL: apiBase,
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
   xsrfCookieName: 'csrftoken',
@@ -21,12 +26,13 @@ api.interceptors.request.use(config => {
 api.interceptors.response.use(
   res => res,
   err => {
-    const publicPaths = ['/', '/login', '/register']
-    if (err.response?.status === 401 && !publicPaths.includes(window.location.pathname)) {
+    const publicPaths = ['/', '/login', '/register', '/forgot-password', '/reset-password']
+    const isMeEndpoint = err.config?.url?.includes('/me/')
+    
+    if (err.response?.status === 401 && !publicPaths.includes(window.location.pathname) && !isMeEndpoint) {
       window.location.href = '/login'
     }
     return Promise.reject(err)
-
   }
 )
 

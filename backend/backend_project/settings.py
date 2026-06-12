@@ -179,7 +179,7 @@ if django_heroku:
 # This must be AFTER django_heroku to prevent it being overridden
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'api.views.CsrfExemptSessionAuthentication'
+        'api.authentication.CsrfExemptSessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [

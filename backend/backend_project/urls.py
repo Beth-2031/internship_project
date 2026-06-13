@@ -28,6 +28,7 @@ from api.views import (
     get_csrf_token,
     users_view,
     user_detail_view,
+    debug_view,
 )
 
 urlpatterns = [
@@ -43,5 +44,6 @@ urlpatterns = [
     path('api/export/', export_view, name='export'),
     path('api/users/', users_view, name='users-list'),
     path('api/users/<int:pk>/', user_detail_view, name='users-detail'),
+    path('api/debug/', debug_view, name='debug'),
     path('', include('Our_First_App.urls')),
 ]

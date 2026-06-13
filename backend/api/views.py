@@ -128,70 +128,7 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-@method_decorator(csrf_exempt, name='dispatch')
-class UserViewSet(viewsets.ModelViewSet):
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [
-        'api.authentication.CsrfExemptSessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ]
 
-    def get_queryset(self):
-        user = self.request.user
-        if not _is_admin_user(user):
-            return CustomUser.objects.none()
-        qs = CustomUser.objects.all().order_by('id')
-        user_type = self.request.query_params.get('type')
-        if user_type:
-            role_map = {
-                'student': 'student',
-                'workplace': 'workplace_supervisor',
-                'academic': 'academic_supervisor',
-                'admin': 'internship_admin',
-                'workplace_supervisor': 'workplace_supervisor',
-                'academic_supervisor': 'academic_supervisor',
-                'internship_admin': 'internship_admin',
-            }
-            mapped = role_map.get(user_type, user_type)
-            qs = qs.filter(user_type=mapped)
-        return qs
-
-    def create(self, request, *args, **kwargs):
-        if not _is_admin_user(request.user):
-            return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
-        
-        email = request.data.get('email', '').strip()
-        password = request.data.get('password', '')
-        
-        if not email:
-            return Response({'error': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        if not password:
-            return Response({'error': 'Password is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        if len(password) < 8:
-            return Response({'error': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
-            # We must use super().create here to trigger the serializer's validation and creation logic
-            response = super().create(request, *args, **kwargs)
-            return response
-        except Exception as e:
-            # Catch specific serializer errors or general exceptions
-            error_data = getattr(e, 'detail', str(e))
-            return Response(
-                {'error': error_data},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-    def destroy(self, request, *args, **kwargs):
-        if not _is_admin_user(request.user):
-            return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
-        
-        user_to_delete = self.get_object()
-        if user_to_delete == request.user:
-            return Response({'error': 'You cannot delete your own account.'}, status=status.HTTP_400_BAD_REQUEST)
-            
-        return super().destroy(request, *args, **kwargs)
              
 
 
@@ -391,6 +328,7 @@ def logout_view(request):
     return Response({'message': 'Logged out'})
 
 
+@csrf_exempt
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def users_view(request):
@@ -437,6 +375,26 @@ def users_view(request):
             {'error': 'Username or email already exists.'},
             status=status.HTTP_400_BAD_REQUEST
             )
+
+@csrf_exempt
+@api_view(['GET', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def user_detail_view(request, pk):
+    if not _is_admin_user(request.user):
+        return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+    try:
+        user = CustomUser.objects.get(pk=pk)
+    except CustomUser.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        data = UserSerializer(user).data
+        return Response(data)
+    elif request.method == 'DELETE':
+        if user == request.user:
+            return Response({'error': 'You cannot delete your own account.'}, status=status.HTTP_400_BAD_REQUEST)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
         
 
 

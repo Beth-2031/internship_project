@@ -29,6 +29,7 @@ from Our_First_App.models import (
 @permission_classes([AllowAny])
 @authentication_classes([])
 @ensure_csrf_cookie
+@csrf_exempt
 def get_csrf_token(request):
     print("=== get_csrf_token called ===")
     print(f"Request: {request}")
@@ -300,6 +301,7 @@ def password_reset_confirm_view(request):
     return Response({'message': 'Password has been reset successfully.'})
 
 
+@csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def me_view(request):
@@ -318,6 +320,7 @@ def me_view(request):
     })
 
 
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_view(request):
@@ -395,6 +398,7 @@ def user_detail_view(request, pk):
         
 
 
+@csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def admin_stats_view(request):
@@ -422,6 +426,7 @@ def _write_csv_response(filename, headers, rows):
     return response
 
 
+@csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def export_view(request):

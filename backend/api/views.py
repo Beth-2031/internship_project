@@ -299,7 +299,7 @@ def password_reset_request_view(request):
     frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173').rstrip('/')
     reset_link = f"{frontend_url}/reset-password?uid={uidb64}&token={token}"
 
-    subject = "Password reset - Internship Management System"
+    subject = "Password reset - Internship Logging and Evaluation System"
     body = (
         "You requested to reset your password.\n\n"
         f"Reset your password using this link:\n{reset_link}\n\n"

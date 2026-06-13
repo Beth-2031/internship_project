@@ -1,16 +1,18 @@
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.exceptions import NotAuthenticated
+from rest_framework.authentication import BaseAuthentication
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 
-class CsrfExemptSessionAuthentication(SessionAuthentication):
-    def enforce_csrf(self, request):
-        # 100% bypass CSRF for all API requests
-        return
-
+class CsrfExemptSessionAuthentication(BaseAuthentication):
     def authenticate(self, request):
-        # First try to authenticate with session
-        result = super().authenticate(request)
-        if result:
-            return result
-
-        # If session auth fails, still allow (we'll handle permissions separately)
+        # Get the user from the session without any CSRF checks
+        User = get_user_model()
+        if hasattr(request, 'session'):
+            user_id = request.session.get('_auth_user_id')
+            if user_id:
+                try:
+                    user = User.objects.get(pk=user_id)
+                    return (user, None)
+                except User.DoesNotExist:
+                    pass
+        # If no user found, return None (permission classes will handle it)
         return None

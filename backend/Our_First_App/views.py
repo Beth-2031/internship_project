@@ -34,6 +34,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 class InternshipPlacementViewSet(viewsets.ModelViewSet):
     serializer_class = InternshipPlacementSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = ['api.authentication.CsrfExemptSessionAuthentication']
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     filterset_fields = ['is_approved', 'student', 'workplace_supervisor', 'academic_supervisor']
     ordering_fields = ['start_date', 'end_date', 'company_name']
@@ -64,6 +65,7 @@ class InternshipPlacementViewSet(viewsets.ModelViewSet):
 class WeeklyLogViewSet(viewsets.ModelViewSet):
     serializer_class = WeeklyLogSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = ['api.authentication.CsrfExemptSessionAuthentication']
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['status', 'is_verified', 'week_number', 'student']
     ordering_fields = ['week_number', 'date_submitted']
@@ -141,6 +143,7 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
 class SupervisorReviewViewSet(viewsets.ModelViewSet):
     serializer_class = SupervisorReviewSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = ['api.authentication.CsrfExemptSessionAuthentication']
 
     def get_queryset(self):
         user = self.request.user
@@ -168,6 +171,7 @@ class SupervisorReviewViewSet(viewsets.ModelViewSet):
 class EvaluationViewSet(viewsets.ModelViewSet):
     serializer_class = EvaluationSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = ['api.authentication.CsrfExemptSessionAuthentication']
 
     def get_queryset(self):
         user = self.request.user
@@ -191,6 +195,7 @@ class EvaluationViewSet(viewsets.ModelViewSet):
 class SafetyReportViewSet(viewsets.ModelViewSet):
     serializer_class = SafetyReportSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = ['api.authentication.CsrfExemptSessionAuthentication']
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_resolved', 'student']
 
@@ -219,6 +224,7 @@ class SafetyReportViewSet(viewsets.ModelViewSet):
 class CourseCompletionViewSet(viewsets.ModelViewSet):
     serializer_class = CourseCompletionSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = ['api.authentication.CsrfExemptSessionAuthentication']
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_completed', 'student']
 
@@ -241,6 +247,7 @@ class CourseCompletionViewSet(viewsets.ModelViewSet):
 class NotificationViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = ['api.authentication.CsrfExemptSessionAuthentication']
 
     def get_queryset(self):
         user = self.request.user

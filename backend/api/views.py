@@ -129,9 +129,6 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
-             
-
-
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])

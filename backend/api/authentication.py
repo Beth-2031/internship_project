@@ -1,10 +1,16 @@
 from rest_framework.authentication import SessionAuthentication
-import logging
-
-logger = logging.getLogger(__name__)
+from rest_framework.exceptions import NotAuthenticated
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
     def enforce_csrf(self, request):
-        logger.info("CsrfExemptSessionAuthentication: Bypassing CSRF check")
-        print("=== CsrfExemptSessionAuthentication.enforce_csrf called - bypassing ===")
-        return  # Do NOT enforce CSRF
+        # 100% bypass CSRF for all API requests
+        return
+
+    def authenticate(self, request):
+        # First try to authenticate with session
+        result = super().authenticate(request)
+        if result:
+            return result
+
+        # If session auth fails, still allow (we'll handle permissions separately)
+        return None

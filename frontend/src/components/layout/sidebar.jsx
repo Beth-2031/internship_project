@@ -24,7 +24,7 @@ const NAV = {
   workplace_supervisor: [
     { label: 'Overview', links: [
       { to: '/supervisor/dashboard',          icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', text: 'Dashboard' },
-      { to: '/supervisor/students', icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 100 8 4 4 0 000-8z', text: 'My Students' },
+      { to: '/supervisor/students', icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 1 0 8 4 4 0 0 0-8z', text: 'My Students' },
     ]},
     { label: 'Actions', links: [
       { to: '/supervisor/logs',     icon: 'M9 11l3 3L22 4', text: 'Verify Logs', badge: 'pendingLogs' },
@@ -34,7 +34,7 @@ const NAV = {
   academic_supervisor: [
     { label: 'Overview', links: [
       { to: '/academic/dashboard',              icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', text: 'Dashboard' },
-      { to: '/academic/students',     icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 100 8 4 4 0 000-8z', text: 'My Students' },
+      { to: '/academic/students',     icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 1 0 8 4 4 0 0 0-8z', text: 'My Students' },
     ]},
     { label: 'Actions', links: [
       { to: '/academic/placements',   icon: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', text: 'Approve Placements', badge: 'pendingPlacements' },
@@ -48,10 +48,10 @@ const NAV = {
     ]},
     { label: 'Placements', links: [
       { to: '/admin/placements',    icon: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', text: 'All Placements' },
-      { to: '/admin/placements/pending', icon: 'M12 2a10 10 0 100 20A10 10 0 0012 2z', text: 'Pending', badge: 'pendingPlacements' },
+      { to: '/admin/placements/pending', icon: 'M12 2a10 10 0 1 0 20A10 10 0 0 012 2z', text: 'Pending', badge: 'pendingPlacements' },
     ]},
     { label: 'Users', links: [
-      { to: '/admin/users',         icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 100 8 4 4 0 000-8z', text: 'Manage Users' },
+      { to: '/admin/users',         icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 1 0 8 4 4 0 0 0-8z', text: 'Manage Users' },
       { to: '/admin/users/new',     icon: 'M12 5v14M5 12h14', text: 'Register User' },
     ]},
     { label: 'Reports', links: [

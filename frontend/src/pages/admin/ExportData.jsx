@@ -28,7 +28,7 @@ const EXPORTS = [
     type:    'users',
     title:   'Users',
     desc:    'All registered users — name, username, email, role',
-    icon:    'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 100 8 4 4 0 000-8z',
+    icon:    'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 1 0 8 4 4 0 0 0-8z',
     color:   'icon-amber',
   },
   {

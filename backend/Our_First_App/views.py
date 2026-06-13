@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.db import models
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, permissions, status, filters
 
 from rest_framework.decorators import action
@@ -31,9 +33,14 @@ from .serializers import (
 from django_filters.rest_framework import DjangoFilterBackend
 from .signals import create_notification
 
+@method_decorator(csrf_exempt, name='dispatch')
 class InternshipPlacementViewSet(viewsets.ModelViewSet):
     serializer_class = InternshipPlacementSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [
+        'api.authentication.CsrfExemptSessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     filterset_fields = ['is_approved', 'student', 'workplace_supervisor', 'academic_supervisor']
     ordering_fields = ['start_date', 'end_date', 'company_name']
@@ -60,9 +67,14 @@ class InternshipPlacementViewSet(viewsets.ModelViewSet):
         return InternshipPlacement.objects.none()
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class WeeklyLogViewSet(viewsets.ModelViewSet):
     serializer_class = WeeklyLogSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [
+        'api.authentication.CsrfExemptSessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['status', 'is_verified', 'week_number', 'student']
     ordering_fields = ['week_number', 'date_submitted']
@@ -137,9 +149,14 @@ class WeeklyLogViewSet(viewsets.ModelViewSet):
             }
         )
     
+@method_decorator(csrf_exempt, name='dispatch')
 class SupervisorReviewViewSet(viewsets.ModelViewSet):
     serializer_class = SupervisorReviewSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [
+        'api.authentication.CsrfExemptSessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ]
 
     def get_queryset(self):
         user = self.request.user
@@ -164,9 +181,14 @@ class SupervisorReviewViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(supervisor=self.request.user)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class EvaluationViewSet(viewsets.ModelViewSet):
     serializer_class = EvaluationSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [
+        'api.authentication.CsrfExemptSessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ]
 
     def get_queryset(self):
         user = self.request.user
@@ -196,9 +218,14 @@ class EvaluationViewSet(viewsets.ModelViewSet):
         serializer.save()    
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class SafetyReportViewSet(viewsets.ModelViewSet):
     serializer_class = SafetyReportSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [
+        'api.authentication.CsrfExemptSessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_resolved', 'student']
 
@@ -223,9 +250,14 @@ class SafetyReportViewSet(viewsets.ModelViewSet):
         serializer.save(student=user)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class CourseCompletionViewSet(viewsets.ModelViewSet):
     serializer_class = CourseCompletionSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [
+        'api.authentication.CsrfExemptSessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_completed', 'student']
 
@@ -244,9 +276,14 @@ class CourseCompletionViewSet(viewsets.ModelViewSet):
         return CourseCompletion.objects.none()
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class NotificationViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationSerializer
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [
+        'api.authentication.CsrfExemptSessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ]
 
     def get_queryset(self):
         return Notification.objects.filter(user=self.request.user).order_by('-created_at')

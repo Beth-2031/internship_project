@@ -30,6 +30,13 @@ from Our_First_App.models import (
 @authentication_classes([])
 @ensure_csrf_cookie
 def get_csrf_token(request):
+    print("=== get_csrf_token called ===")
+    print(f"Request: {request}")
+    print(f"Cookies: {request.COOKIES}")
+    csrf_token = request.META.get('CSRF_COOKIE', None)
+    print(f"Generated CSRF token: {csrf_token}")
+    print(f"Session: {request.session.session_key}")
+    print("=== end get_csrf_token ===")
     return Response({'detail': 'CSRF cookie set'})
 
 
@@ -125,6 +132,10 @@ class UserSerializer(serializers.ModelSerializer):
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    authentication_classes = [
+        'api.authentication.CsrfExemptSessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ]
 
     def get_queryset(self):
         user = self.request.user

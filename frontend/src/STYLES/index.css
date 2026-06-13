@@ -273,16 +273,15 @@ a { color: inherit; }
 @media (max-width: 1000px) {
   .hamburger-btn { display: block; }
   .sidebar-close-btn { display: block; }
-  .sidebar {
+  .sidebar-container {
     position: fixed;
     top: 0;
     left: -280px;
     height: 100svh;
     z-index: 100;
     transition: left 0.3s ease;
-    border-right: 1px solid var(--border);
   }
-  .sidebar.sidebar-open { left: 0; }
+  .sidebar-container.sidebar-open { left: 0; }
   .page-content { padding: 16px; }
   .stats-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid-3-1 { grid-template-columns: 1fr; }

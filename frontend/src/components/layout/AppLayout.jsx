@@ -17,7 +17,7 @@ export default function AppLayout({ badges, topbarTitle, topbarSub, topbarAction
       )}
       
       {/* Sidebar */}
-      <div className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
+      <div className={`sidebar-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <Sidebar badges={badges} onClose={() => setSidebarOpen(false)} />
       </div>
       

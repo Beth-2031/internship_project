@@ -12,7 +12,6 @@ from .views import (
     verify_log,
     submit_log,
 )
-from api.views import UserViewSet
 
 # DRF Router
 router = DefaultRouter()
@@ -21,7 +20,6 @@ router.register(r'weekly-logs', WeeklyLogViewSet, basename='weekly-logs')
 router.register(r'safety-reports', SafetyReportViewSet, basename='safety-reports')
 router.register(r'course-completions', CourseCompletionViewSet, basename='course-completions')
 router.register(r'notifications', NotificationViewSet, basename='notifications')
-router.register(r'users', UserViewSet, basename='users')
 router.register(r'supervisor-review', SupervisorReviewViewSet, basename='supervisor-reviews')
 router.register(r'evaluations', EvaluationViewSet, basename='evaluations')
 urlpatterns = [

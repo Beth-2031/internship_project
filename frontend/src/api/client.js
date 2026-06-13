@@ -12,7 +12,28 @@ const api = axios.create({
   xsrfCookieName: 'csrftoken',
   xsrfHeaderName: 'X-CSRFToken',
 })
-api.interceptors.request.use(config => {
+
+// Helper function to ensure CSRF token is fetched
+let csrfFetched = false
+const ensureCsrfToken = async () => {
+  if (csrfFetched) return
+  
+  try {
+    console.log('Ensuring CSRF token is present...')
+    await api.get('/csrf-token/')
+    csrfFetched = true
+    console.log('CSRF token confirmed!')
+  } catch (err) {
+    console.error('Failed to fetch CSRF token:', err)
+  }
+}
+
+api.interceptors.request.use(async config => {
+  // Ensure we have a CSRF token for any state-changing request
+  if (['post', 'put', 'patch', 'delete'].includes(config.method?.toLowerCase())) {
+    await ensureCsrfToken()
+  }
+  
   const csrfToken = document.cookie
     .split('; ')
     .find(row => row.startsWith('csrftoken='))
@@ -23,6 +44,7 @@ api.interceptors.request.use(config => {
   }
   return config
 })
+
 api.interceptors.response.use(
   res => res,
   err => {

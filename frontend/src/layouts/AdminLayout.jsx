@@ -11,7 +11,7 @@ export default function AdminLayout() {
         pendingPlacements: placements?.filter(p => !p.is_approved).length ?? 0,
         openSafety:        safety?.filter(r => !r.is_resolved).length ?? 0,
       }}
-      topbarTitle="Internship Management System"
+      topbarTitle="Internship Logging and Evaluation System"
       topbarSub="Admin Panel"
     />
   )

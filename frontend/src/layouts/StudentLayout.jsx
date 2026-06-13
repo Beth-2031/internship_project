@@ -11,7 +11,7 @@ export function StudentLayout() {
     <>
     <AppLayout
       badges={{ pendingLogs }}
-      topbarTitle="Internship Management System"
+      topbarTitle="Internship Logging and Evaluation System"
       topbarSub="Student Portal"
     />
     <ToastContainer />

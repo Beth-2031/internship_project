@@ -49,7 +49,7 @@ export default function RegisterPage() {
 
       return (
         <div className="login-container">
-            <div className="app-title" >Internship System</div>
+            <div className="app-title" >Internship Logging and Evaluation System</div>
             <div className="welcome-text" >Create Account</div>
             <div className="subtitle" >Select your role and register</div>
 

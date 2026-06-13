@@ -58,7 +58,7 @@ export default function LoginPage(){
 
     return (
       <div className="login-container">
-        <div className="app-title">Internship Management System</div>
+        <div className="app-title">Internship Logging and Evaluation System</div>
         <div className="welcome-text">Welcome Back!</div>
         <div className="subtitle">Select your role and sign in to continue</div>
         

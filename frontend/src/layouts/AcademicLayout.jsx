@@ -11,7 +11,7 @@ export default function AcademicLayout() {
         pendingPlacements: pending?.length ?? 0,
         openSafety:        safety?.filter(r => !r.is_resolved).length ?? 0,
       }}
-      topbarTitle="Internship Management System"
+      topbarTitle="Internship Logging and Evaluation System"
       topbarSub="Academic Portal"
     />
   )

@@ -24,7 +24,7 @@ const NAV = {
   workplace_supervisor: [
     { label: 'Overview', links: [
       { to: '/supervisor/dashboard',          icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', text: 'Dashboard' },
-      { to: '/supervisor/students', icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 100 8 4 4 0 000-8z', text: 'My Students' },
+      { to: '/supervisor/students', icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 100 8 4 4 0 000-8z', text: 'My Students' },
     ]},
     { label: 'Actions', links: [
       { to: '/supervisor/logs',     icon: 'M9 11l3 3L22 4', text: 'Verify Logs', badge: 'pendingLogs' },
@@ -34,7 +34,7 @@ const NAV = {
   academic_supervisor: [
     { label: 'Overview', links: [
       { to: '/academic/dashboard',              icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', text: 'Dashboard' },
-      { to: '/academic/students',     icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 100 8 4 4 0 000-8z', text: 'My Students' },
+      { to: '/academic/students',     icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 100 8 4 4 0 000-8z', text: 'My Students' },
     ]},
     { label: 'Actions', links: [
       { to: '/academic/placements',   icon: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', text: 'Approve Placements', badge: 'pendingPlacements' },
@@ -51,7 +51,7 @@ const NAV = {
       { to: '/admin/placements/pending', icon: 'M12 2a10 10 0 100 20A10 10 0 0012 2z', text: 'Pending', badge: 'pendingPlacements' },
     ]},
     { label: 'Users', links: [
-      { to: '/admin/users',         icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 0 100 8 4 4 0 000-8z', text: 'Manage Users' },
+      { to: '/admin/users',         icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M12 7a4 4 100 8 4 4 0 000-8z', text: 'Manage Users' },
       { to: '/admin/users/new',     icon: 'M12 5v14M5 12h14', text: 'Register User' },
     ]},
     { label: 'Reports', links: [
@@ -61,7 +61,7 @@ const NAV = {
   ],
 }
 
-export default function Sidebar({ badges = {} }) {
+export default function Sidebar({ badges = {}, onClose }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const sections = NAV[user?.user_type] || []
@@ -75,7 +75,15 @@ export default function Sidebar({ badges = {} }) {
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
           </svg>
         </div>
-        <span className="brand-name">Internship Management System</span>
+        <span className="brand-name">Internship Logging and Evaluation System</span>
+        <button 
+          className="sidebar-close-btn"
+          onClick={onClose}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
       </div>
 
       <nav className="sidebar-nav">
@@ -88,8 +96,9 @@ export default function Sidebar({ badges = {} }) {
                 to={link.to}
                 end={link.to.split('/').length <= 2}
                 className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+                onClick={onClose}
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <path d={link.icon}/>
                 </svg>
                 {link.text}
@@ -112,7 +121,7 @@ export default function Sidebar({ badges = {} }) {
             <div className="user-role">{user?.user_type?.replace(/_/g,' ')}</div>
           </div>
           <button
-            onClick={async () => { await logout(); navigate('/') }}
+            onClick={async () => { await logout(); navigate('/'); onClose?.(); }}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text3)', padding: '2px' }}
             title="Sign out"
           >

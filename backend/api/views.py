@@ -2,7 +2,6 @@ from django.conf import settings
 from datetime import date, timedelta
 import os
 import logging
-
 logger = logging.getLogger(__name__)
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.contrib.auth.tokens import default_token_generator
@@ -24,6 +23,7 @@ from Our_First_App.models import (
     SafetyReport,
     CourseCompletion,
 )
+
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -47,9 +47,9 @@ def _normalize_user_type(user_type):
 
 def _is_admin_user(user):
     return (
-        _normalize_user_type(getattr(user, 'user_type', '')) == 'internship_admin'
-        or getattr(user, 'is_staff', False)
-        or getattr(user, 'is_superuser', False)
+        _normalize_user_type(getattr(user, 'user_type', '')) == 'internship_admin' or
+        getattr(user, 'is_staff', False) or
+        getattr(user, 'is_superuser', False)
     )
 
 
@@ -71,7 +71,6 @@ class UserSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password', None)
         assigned_students = validated_data.pop('assigned_students', [])
         
-        # Consistent role mapping
         role = validated_data.get('user_type', '')
         role_map = {
             'student': 'student',
@@ -79,14 +78,12 @@ class UserSerializer(serializers.ModelSerializer):
             'academic_supervisor': 'academic_supervisor',
             'internship_admin': 'internship_admin',
         }
-        # Default to whatever was sent if not in map, but prefer long names
         validated_data['user_type'] = role_map.get(role, role)
         
         email = validated_data.get('email', '')
         if not validated_data.get('username'):
             validated_data['username'] = email
             
-        # Ensure username is unique even if email is not
         if CustomUser.objects.filter(username=validated_data['username']).exists():
             raise serializers.ValidationError({"username": "A user with this username/email already exists."})
 
@@ -95,8 +92,7 @@ class UserSerializer(serializers.ModelSerializer):
             user.set_password(password)
         user.save()
 
-        # Link assigned students to this new supervisor
-        if assigned_students and user.user_type in ('workplace_supervisor', 'academic_supervisor'):
+        if assigned_students and user.user_type in ['workplace_supervisor', 'academic_supervisor']:
             supervisor_field = 'workplace_supervisor' if user.user_type == 'workplace_supervisor' else 'academic_supervisor'
             for student_id in assigned_students:
                 try:
@@ -137,7 +133,6 @@ class UserSerializer(serializers.ModelSerializer):
 def login_view(request):
     email = request.data.get('email')
     password = request.data.get('password')
-
     try:
         user = CustomUser.objects.get(username=email)
         if user.check_password(password):
@@ -158,7 +153,6 @@ def login_view(request):
                 }
             })
     except CustomUser.DoesNotExist:
-        # Still run password check to avoid timing attacks
         CustomUser().set_password(password)
     return Response({'error': 'Invalid credentials'}, status=400)
 
@@ -193,13 +187,12 @@ def register_view(request):
     }
     user_type = role_map.get(role, 'student')
 
-    if user_type in ('workplace_supervisor', 'academic_supervisor'):
+    if user_type in ['workplace_supervisor', 'academic_supervisor']:
         return Response({'error': 'This role can only be created by an administrator.'}, status=status.HTTP_403_FORBIDDEN)
 
     if CustomUser.objects.filter(username=email).exists():
         return Response({'error': 'User already exists'}, status=400)
 
-    # Split full name into first and last
     name_parts = full_name.strip().split(' ', 1)
     first_name = name_parts[0]
     last_name = name_parts[1] if len(name_parts) > 1 else ''
@@ -223,12 +216,7 @@ def register_view(request):
 @permission_classes([AllowAny])
 @authentication_classes([])
 def password_reset_request_view(request):
-    """
-    Request a password reset link.
-    Always returns 200 to avoid leaking whether an email exists.
-    """
     email = (request.data.get('email') or '').strip()
-    # Default response (do not reveal whether the user exists).
     ok_response = Response({'message': 'If an account exists for this email, a reset link has been sent.'})
 
     if not email:
@@ -240,7 +228,6 @@ def password_reset_request_view(request):
 
     uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
-
     
     frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173').rstrip('/')
     reset_link = f"{frontend_url}/reset-password?uid={uidb64}&token={token}"
@@ -271,18 +258,12 @@ def password_reset_request_view(request):
 @permission_classes([AllowAny])
 @authentication_classes([])
 def password_reset_confirm_view(request):
-    """
-    Confirm password reset using uid+token and set new password.
-    """
     uidb64 = (request.data.get('uid') or '').strip()
     token = (request.data.get('token') or '').strip()
     new_password = request.data.get('new_password') or ''
 
     if not uidb64 or not token or not new_password:
-        return Response(
-            {'error': 'uid, token and new_password are required.'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response({'error': 'uid, token and new_password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if len(new_password) < 8:
         return Response({'error': 'Password must be at least 8 characters.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -374,7 +355,8 @@ def users_view(request):
         return Response(
             {'error': 'Username or email already exists.'},
             status=status.HTTP_400_BAD_REQUEST
-            )
+        )
+
 
 @csrf_exempt
 @api_view(['GET', 'DELETE'])
@@ -395,7 +377,21 @@ def user_detail_view(request, pk):
             return Response({'error': 'You cannot delete your own account.'}, status=status.HTTP_400_BAD_REQUEST)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-        
+
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def debug_view(request):
+    return Response({
+        "method": request.method,
+        "path": request.path,
+        "full_path": request.get_full_path(),
+        "headers": dict(request.headers),
+        "cookies": request.COOKIES,
+        "is_authenticated": request.user.is_authenticated,
+        "user": str(request.user),
+    })
 
 
 @csrf_exempt
@@ -425,20 +421,6 @@ def _write_csv_response(filename, headers, rows):
         writer.writerow(row)
     return response
 
-
-@csrf_exempt
-@api_view(['GET', 'POST'])
-@permission_classes([AllowAny])
-def debug_view(request):
-    return Response({
-        "method": request.method,
-        "path": request.path,
-        "full_path": request.get_full_path(),
-        "headers": dict(request.headers),
-        "cookies": request.COOKIES,
-        "is_authenticated": request.user.is_authenticated,
-        "user": str(request.user),
-    })
 
 @csrf_exempt
 @api_view(['GET'])

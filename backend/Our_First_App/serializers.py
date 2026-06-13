@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.utils import timezone
 from .models import InternshipPlacement, CustomUser, WeeklyLog, SafetyReport, CourseCompletion, Notification, SupervisorReview, Evaluation
 
 class CustomUserSerializer(serializers.ModelSerializer):

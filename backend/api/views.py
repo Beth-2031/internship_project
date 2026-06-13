@@ -11,9 +11,8 @@ from django.core.mail import send_mail
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import viewsets, serializers, status
+from rest_framework import serializers, status
 from django.http import HttpResponse
-from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login, logout
 import csv
 from Our_First_App.models import (
@@ -23,21 +22,16 @@ from Our_First_App.models import (
     SafetyReport,
     CourseCompletion,
 )
+from api.authentication import CsrfExemptSessionAuthentication
 
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-@authentication_classes([])
+@authentication_classes([CsrfExemptSessionAuthentication])
 @ensure_csrf_cookie
 @csrf_exempt
 def get_csrf_token(request):
     print("=== get_csrf_token called ===")
-    print(f"Request: {request}")
-    print(f"Cookies: {request.COOKIES}")
-    csrf_token = request.META.get('CSRF_COOKIE', None)
-    print(f"Generated CSRF token: {csrf_token}")
-    print(f"Session: {request.session.session_key}")
-    print("=== end get_csrf_token ===")
     return Response({'detail': 'CSRF cookie set'})
 
 
@@ -129,7 +123,7 @@ class UserSerializer(serializers.ModelSerializer):
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@authentication_classes([])
+@authentication_classes([CsrfExemptSessionAuthentication])
 def login_view(request):
     email = request.data.get('email')
     password = request.data.get('password')
@@ -160,7 +154,7 @@ def login_view(request):
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@authentication_classes([])
+@authentication_classes([CsrfExemptSessionAuthentication])
 def register_view(request):
     email = request.data.get('email', '').strip()
     password = request.data.get('password', '')
@@ -214,7 +208,7 @@ def register_view(request):
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@authentication_classes([])
+@authentication_classes([CsrfExemptSessionAuthentication])
 def password_reset_request_view(request):
     email = (request.data.get('email') or '').strip()
     ok_response = Response({'message': 'If an account exists for this email, a reset link has been sent.'})
@@ -256,7 +250,7 @@ def password_reset_request_view(request):
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@authentication_classes([])
+@authentication_classes([CsrfExemptSessionAuthentication])
 def password_reset_confirm_view(request):
     uidb64 = (request.data.get('uid') or '').strip()
     token = (request.data.get('token') or '').strip()
@@ -285,6 +279,7 @@ def password_reset_confirm_view(request):
 @csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([CsrfExemptSessionAuthentication])
 def me_view(request):
     user = request.user
     return Response({
@@ -304,6 +299,7 @@ def me_view(request):
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([CsrfExemptSessionAuthentication])
 def logout_view(request):
     logout(request)
     return Response({'message': 'Logged out'})
@@ -312,6 +308,7 @@ def logout_view(request):
 @csrf_exempt
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([CsrfExemptSessionAuthentication])
 def users_view(request):
     if not _is_admin_user(request.user):
         return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
@@ -361,6 +358,7 @@ def users_view(request):
 @csrf_exempt
 @api_view(['GET', 'DELETE'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([CsrfExemptSessionAuthentication])
 def user_detail_view(request, pk):
     if not _is_admin_user(request.user):
         return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
@@ -382,6 +380,7 @@ def user_detail_view(request, pk):
 @csrf_exempt
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
+@authentication_classes([CsrfExemptSessionAuthentication])
 def debug_view(request):
     return Response({
         "method": request.method,
@@ -397,6 +396,7 @@ def debug_view(request):
 @csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([CsrfExemptSessionAuthentication])
 def admin_stats_view(request):
     if not _is_admin_user(request.user):
         return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
@@ -425,6 +425,7 @@ def _write_csv_response(filename, headers, rows):
 @csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([CsrfExemptSessionAuthentication])
 def export_view(request):
     if not _is_admin_user(request.user):
         return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)

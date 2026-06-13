@@ -427,6 +427,20 @@ def _write_csv_response(filename, headers, rows):
 
 
 @csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def debug_view(request):
+    return Response({
+        "method": request.method,
+        "path": request.path,
+        "full_path": request.get_full_path(),
+        "headers": dict(request.headers),
+        "cookies": request.COOKIES,
+        "is_authenticated": request.user.is_authenticated,
+        "user": str(request.user),
+    })
+
+@csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def export_view(request):

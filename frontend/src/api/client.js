@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const isProduction = import.meta.env.PROD
 const apiBase = isProduction 
-  ? (import.meta.env.VITE_API_URL_PRODUCTION || 'https://iles-django-7119b58af980.herokuapp.com/') + 'api'
+  ? (import.meta.env.VITE_API_URL_PRODUCTION || 'https://iles-django-7119b58af980.herokuapp.com').replace(/\/$/, '') + '/api'
   : '/api'
 
 const api = axios.create({
@@ -94,3 +94,4 @@ export const markAllNotificationsRead = ()  => api.get('/notifications/').then(r
   const unread = (res.data || []).filter(n => !n.is_read)
   return Promise.all(unread.map(n => api.patch(`/notifications/${n.id}/`, { is_read: true })))
 })
+export const callDebug               = () => api.get('/debug/')
